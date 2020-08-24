@@ -10,9 +10,6 @@ public class Article {
     private Utilisateur vendeur, acquereur;
     private boolean retraitEffectue;
 
-    // METHODS
-    public static String getIdentifierName() { return "no_article"; }
-
     // CONSTRUCTORS
 
     public Article(String nomArticle, String description, LocalDate dateDebutEncheres, LocalDate dateFinEncheres, Categorie categorie, Utilisateur vendeur) {
@@ -50,6 +47,10 @@ public class Article {
         this(noArticle, nomArticle, description, dateDebutEncheres, dateFinEncheres, categorie, vendeur, acquereur, miseAPrix, prixVente);
         setRetraitEffectue(retraitEffectue);
     }
+
+
+    // METHODS
+    public static String getIdentifierName() { return "no_article"; }
 
 
     // GETTERS & SETTERS

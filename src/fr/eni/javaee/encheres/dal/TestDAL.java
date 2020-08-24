@@ -4,7 +4,11 @@ import fr.eni.javaee.encheres.EException;
 import fr.eni.javaee.encheres.dal.jdbc.UtilisateurJDBCDAOImpl;
 
 public class TestDAL {
-    public static void main(String[] args) throws EException {
-        new UtilisateurJDBCDAOImpl().delete(1);
+    public static void main(String[] args) {
+        try {
+            new UtilisateurJDBCDAOImpl().delete(1);
+        } catch (EException eException) {
+            eException.printStackTrace();
+        }
     }
 }

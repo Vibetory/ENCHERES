@@ -61,13 +61,13 @@ ALTER TABLE ARTICLE ADD constraint article_pk PRIMARY KEY (no_article)
 ALTER TABLE ARTICLE
     ADD CONSTRAINT enchere_vendeur_fk FOREIGN KEY ( no_vendeur ) REFERENCES UTILISATEUR ( no_utilisateur )
 ON DELETE NO ACTION
-    ON UPDATE no action
+    ON UPDATE NO ACTION
 
 -- A new foreign key has been added.
 ALTER TABLE ARTICLE
     ADD CONSTRAINT enchere_acquereur_fk FOREIGN KEY ( no_acquereur ) REFERENCES UTILISATEUR ( no_utilisateur )
 ON DELETE NO ACTION
-    ON UPDATE no action
+    ON UPDATE NO ACTION
 
 ALTER TABLE ENCHERE
     ADD CONSTRAINT enchere_article_fk FOREIGN KEY ( no_article )
@@ -85,5 +85,5 @@ ALTER TABLE ARTICLE
     ADD CONSTRAINT article_categorie_fk FOREIGN KEY ( no_categorie )
         REFERENCES CATEGORIE ( no_categorie )
 ON DELETE NO ACTION
-    ON UPDATE no action
+    ON UPDATE NO ACTION
 
