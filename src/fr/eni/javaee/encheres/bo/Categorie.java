@@ -14,6 +14,10 @@ public class Categorie {
     public Categorie(String libelle) { setLibelle(libelle); }
 
 
+    // METHODS
+    public static String getIdentifierName() { return "no_categorie"; }
+
+
     // GETTERS AND SETTERS
 
     public int getNoCategorie() { return this.noCategorie;}

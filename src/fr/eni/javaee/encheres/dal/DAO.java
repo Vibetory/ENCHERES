@@ -1,8 +1,8 @@
 package fr.eni.javaee.encheres.dal;
 
-import java.util.List;
-
 import fr.eni.javaee.encheres.EException;
+
+import java.util.List;
 
 public interface DAO<T> {
 
@@ -14,3 +14,4 @@ public interface DAO<T> {
 
     public List<T> selectAll() throws EException;
 }
+

@@ -10,6 +10,8 @@ public class Article {
     private Utilisateur vendeur, acquereur;
     private boolean retraitEffectue;
 
+    // METHODS
+    public static String getIdentifierName() { return "no_article"; }
 
     // CONSTRUCTORS
 

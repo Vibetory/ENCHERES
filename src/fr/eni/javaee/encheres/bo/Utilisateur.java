@@ -37,6 +37,9 @@ public class Utilisateur {
         setNoUtilisateur(noUtilisateur);
     }
 
+    // METHODS
+    public static String getIdentifierName() { return "no_utilisateur"; }
+
 
     // GETTERS & SETTERS
 

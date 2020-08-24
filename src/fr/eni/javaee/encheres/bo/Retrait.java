@@ -1,18 +1,21 @@
 package fr.eni.javaee.encheres.bo;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Retrait {
     private String rue, codePostal, ville;
+    private Article articleARetirer;
 
     // CONSTRUCTORS
 
-    public Retrait(String rue, String codePostal, String ville) {
+    public Retrait(Article articleARetirer, String rue, String codePostal, String ville) {
+        setArticleARetirer(articleARetirer);
         setRue(rue);
         setCodePostal(codePostal);
         setVille(ville);
     }
+
+
+    // METHODS
+    public static String getIdentifierName() { return "no_article"; }
 
 
     // GETTERS & SETTERS
@@ -28,4 +31,8 @@ public class Retrait {
     public String getVille() { return ville; }
 
     public void setVille(String ville) { this.ville = ville; }
+
+    public Article getArticleARetirer() { return this.articleARetirer; }
+
+    public void setArticleARetirer(Article articleARetirer) { this.articleARetirer = articleARetirer; }
 }
