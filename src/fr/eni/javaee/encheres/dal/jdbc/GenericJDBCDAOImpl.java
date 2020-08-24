@@ -11,13 +11,13 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-public class GenericJDBCDAO<T> implements DAO<T> {
+public class GenericJDBCDAOImpl<T> implements DAO<T> {
     protected Class<T> entityClass;
     protected final String SQL_DELETE;
     protected final String SQL_SELECT_BY_ID;
     protected final String SQL_SELECT_ALL;
 
-    public GenericJDBCDAO() throws EException {
+    public GenericJDBCDAOImpl() throws EException {
         this.entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
         this.SQL_DELETE = "DELETE FROM " + getActualClassName() + " WHERE " + getIdentifier() + " = ?";
         this.SQL_SELECT_BY_ID = "SELECT * FROM " + getActualClassName() + " WHERE " + getIdentifier() + " = ?";
@@ -40,6 +40,7 @@ public class GenericJDBCDAO<T> implements DAO<T> {
             statement.setInt(1, identifier);
             statement.executeUpdate();
         } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
             throw new EException(CodesExceptionJDBC.CRUD_DELETE_ERROR.get(this.getActualClassName()), sqlException);
         }
     }
@@ -59,6 +60,7 @@ public class GenericJDBCDAO<T> implements DAO<T> {
             Method getIdentifierName= this.entityClass.getMethod("getIdentifierName");
             return (String) getIdentifierName.invoke(this.entityClass);
         } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException exception) {
+            exception.printStackTrace();
             throw new EException(CodesExceptionJDBC.IDENTIFIER_ERROR, exception);
         }
     }
