@@ -8,6 +8,8 @@ public interface DAO<T> {
 
     public void insert(T object) throws EException;
 
+    public T update(T object) throws EException;
+
     public void delete(int identifier) throws EException;
 
     public T selectById(int identifier) throws EException;

@@ -12,6 +12,8 @@ public class Utilisateur {
 
     // CONSTRUCTORS
 
+    public Utilisateur() {}
+
     public Utilisateur(String pseudo, String nom, String prenom, String email, String rue, String codePostal, String ville, String motDePasse, int credit, byte administrateur) {
         setPseudo(pseudo);
         setNom(nom);

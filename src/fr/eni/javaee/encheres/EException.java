@@ -5,7 +5,6 @@ import fr.eni.javaee.encheres.messages.PropertiesReader;
 public class EException extends Exception{
     private int code;
 
-
     // CONSTRUCTORS
 
     public EException() { super(); }

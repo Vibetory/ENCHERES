@@ -13,29 +13,25 @@ import java.util.List;
 
 public class GenericJDBCDAO<T> implements DAO<T> {
     protected Class<T> entityClass;
-    protected String identifier;
-    protected final String SQL_DELETE =
-            "DELETE FROM" + entityClass.getSimpleName() + " WHERE " + identifier + " = ?";
-    protected final String SQL_SELECT_BY_ID =
-            "SELECT * FROM" + entityClass.getSimpleName() + " WHERE " + identifier + " = ?";
-    protected final String SQL_SELECT_ALL = "SELECT * FROM" + entityClass.getSimpleName();
-
-
+    protected final String SQL_DELETE;
+    protected final String SQL_SELECT_BY_ID;
+    protected final String SQL_SELECT_ALL;
 
     public GenericJDBCDAO() throws EException {
-        ParameterizedType genericSuperclass = (ParameterizedType) getClass().getGenericSuperclass();
-        this.entityClass = (Class<T>) genericSuperclass.getActualTypeArguments()[0];
-        try {
-            Method getIdentifierNamedentifier = this.entityClass.getClass().getMethod("getIdentifierName");
-            identifier = (String) getIdentifierNamedentifier.invoke(this.entityClass.getClass());
-        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException exception) {
-            throw new EException(CodesExceptionJDBC.IDENTIFIER_ERROR, exception);
-        }
+        this.entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+        this.SQL_DELETE = "DELETE FROM " + getActualClassName() + " WHERE " + getIdentifier() + " = ?";
+        this.SQL_SELECT_BY_ID = "SELECT * FROM " + getActualClassName() + " WHERE " + getIdentifier() + " = ?";
+        this.SQL_SELECT_ALL = "SELECT * FROM " + getActualClassName();
     }
 
     @Override
     public void insert(T object) throws EException {
 
+    }
+
+    @Override
+    public T update(T object) throws EException {
+        return null;
     }
 
     @Override
@@ -57,5 +53,18 @@ public class GenericJDBCDAO<T> implements DAO<T> {
     @Override
     public List<T> selectAll() throws EException {
         return null;
+    }
+
+    public String getIdentifier() throws EException {
+        try {
+            Method getIdentifierName= this.entityClass.getMethod("getIdentifierName");
+            return (String) getIdentifierName.invoke(this.entityClass);
+        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException exception) {
+            throw new EException(CodesExceptionJDBC.IDENTIFIER_ERROR, exception);
+        }
+    }
+
+    public String getActualClassName() throws EException {
+        return this.entityClass.getSimpleName();
     }
 }
