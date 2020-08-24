@@ -26,7 +26,6 @@ public class GenericJDBCDAO<T> implements DAO<T> {
 
     @Override
     public void insert(T object) throws EException {
-
     }
 
     @Override
@@ -41,7 +40,7 @@ public class GenericJDBCDAO<T> implements DAO<T> {
             statement.setInt(1, identifier);
             statement.executeUpdate();
         } catch (SQLException sqlException) {
-            throw new EException(CodesExceptionJDBC.CRUD_DELETE_ERROR, sqlException);
+            throw new EException(CodesExceptionJDBC.CRUD_DELETE_ERROR.get(this.getActualClassName()), sqlException);
         }
     }
 

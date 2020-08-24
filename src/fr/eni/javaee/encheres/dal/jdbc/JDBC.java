@@ -15,7 +15,7 @@ public class JDBC {
         Context context;
         try {
             context = new InitialContext();
-            dataSource = (DataSource) context.lookup("java:comp/env/jdbc/pool_cnx");
+            dataSource = (DataSource) context.lookup("java:comp/env/jdbc/connections");
         } catch (NamingException namingException) {
             try { throw new EException(CodesExceptionJDBC.DATABASE_ACCESS_ERROR, namingException); }
             catch (EException eException) {

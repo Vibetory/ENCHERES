@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <Context>
     <Resource
-            name="jdbc/pool_cnx"
+            name="jdbc/connections"
             driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
             type="javax.sql.DataSource"
             url="jdbc:sqlserver://localhost;databasename=ENCHERES"
