@@ -10,7 +10,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class JDBC {
-    private static DataSource dataSource;
+    private static final DataSource dataSource;
     static {
         Context context;
         try {

@@ -1,18 +1,14 @@
 package fr.eni.javaee.encheres.bo;
 
 import java.time.LocalDate;
-import java.util.*;
 
 public class Article {
-    private static final String[] etatsVente = {"Créée", "En cours", "Enchères terminées", "Retrait effectué"};
-    private static Map<Integer, Article> articlesVendus = new HashMap<>();
-    private Map<Utilisateur, Enchere> encheres;
     private int noArticle, miseAPrix, prixVente;
     private String nomArticle, description, etatVente;
     private LocalDate dateDebutEncheres, dateFinEncheres;
     private Categorie categorie;
     private Utilisateur vendeur, acquereur;
-    private boolean retirer;
+    private boolean retraitEffectue;
 
 
     // CONSTRUCTORS
@@ -24,8 +20,8 @@ public class Article {
         setDateFinEncheres(dateFinEncheres);
         setCategorie(categorie);
         setVendeur(vendeur);
+        setRetraitEffectue(false); // Default value.
         setEtatVente();
-        setEnchères();
     }
 
     public Article(String nomArticle, String description, LocalDate dateDebutEncheres, LocalDate dateFinEncheres, Categorie categorie, Utilisateur vendeur, int miseAPrix) {
@@ -43,62 +39,22 @@ public class Article {
         setPrixVente(prixVente);
     }
 
-    public Article (int noArticle, String nomArticle, String description, LocalDate dateDebutEncheres, LocalDate dateFinEncheres, Categorie categorie, Utilisateur vendeur, int miseAPrix, int prixVente, Utilisateur acquereur) {
-        this(noArticle, nomArticle, description, dateDebutEncheres, dateFinEncheres, categorie, vendeur, miseAPrix);
+    public Article (int noArticle, String nomArticle, String description, LocalDate dateDebutEncheres, LocalDate dateFinEncheres, Categorie categorie, Utilisateur vendeur, Utilisateur acquereur, int miseAPrix, int prixVente) {
+        this(noArticle, nomArticle, description, dateDebutEncheres, dateFinEncheres, categorie, vendeur, miseAPrix, prixVente);
         setAcquereur(acquereur);
     }
 
-
-    // METHODS
-
-    /**
-     * Get the highest auction.
-     * @return Enchere | Highest auction.
-     */
-    public Enchere getMaxEnchere() {
-        Enchere max = new Enchere();
-        max.setMontantEnchere(Integer.MIN_VALUE);
-        for (Map.Entry<Utilisateur, Enchere> enchere : encheres.entrySet()) {
-            max = enchere.getValue().getMontantEnchere() > max.getMontantEnchere() ? enchere.getValue() : max;
-        }
-        return max;
-    }
-
-    /**
-     * Add an auction on the article.
-     * @param encherisseur Utilisateur | User doing an auction.
-     * @param montant int | Amount in credits.
-     */
-    public void addEnchere(Utilisateur encherisseur, int montant) {
-        Enchere enchere = new Enchere(this, encherisseur, montant);
-        this.encheres.put(encherisseur, enchere);
-        encherisseur.getEncheres().put(this, enchere);
+    public Article (int noArticle, String nomArticle, String description, LocalDate dateDebutEncheres, LocalDate dateFinEncheres, Categorie categorie, Utilisateur vendeur, int miseAPrix, int prixVente, Utilisateur acquereur, boolean retraitEffectue) {
+        this(noArticle, nomArticle, description, dateDebutEncheres, dateFinEncheres, categorie, vendeur, acquereur, miseAPrix, prixVente);
+        setRetraitEffectue(retraitEffectue);
     }
 
 
     // GETTERS & SETTERS
 
-    public static Map<Integer, Article> getArticlesVendus() { return articlesVendus; }
-
-    public static Article getArticleVendu(int noArticle) { return articlesVendus.get(noArticle); }
-
-    public Map<Utilisateur, Enchere> getEncheres() { return this.encheres; }
-
-    public Enchere getEnchere(Utilisateur encherisseur) { return this.encheres.get(encherisseur); }
-
-    public void setEnchères() { this.encheres = new HashMap<>(); }
-
     public int getNoArticle() { return this.noArticle; }
 
-    /**
-     * Set an identifier for an article.
-     * Add the user to the map of articles.
-     * @param noArticle int | Identifier.
-     */
-    public void setNoArticle(int noArticle) {
-        this.noArticle = noArticle;
-        articlesVendus.put(noArticle, this);
-    }
+    public void setNoArticle(int noArticle) { this.noArticle = noArticle; }
 
     public int getMiseAPrix() { return this.miseAPrix; }
 
@@ -121,11 +77,14 @@ public class Article {
         return this.etatVente;
     }
 
+    /**
+     * The status of a sale is automatically set according to the dates.
+     */
     public void setEtatVente() {
-        if (this.dateDebutEncheres.isAfter(LocalDate.now())) { this.etatVente = etatsVente[0]; }
+        if (this.dateDebutEncheres.isAfter(LocalDate.now())) { this.etatVente = "Créée"; }
         else if (this.dateFinEncheres.isBefore(LocalDate.now())) {
-            this.etatVente = this.retirer ? etatsVente[3] : etatsVente[2];
-        } else { this.etatVente = etatsVente[1]; }
+            this.etatVente = this.retraitEffectue ? "Retrait effectué" : "Enchères terminées";
+        } else { this.etatVente = "En cours"; }
     }
 
     public LocalDate getDateDebutEncheres() { return this.dateDebutEncheres; }
@@ -142,19 +101,13 @@ public class Article {
 
     public Utilisateur getVendeur() { return this.vendeur; }
 
-    public void setVendeur(Utilisateur vendeur) {
-        this.vendeur = vendeur;
-        vendeur.addArticleVendu(this);
-    }
+    public void setVendeur(Utilisateur vendeur) { this.vendeur = vendeur; }
 
     public Utilisateur getAcquereur() { return this.acquereur; }
 
-    public void setAcquereur(Utilisateur acquereur) {
-        this.acquereur = acquereur;
-        acquereur.addArticleAcquis(this);
-    }
+    public void setAcquereur(Utilisateur acquereur) { this.acquereur = acquereur; }
 
-    public boolean isRetirer() { return this.retirer; }
+    public boolean isRetraitEffectue() { return this.retraitEffectue; }
 
-    public void setRetirer(boolean retirer) { this.retirer = retirer; }
+    public void setRetraitEffectue(boolean retraitEffectue) { this.retraitEffectue = retraitEffectue; }
 }

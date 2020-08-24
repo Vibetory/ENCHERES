@@ -6,9 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 public class Utilisateur {
-    private static Map<Integer, Utilisateur> utilisateurs = new HashMap<>();
-    private Map<Article, Enchere> encheres;
-    private List<Article> articlesVendus, articlesAcquis;
     private int noUtilisateur, credit;
     private String pseudo, nom, prenom, email, telephone, rue, codePostal, ville, motDePasse;
     private byte administrateur;
@@ -26,9 +23,6 @@ public class Utilisateur {
         setMotDePasse(motDePasse);
         setCredit(credit);
         setAdministrateur(administrateur);
-        setArticlesVendus();
-        setArticlesAcquis();
-        setEnchères();
     }
 
     // CONSTRUCTORS
@@ -44,65 +38,11 @@ public class Utilisateur {
     }
 
 
-    // METHODS
-
-    /**
-     * Add an article to a vendor.
-     * @param article ArticleVendu | Article to add.
-     */
-    public void addArticleVendu(Article article) { this.articlesVendus.add(article); }
-
-    /**
-     * Remove an article to a vendor.
-     * @param article ArticleVendu | Article to remove.
-     */
-    public void removeArticleVendu(Article article) { this.articlesVendus.remove(article); }
-
-    /**
-     * Add an article to the acquirer.
-     * @param articleAcquis ArticleVendu | Article to add.
-     */
-    public void addArticleAcquis(Article articleAcquis) { this.articlesVendus.add(articleAcquis); }
-
-    /**
-     * Add an auction on an article.
-     * @param article Article | Article.
-     * @param montant int | Amount in credits.
-     */
-    public void addEnchere(Article article, int montant) { article.addEnchere(this, montant); }
-
-
     // GETTERS & SETTERS
-
-    public static Map<Integer, Utilisateur> getUtilisateurs() { return utilisateurs; }
-
-    public static Utilisateur getUtilisateur(int noUtilisateur) { return utilisateurs.get(noUtilisateur); }
-
-    public void setArticlesVendus() { this.articlesVendus = new ArrayList<>(); }
-
-    public List<Article> getArticlesVendus() { return this.articlesVendus; }
-
-    public void setArticlesAcquis() { this.articlesAcquis = new ArrayList<>(); }
-
-    public List<Article> getArticlesAcquis() { return this.articlesAcquis; }
 
     public int getNoUtilisateur() { return this.noUtilisateur; }
 
-    public Map<Article, Enchere> getEncheres() { return this.encheres; }
-
-    public Enchere getEnchere(Article articleVendu) { return this.encheres.get(articleVendu); }
-
-    public void setEnchères() { this.encheres = new HashMap<>(); }
-
-    /**
-     * Set an identifier for an user.
-     * Add the user to the map of users.
-     * @param noUtilisateur int | Identifier.
-     */
-    public void setNoUtilisateur(int noUtilisateur) {
-        this.noUtilisateur = noUtilisateur;
-        utilisateurs.put(noUtilisateur, this);
-    }
+    public void setNoUtilisateur(int noUtilisateur) { this.noUtilisateur = noUtilisateur; }
 
     public int getCredit() { return this.credit; }
 
