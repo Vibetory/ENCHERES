@@ -8,7 +8,6 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Hashtable;
 
 public class JDBC {
     private static DataSource dataSource;
@@ -16,7 +15,7 @@ public class JDBC {
         Context context;
         try {
             context = new InitialContext();
-            dataSource = (DataSource) context.lookup("/java:comp/env/jdbc/pool_cnx");
+            dataSource = (DataSource) context.lookup("java:comp/env/jdbc/pool_cnx");
         } catch (NamingException namingException) {
             namingException.printStackTrace();
             try { throw new EException(CodesExceptionJDBC.DATABASE_ACCESS_ERROR, namingException); }

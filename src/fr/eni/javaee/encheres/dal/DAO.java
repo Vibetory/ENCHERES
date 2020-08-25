@@ -10,9 +10,9 @@ public interface DAO<T> {
 
     public T update(T object) throws EException;
 
-    public void delete(int identifier) throws EException;
+    public void delete(int... identifiers) throws EException;
 
-    public T selectById(int identifier) throws EException;
+    public T selectById(int... identifiers) throws EException;
 
     public List<T> selectAll() throws EException;
 }

@@ -25,10 +25,6 @@ public class Enchere {
     }
 
 
-    // METHODS
-    public static String getIdentifierName() { return "no_article"; }
-
-
     // GETTERS & SETTERS
 
     public Article getArticleVendu() { return this.articleVendu; }

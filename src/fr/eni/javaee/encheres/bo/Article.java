@@ -49,10 +49,6 @@ public class Article {
     }
 
 
-    // METHODS
-    public static String getIdentifierName() { return "no_article"; }
-
-
     // GETTERS & SETTERS
 
     public int getNoArticle() { return this.noArticle; }
