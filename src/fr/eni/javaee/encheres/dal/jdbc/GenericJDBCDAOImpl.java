@@ -5,10 +5,7 @@ import fr.eni.javaee.encheres.dal.DAO;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +18,8 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
     protected String SQL_DELETE;
     protected String SQL_SELECT_BY_ID;
     protected String SQL_SELECT_ALL;
+    protected String SQL_INSERT;
+    protected String SQL_UPDATE;
 
     // CONSTRUCTOR
 
@@ -31,6 +30,7 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
         setSQL_DELETE();
         setSQL_SELECT_BY_ID();
         setSQL_SELECT_ALL();
+        setSQL_UPDATE();
     }
 
 
@@ -45,13 +45,48 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
 
     // CRUD METHODS
 
+    /**
+     * <!> This method can not be used with Enchere and Retrait.
+     * @param object T | Instance of the actual object to insert into the database.
+     * @return T | Instance of the actual  object sucessfully inserted into the database.
+     * @throws EException EEXception | CRUD_INSERT.
+     */
     @Override
-    public void insert(T object) throws EException {
+    public T insert(T object) throws EException {
+        setSQL_INSERT(this.fields.size());
+        try (Connection connection = JDBC.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(this.SQL_INSERT, PreparedStatement.RETURN_GENERATED_KEYS);
+            generateStatementData(statement, object);
+            statement.executeUpdate();
+            ResultSet resultSet = statement.getGeneratedKeys();
+            if (resultSet.next()) {
+                String identifier = this.identifiers.get(0);
+                String method = "set" + identifier.substring(0, 1).toUpperCase() + identifier.substring(1);
+                entityClass.getMethod(method, int.class).invoke(object, resultSet.getInt(1));
+            }
+        } catch (IllegalAccessException | SQLException | NoSuchMethodException | InvocationTargetException exception) {
+            exception.printStackTrace();
+            throw new EException(CodesExceptionJDBC.CRUD_INSERT.get(this.getActualClassName()), exception);
+        }
+        return object;
     }
 
+    /**
+     * @param object T | Instance of generic object to update into the database.
+     * @return T | Instance of the actual object sucessfully updated into the database.
+     * @throws EException EEXception | CRUD_UPDATE.
+     */
     @Override
     public T update(T object) throws EException {
-        return null;
+        try (Connection connection = JDBC.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(this.SQL_UPDATE);
+            generateStatementData(statement, object, true);
+            statement.executeUpdate();
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            throw new EException(CodesExceptionJDBC.CRUD_UPDATE.get(this.getActualClassName()), sqlException);
+        }
+        return object;
     }
 
     /**
@@ -72,7 +107,7 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
 
     /**
      * @param identifiers int | Identifier. Requires two parameters when deleting an "Enchere" element: "articleVendu" and "encherisseur".
-     * @return T | Instance of generic object with the provided identifier(s).
+     * @return T | Instance of the actual object with the provided identifier(s).
      * @throws EException EException | CRUD_SELECT_ID_ERROR.
      */
     @Override
@@ -92,7 +127,7 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
     }
 
     /**
-     * @return List<T> | List of all the instances of generic objects.
+     * @return List<T> | List of all the instances of the actual objects.
      * @throws EException EException | CRUD_SELECT_ALL_ERROR.
      */
     @Override
@@ -114,12 +149,11 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
 
     /**
      * @param resultSet | ResultSet
-     * @return T | Instance of generic object with the data of the ResultSet.
+     * @return T | Instance of the actual object with the data of the ResultSet.
      * @throws EException EException | GENERATE_OBJECT_ERROR.
      */
     protected T generateObject(ResultSet resultSet) throws EException {
         T instance = getObject();
-        int index = 0;
         try {
             for (Map.Entry<String, String> field : this.fields.entrySet()) {
                 String method = "set" + field.getKey().substring(0, 1).toUpperCase() + field.getKey().substring(1);
@@ -137,13 +171,57 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
                         entityClass.getMethod(method, byte.class).invoke(instance, resultSet.getByte(field.getKey()));
                         break;
                 }
-                index ++;
             }
         } catch (IllegalAccessException | SQLException | InvocationTargetException | NoSuchMethodException exception) {
             exception.printStackTrace();
             throw new EException(CodesExceptionJDBC.GENERATE_OBJECT_ERROR.get(this.getActualClassName()), exception);
         }
         return instance;
+    }
+
+    /**
+     * @param statement PreparedStatement | Statement in which the data will be added.
+     * @param object T | Instance of the actual object providing the data.
+     * @param update boolean | "true" if the statement is about an update.
+     * @throws EException EException | GENERATE_STATEMENT_DATA_ERROR.
+     */
+    protected void generateStatementData(PreparedStatement statement, T object, boolean update) throws EException {
+        try {
+            int parameterIndex = 1;
+            for (Map.Entry<String, String> field : this.fields.entrySet()) {
+                String method = "get" + field.getKey().substring(0, 1).toUpperCase() + field.getKey().substring(1);
+                if (this.identifiers.contains(field.getKey())) { continue; } // Auto-generated.
+                switch (field.getValue()) {
+                    case "String":
+                        statement.setString(parameterIndex, (String) entityClass.getMethod(method).invoke(object));
+                        break;
+                    case "int":
+                        statement.setInt(parameterIndex, (int) entityClass.getMethod(method).invoke(object));
+                        break;
+                    case "Date":
+                        statement.setDate(parameterIndex, Date.valueOf((LocalDate) entityClass.getMethod(method).invoke(object)));
+                        break;
+                    case "byte":
+                        statement.setByte(parameterIndex, (byte) entityClass.getMethod(method).invoke(object));
+                        break;
+                }
+                parameterIndex++;
+            }
+            if (update) {
+                for (String identifier : this.identifiers) {
+                    String method = "get" + identifier.substring(0, 1).toUpperCase() + identifier.substring(1);
+                    statement.setInt(parameterIndex, (int) entityClass.getMethod(method).invoke(object));
+                    parameterIndex ++;
+                }
+            }
+        } catch (InvocationTargetException | NoSuchMethodException | SQLException | IllegalAccessException exception){
+            exception.printStackTrace();
+            throw new EException(CodesExceptionJDBC.GENERATE_STATEMENT_DATA_ERROR.get(this.getActualClassName()), exception);
+        }
+    }
+
+    protected void generateStatementData(PreparedStatement statement, T object) throws EException {
+        generateStatementData(statement, object, false); // Default value.
     }
 
     protected String getActualClassName() throws EException {
@@ -172,14 +250,25 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
         return identifiersConditions.toString();
     }
 
-    protected String getFieldsSelection() {
+    /**
+     *
+     * @param isUnknownParameter boolean | "true" if the field is an unknown parameter in the query.
+     * @return String | List of fields of the actual object.
+     */
+    protected String getFieldsSelection(boolean isUnknownParameter) {
         StringBuilder fieldsSelection = new StringBuilder();
         String separator = "";
         for (Map.Entry<String, String> field : this.fields.entrySet()) {
+            if (this.identifiers.contains(field.getKey())) { continue; }
             fieldsSelection.append(separator).append(field.getKey());
+            if (isUnknownParameter) { fieldsSelection.append(" = ?"); }
             separator = ", ";
         }
         return fieldsSelection.toString();
+    }
+
+    protected String getFieldsSelection() {
+        return getFieldsSelection(false); // Default value.
     }
 
 
@@ -195,5 +284,19 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
 
     protected void setSQL_SELECT_ALL() throws EException {
         this.SQL_SELECT_ALL = "SELECT " + getFieldsSelection() + " FROM " + getActualClassName();
+    }
+
+    protected void setSQL_INSERT(int length) throws EException {
+        StringBuilder unknownParameters = new StringBuilder();
+        String separator = "";
+        while (-- length > 0) {
+            unknownParameters.append(separator).append("?");
+            separator = ", ";
+        }
+        this.SQL_INSERT = "INSERT INTO " + getActualClassName() + " VALUES ( " + unknownParameters.toString() + " ) ";
+    }
+
+    protected void setSQL_UPDATE() throws EException {
+        this.SQL_UPDATE = "UPDATE " + getActualClassName() + " SET " + getFieldsSelection(true) + " WHERE " + getIdentifiersConditions();
     }
 }

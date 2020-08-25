@@ -19,7 +19,7 @@ public class Enchere {
         setMontantEnchere(montantEnchere);
     }
 
-    public Enchere(Article article, Utilisateur encherisseur, int montantEnchere, LocalDate dateEnchère) {
+    public Enchere(Article article, Utilisateur encherisseur, LocalDate dateEnchère, int montantEnchere) {
         this(article,encherisseur, montantEnchere);
         setDateEnchère(dateEnchère);
     }

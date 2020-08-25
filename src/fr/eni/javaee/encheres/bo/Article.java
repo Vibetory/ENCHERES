@@ -50,6 +50,13 @@ public class Article {
         setRetraitEffectue(retraitEffectue);
     }
 
+    public Article (String nomArticle, String description, LocalDate dateDebutEncheres, LocalDate dateFinEncheres , int miseAPrix, int prixVente, Utilisateur vendeur, Utilisateur acquereur, Categorie categorie, boolean retraitEffectue) {
+        this(nomArticle, description, dateDebutEncheres, dateFinEncheres, vendeur, categorie);
+        setMiseAPrix(miseAPrix);
+        setPrixVente(prixVente);
+        setAcquereur(acquereur);
+    }
+
 
     // GETTERS & SETTERS
 

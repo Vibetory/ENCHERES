@@ -1,12 +1,13 @@
 package fr.eni.javaee.encheres.dal;
 
 import fr.eni.javaee.encheres.EException;
+import fr.eni.javaee.encheres.bo.Utilisateur;
 
 import java.util.List;
 
 public interface DAO<T> {
 
-    public void insert(T object) throws EException;
+    public T insert(T object) throws EException;
 
     public T update(T object) throws EException;
 
