@@ -3,8 +3,8 @@ package fr.eni.javaee.encheres.dal.jdbc;
 import fr.eni.javaee.encheres.EException;
 import fr.eni.javaee.encheres.bo.Retrait;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 public class RetraitJDBCDAOImpl extends GenericJDBCDAOImpl<Retrait> {
     public RetraitJDBCDAOImpl() throws EException {
@@ -19,16 +19,14 @@ public class RetraitJDBCDAOImpl extends GenericJDBCDAOImpl<Retrait> {
 
     @Override
     protected void setFields() {
-
+        this.fields = new LinkedHashMap<String, String>() {{
+            put("articleARetirer", "int");
+            put("rue", "String");
+            put("codePostal", "String");
+            put("ville", "String");
+        }};
     }
 
     @Override
-    protected Retrait getObject() {
-        return null;
-    }
-
-    @Override
-    protected Retrait generateObject(ResultSet resultSet) {
-        return null;
-    }
+    protected Retrait getObject() { return new Retrait(); }
 }

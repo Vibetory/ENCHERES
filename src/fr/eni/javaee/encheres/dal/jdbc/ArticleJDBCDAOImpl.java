@@ -3,9 +3,8 @@ package fr.eni.javaee.encheres.dal.jdbc;
 import fr.eni.javaee.encheres.EException;
 import fr.eni.javaee.encheres.bo.Article;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class ArticleJDBCDAOImpl extends GenericJDBCDAOImpl<Article> {
     public ArticleJDBCDAOImpl() throws EException {
@@ -20,7 +19,7 @@ public class ArticleJDBCDAOImpl extends GenericJDBCDAOImpl<Article> {
 
     @Override
     protected void setFields() {
-        this.fields = new HashMap<String, String>() {{
+        this.fields = new LinkedHashMap<String, String>() {{
             put("noArticle", "int");
             put("nomArticle", "String");
             put("description", "String");
@@ -35,12 +34,5 @@ public class ArticleJDBCDAOImpl extends GenericJDBCDAOImpl<Article> {
     }
 
     @Override
-    protected Article getObject() {
-        return null;
-    }
-
-    @Override
-    protected Article generateObject(ResultSet resultSet) {
-        return null;
-    }
+    protected Article getObject() { return new Article(); }
 }

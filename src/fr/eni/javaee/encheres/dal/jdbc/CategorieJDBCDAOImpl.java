@@ -2,9 +2,9 @@ package fr.eni.javaee.encheres.dal.jdbc;
 
 import fr.eni.javaee.encheres.EException;
 import fr.eni.javaee.encheres.bo.Categorie;
-
-import java.sql.ResultSet;
+;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 public class CategorieJDBCDAOImpl extends GenericJDBCDAOImpl<Categorie> {
     public CategorieJDBCDAOImpl() throws EException {
@@ -19,16 +19,12 @@ public class CategorieJDBCDAOImpl extends GenericJDBCDAOImpl<Categorie> {
 
     @Override
     protected void setFields() {
-
+        this.fields = new LinkedHashMap<String, String>() {{
+            put("noCategorie", "int");
+            put("libelle", "String");
+        }};
     }
 
     @Override
-    protected Categorie getObject() {
-        return null;
-    }
-
-    @Override
-    protected Categorie generateObject(ResultSet resultSet) {
-        return null;
-    }
+    protected Categorie getObject() { return new Categorie(); }
 }

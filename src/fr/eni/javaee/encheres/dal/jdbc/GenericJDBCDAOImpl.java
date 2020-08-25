@@ -4,13 +4,13 @@ import fr.eni.javaee.encheres.EException;
 import fr.eni.javaee.encheres.dal.DAO;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +22,8 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
     protected String SQL_SELECT_BY_ID;
     protected String SQL_SELECT_ALL;
 
+    // CONSTRUCTOR
+
     public GenericJDBCDAOImpl() throws EException {
         this.entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
         setIdentifiers();
@@ -30,6 +32,18 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
         setSQL_SELECT_BY_ID();
         setSQL_SELECT_ALL();
     }
+
+
+    // ABSTRACT METHODS
+
+    protected abstract void setIdentifiers();
+
+    protected abstract void setFields();
+
+    protected abstract T getObject();
+
+
+    // CRUD METHODS
 
     @Override
     public void insert(T object) throws EException {
@@ -56,80 +70,84 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
         }
     }
 
+    /**
+     * @param identifiers int | Identifier. Requires two parameters when deleting an "Enchere" element: "articleVendu" and "encherisseur".
+     * @return T | Instance of generic object with the provided identifier(s).
+     * @throws EException EException | CRUD_SELECT_ID_ERROR.
+     */
     @Override
     public T selectById(int... identifiers) throws EException {
+        T instance = null;
         try (Connection connection = JDBC.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(this.SQL_SELECT_BY_ID);
             setStatementIdentifiers(statement, identifiers);
             ResultSet resultSet = statement.executeQuery();
-            return generateObject(resultSet);
+            if (resultSet.next()) { instance = generateObject(resultSet); }
+
         } catch (SQLException exception) {
             exception.printStackTrace();
             throw new EException(CodesExceptionJDBC.CRUD_SELECT_ID_ERROR.get(this.getActualClassName()), exception);
         }
+        return instance;
     }
-
-    @Override
-    public List<T> selectAll() throws EException {
-        return null;
-    }
-
-    protected abstract void setIdentifiers();
-
-    protected abstract void setFields();
-
-    protected abstract T getObject();
 
     /**
-     * Generate an instance of an object from a ResultSet.
+     * @return List<T> | List of all the instances of generic objects.
+     * @throws EException EException | CRUD_SELECT_ALL_ERROR.
+     */
+    @Override
+    public List<T> selectAll() throws EException {
+        List<T> instances = new ArrayList<>();
+        try (Connection connection = JDBC.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(this.SQL_SELECT_ALL);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) { instances.add(generateObject(resultSet)); }
+            return instances;
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+            throw new EException(CodesExceptionJDBC.CRUD_SELECT_ALL_ERROR.get(this.getActualClassName()), exception);
+        }
+    }
+
+
+    // HELPER METHODS
+
+    /**
      * @param resultSet | ResultSet
      * @return T | Instance of generic object with the data of the ResultSet.
+     * @throws EException EException | GENERATE_OBJECT_ERROR.
      */
     protected T generateObject(ResultSet resultSet) throws EException {
         T instance = getObject();
         int index = 0;
         try {
-            if (resultSet.next()) {
-                for (Map.Entry<String, String> field : this.fields.entrySet()) {
-                    String method = "set" + field.getKey().substring(0, 1).toUpperCase() + field.getKey().substring(1);
-                    switch (field.getValue()) {
-                        case "String":
-                            entityClass.getMethod(method, String.class).invoke(instance, resultSet.getString(field.getKey()));
-                            break;
-                        case "int":
-                            entityClass.getMethod(method, int.class).invoke(instance, resultSet.getInt(field.getKey()));
-                            break;
-                        case "Date":
-                            entityClass.getMethod(method, LocalDate.class).invoke(instance, resultSet.getDate(field.getKey()));
-                            break;
-                        case "byte":
-                            entityClass.getMethod(method, byte.class).invoke(instance, resultSet.getByte(field.getKey()));
-                            break;
-                    }
-                    index ++;
+            for (Map.Entry<String, String> field : this.fields.entrySet()) {
+                String method = "set" + field.getKey().substring(0, 1).toUpperCase() + field.getKey().substring(1);
+                switch (field.getValue()) {
+                    case "String":
+                        entityClass.getMethod(method, String.class).invoke(instance, resultSet.getString(field.getKey()));
+                        break;
+                    case "int":
+                        entityClass.getMethod(method, int.class).invoke(instance, resultSet.getInt(field.getKey()));
+                        break;
+                    case "Date":
+                        entityClass.getMethod(method, LocalDate.class).invoke(instance, resultSet.getDate(field.getKey()));
+                        break;
+                    case "byte":
+                        entityClass.getMethod(method, byte.class).invoke(instance, resultSet.getByte(field.getKey()));
+                        break;
                 }
+                index ++;
             }
         } catch (IllegalAccessException | SQLException | InvocationTargetException | NoSuchMethodException exception) {
             exception.printStackTrace();
             throw new EException(CodesExceptionJDBC.GENERATE_OBJECT_ERROR.get(this.getActualClassName()), exception);
         }
         return instance;
-    };
-
+    }
 
     protected String getActualClassName() throws EException {
         return this.entityClass.getSimpleName();
-    }
-
-    protected String getIdentifiersConditions() {
-        StringBuilder identifiersConditions = new StringBuilder();
-        for (int index = 0; index < this.identifiers.size(); index ++) {
-            identifiersConditions.append(identifiers.get(index)).append(" = ?");
-            if (index != this.identifiers.size() - 1) {
-                identifiersConditions.append(" AND ");
-            }
-        }
-        return identifiersConditions.toString();
     }
 
     protected void setStatementIdentifiers(PreparedStatement statement, int... identifiers) throws EException {
@@ -143,6 +161,17 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
         }
     }
 
+    protected String getIdentifiersConditions() {
+        StringBuilder identifiersConditions = new StringBuilder();
+        for (int index = 0; index < this.identifiers.size(); index ++) {
+            identifiersConditions.append(identifiers.get(index)).append(" = ?");
+            if (index != this.identifiers.size() - 1) {
+                identifiersConditions.append(" AND ");
+            }
+        }
+        return identifiersConditions.toString();
+    }
+
     protected String getFieldsSelection() {
         StringBuilder fieldsSelection = new StringBuilder();
         String separator = "";
@@ -152,6 +181,9 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
         }
         return fieldsSelection.toString();
     }
+
+
+    // GETTERS & SETTERS
 
     protected void setSQL_DELETE() throws EException {
         this.SQL_DELETE = "DELETE FROM " + getActualClassName() + " WHERE " + getIdentifiersConditions();

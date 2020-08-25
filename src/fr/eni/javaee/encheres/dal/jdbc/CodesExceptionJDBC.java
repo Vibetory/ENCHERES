@@ -28,6 +28,13 @@ public abstract class CodesExceptionJDBC {
 		CRUD_DELETE_ERROR.put("Retrait", 10043);
 		CRUD_DELETE_ERROR.put("Utilisateur", 10044);
 	}};
+	public static final Map<String, Integer> CRUD_SELECT_ALL_ERROR = new HashMap<String, Integer> () {{
+		CRUD_DELETE_ERROR.put("Article", 10050);
+		CRUD_DELETE_ERROR.put("Categorie", 10051);
+		CRUD_DELETE_ERROR.put("Enchere", 10052);
+		CRUD_DELETE_ERROR.put("Retrait", 10053);
+		CRUD_DELETE_ERROR.put("Utilisateur", 10054);
+	}};
 
 
 

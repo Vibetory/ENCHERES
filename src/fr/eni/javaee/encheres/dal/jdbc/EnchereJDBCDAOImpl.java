@@ -3,8 +3,8 @@ package fr.eni.javaee.encheres.dal.jdbc;
 import fr.eni.javaee.encheres.EException;
 import fr.eni.javaee.encheres.bo.Enchere;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 public class EnchereJDBCDAOImpl extends GenericJDBCDAOImpl<Enchere> {
     public EnchereJDBCDAOImpl() throws EException {
@@ -20,16 +20,14 @@ public class EnchereJDBCDAOImpl extends GenericJDBCDAOImpl<Enchere> {
 
     @Override
     protected void setFields() {
-
+        this.fields = new LinkedHashMap<String, String>() {{
+            put("articleVendu", "int");
+            put("encherisseur", "int");
+            put("dateEnchère", "Date");
+            put("montantEnchere", "int");
+        }};
     }
 
     @Override
-    protected Enchere getObject() {
-        return null;
-    }
-
-    @Override
-    protected Enchere generateObject(ResultSet resultSet) {
-        return null;
-    }
+    protected Enchere getObject() { return new Enchere(); }
 }
