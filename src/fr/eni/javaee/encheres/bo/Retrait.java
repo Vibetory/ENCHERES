@@ -5,6 +5,7 @@ public class Retrait {
     private Article articleARetirer;
 
     // CONSTRUCTORS
+    public Retrait() {}
 
     public Retrait(Article articleARetirer, String rue, String codePostal, String ville) {
         setArticleARetirer(articleARetirer);

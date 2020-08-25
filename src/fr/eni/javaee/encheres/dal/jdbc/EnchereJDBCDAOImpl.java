@@ -12,15 +12,10 @@ public class EnchereJDBCDAOImpl extends GenericJDBCDAOImpl<Enchere> {
     }
 
     @Override
-    protected void setSetters() {
-
-    }
-
-    @Override
     protected void setIdentifiers() {
         this.identifiers = new ArrayList<>();
-        this.identifiers.add("no_article");
-        this.identifiers.add("no_utilisateur");
+        this.identifiers.add("articleVendu");
+        this.identifiers.add("encherisseur");
     }
 
     @Override

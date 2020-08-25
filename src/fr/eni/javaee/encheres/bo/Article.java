@@ -12,7 +12,9 @@ public class Article {
 
     // CONSTRUCTORS
 
-    public Article(String nomArticle, String description, LocalDate dateDebutEncheres, LocalDate dateFinEncheres, Categorie categorie, Utilisateur vendeur) {
+    public Article() {};
+
+    public Article(String nomArticle, String description, LocalDate dateDebutEncheres, LocalDate dateFinEncheres, Utilisateur vendeur, Categorie categorie) {
         setNomArticle(nomArticle);
         setDescription(description);
         setDateDebutEncheres(dateDebutEncheres == null ? LocalDate.now() : dateDebutEncheres);
@@ -23,28 +25,28 @@ public class Article {
         setEtatVente();
     }
 
-    public Article(String nomArticle, String description, LocalDate dateDebutEncheres, LocalDate dateFinEncheres, Categorie categorie, Utilisateur vendeur, int miseAPrix) {
-        this(nomArticle, description, dateDebutEncheres, dateFinEncheres, categorie, vendeur);
+    public Article(String nomArticle, String description, LocalDate dateDebutEncheres, LocalDate dateFinEncheres, int miseAPrix, Utilisateur vendeur, Categorie categorie) {
+        this(nomArticle, description, dateDebutEncheres, dateFinEncheres, vendeur, categorie);
         setMiseAPrix(miseAPrix);
     }
 
-    public Article(int noArticle, String nomArticle, String description, LocalDate dateDebutEncheres, LocalDate dateFinEncheres, Categorie categorie, Utilisateur vendeur, int miseAPrix) {
-        this(nomArticle, description, dateDebutEncheres, dateFinEncheres, categorie, vendeur, miseAPrix);
+    public Article(int noArticle, String nomArticle, String description, LocalDate dateDebutEncheres, LocalDate dateFinEncheres, int miseAPrix, Utilisateur vendeur, Categorie categorie) {
+        this(nomArticle, description, dateDebutEncheres, dateFinEncheres, miseAPrix, vendeur, categorie);
         setNoArticle(noArticle);
     }
 
-    public Article (int noArticle, String nomArticle, String description, LocalDate dateDebutEncheres, LocalDate dateFinEncheres, Categorie categorie, Utilisateur vendeur, int miseAPrix, int prixVente) {
-        this(noArticle, nomArticle, description, dateDebutEncheres, dateFinEncheres, categorie, vendeur, miseAPrix);
+    public Article (int noArticle, String nomArticle, String description, LocalDate dateDebutEncheres, LocalDate dateFinEncheres , int miseAPrix, int prixVente, Utilisateur vendeur, Categorie categorie) {
+        this(noArticle, nomArticle, description, dateDebutEncheres, dateFinEncheres, miseAPrix, vendeur, categorie);
         setPrixVente(prixVente);
     }
 
-    public Article (int noArticle, String nomArticle, String description, LocalDate dateDebutEncheres, LocalDate dateFinEncheres, Categorie categorie, Utilisateur vendeur, Utilisateur acquereur, int miseAPrix, int prixVente) {
-        this(noArticle, nomArticle, description, dateDebutEncheres, dateFinEncheres, categorie, vendeur, miseAPrix, prixVente);
+    public Article (int noArticle, String nomArticle, String description, LocalDate dateDebutEncheres, LocalDate dateFinEncheres , int miseAPrix, int prixVente, Utilisateur vendeur, Utilisateur acquereur, Categorie categorie) {
+        this(noArticle, nomArticle, description, dateDebutEncheres, dateFinEncheres, miseAPrix, prixVente, vendeur, categorie);
         setAcquereur(acquereur);
     }
 
-    public Article (int noArticle, String nomArticle, String description, LocalDate dateDebutEncheres, LocalDate dateFinEncheres, Categorie categorie, Utilisateur vendeur, int miseAPrix, int prixVente, Utilisateur acquereur, boolean retraitEffectue) {
-        this(noArticle, nomArticle, description, dateDebutEncheres, dateFinEncheres, categorie, vendeur, acquereur, miseAPrix, prixVente);
+    public Article (int noArticle, String nomArticle, String description, LocalDate dateDebutEncheres, LocalDate dateFinEncheres , int miseAPrix, int prixVente, Utilisateur vendeur, Utilisateur acquereur, Categorie categorie, boolean retraitEffectue) {
+        this(noArticle, nomArticle, description, dateDebutEncheres, dateFinEncheres, miseAPrix, prixVente, vendeur, acquereur, categorie);
         setRetraitEffectue(retraitEffectue);
     }
 

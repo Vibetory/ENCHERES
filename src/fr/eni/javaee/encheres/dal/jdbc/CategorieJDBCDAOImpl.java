@@ -12,14 +12,9 @@ public class CategorieJDBCDAOImpl extends GenericJDBCDAOImpl<Categorie> {
     }
 
     @Override
-    protected void setSetters() {
-
-    }
-
-    @Override
     protected void setIdentifiers() {
         this.identifiers = new ArrayList<>();
-        this.identifiers.add("no_categorie");
+        this.identifiers.add("noCategorie");
     }
 
     @Override

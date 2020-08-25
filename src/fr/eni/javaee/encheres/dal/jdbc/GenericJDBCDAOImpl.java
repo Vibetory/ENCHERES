@@ -17,7 +17,6 @@ import java.util.Map;
 public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
     protected List<String> identifiers;
     protected Map<String, String> fields;
-    protected List<Method> setters;
     protected Class<T> entityClass;
     protected String SQL_DELETE;
     protected String SQL_SELECT_BY_ID;
@@ -27,16 +26,10 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
         this.entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
         setIdentifiers();
         setFields();
-        setSetters();
         setSQL_DELETE();
         setSQL_SELECT_BY_ID();
         setSQL_SELECT_ALL();
-        System.out.println(SQL_DELETE);
-        System.out.println(SQL_SELECT_BY_ID);
-        System.out.println(setters.toString());
     }
-
-    protected abstract void setSetters();
 
     @Override
     public void insert(T object) throws EException {
@@ -48,7 +41,7 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
     }
 
     /**
-     * @param identifiers int | Identifier. Requires two parameters when deleting an "Enchere" element: "no_article" and "no_utilisateur".
+     * @param identifiers int | Identifier. Requires two parameters when deleting an "Enchere" element: "articleVendu" and "encherisseur".
      * @throws EException EException | CRUD_DELETE_ERROR.
      */
     @Override
@@ -104,7 +97,6 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
                             entityClass.getMethod(method, String.class).invoke(instance, resultSet.getString(field.getKey()));
                             break;
                         case "int":
-                            System.out.println(this.setters.get(index).toString());
                             entityClass.getMethod(method, int.class).invoke(instance, resultSet.getInt(field.getKey()));
                             break;
                         case "Date":

@@ -13,29 +13,24 @@ public class ArticleJDBCDAOImpl extends GenericJDBCDAOImpl<Article> {
     }
 
     @Override
-    protected void setSetters() {
-
-    }
-
-    @Override
     protected void setIdentifiers() {
         this.identifiers = new ArrayList<>();
-        this.identifiers.add("no_article");
+        this.identifiers.add("noArticle");
     }
 
     @Override
     protected void setFields() {
         this.fields = new HashMap<String, String>() {{
-            put("no_article", "int");
-            put("nom_article", "String");
+            put("noArticle", "int");
+            put("nomArticle", "String");
             put("description", "String");
-            put("date_debut_encheres", "Date");
-            put("date_fin_encheres", "Date");
-            put("prix_initial", "int");
-            put("prix_vente", "int");
-            put("no_vendeur", "int");
-            put("no_acquereur", "int");
-            put("no_categorie", "int");
+            put("dateDebutEncheres", "Date");
+            put("dateFinEncheres", "Date");
+            put("miseAPrix", "int");
+            put("prixVente", "int");
+            put("vendeur", "int");
+            put("acquereur", "int");
+            put("categorie", "int");
         }};
     }
 

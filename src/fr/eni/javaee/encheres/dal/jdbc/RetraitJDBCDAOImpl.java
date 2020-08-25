@@ -12,14 +12,9 @@ public class RetraitJDBCDAOImpl extends GenericJDBCDAOImpl<Retrait> {
     }
 
     @Override
-    protected void setSetters() {
-
-    }
-
-    @Override
     protected void setIdentifiers() {
         this.identifiers = new ArrayList<>();
-        this.identifiers.add("no_article");
+        this.identifiers.add("articleARetirer");
     }
 
     @Override

@@ -6,6 +6,8 @@ public class Categorie {
 
     // CONSTRUCTORS
 
+    public Categorie() {};
+
     public Categorie(int noCategorie, String libelle) {
         this(libelle);
         setNoCategorie(noCategorie);
