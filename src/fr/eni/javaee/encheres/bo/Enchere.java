@@ -29,9 +29,13 @@ public class Enchere {
 
     public Article getArticleVendu() { return this.articleVendu; }
 
+    public int getNoArticleVendu() { return this.articleVendu.getNoArticle(); }
+
     public void setArticleVendu(Article articleVendu) { this.articleVendu = articleVendu; }
 
-    public Utilisateur getEncherisseur() { return encherisseur; }
+    public Utilisateur getEncherisseur() { return this.encherisseur; }
+
+    public int getNoEncherisseur() { return this.encherisseur.getNoUtilisateur(); }
 
     public void setEncherisseur(Utilisateur encherisseur) { this.encherisseur = encherisseur; }
 

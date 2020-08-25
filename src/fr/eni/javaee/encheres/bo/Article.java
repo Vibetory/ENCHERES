@@ -50,7 +50,7 @@ public class Article {
         setRetraitEffectue(retraitEffectue);
     }
 
-    public Article (String nomArticle, String description, LocalDate dateDebutEncheres, LocalDate dateFinEncheres , int miseAPrix, int prixVente, Utilisateur vendeur, Utilisateur acquereur, Categorie categorie, boolean retraitEffectue) {
+    public Article (String nomArticle, String description, LocalDate dateDebutEncheres, LocalDate dateFinEncheres , int miseAPrix, int prixVente, Utilisateur vendeur, Utilisateur acquereur, Categorie categorie) {
         this(nomArticle, description, dateDebutEncheres, dateFinEncheres, vendeur, categorie);
         setMiseAPrix(miseAPrix);
         setPrixVente(prixVente);
@@ -105,15 +105,21 @@ public class Article {
 
     public Categorie getCategorie() { return categorie; }
 
-    public void setCategorie(Categorie categorie) { this.categorie = categorie; }
+    public int getNoCategorie() { return this.categorie.getNoCategorie(); }
+
+    public void setCategorie(Categorie categorie) { this.categorie = (Categorie) categorie; }
 
     public Utilisateur getVendeur() { return this.vendeur; }
 
-    public void setVendeur(Utilisateur vendeur) { this.vendeur = vendeur; }
+    public int getNoVendeur() { return this.vendeur.getNoUtilisateur(); }
+
+    public void setVendeur(Utilisateur vendeur) { this.vendeur = (Utilisateur) vendeur; }
 
     public Utilisateur getAcquereur() { return this.acquereur; }
 
-    public void setAcquereur(Utilisateur acquereur) { this.acquereur = acquereur; }
+    public int getNoAcquereur() { return this.acquereur.getNoUtilisateur(); }
+
+    public void setAcquereur(Utilisateur acquereur) { this.acquereur = (Utilisateur) acquereur; }
 
     public boolean isRetraitEffectue() { return this.retraitEffectue; }
 

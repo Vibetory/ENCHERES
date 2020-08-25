@@ -1,13 +1,17 @@
 package fr.eni.javaee.encheres.dal.jdbc;
 
 import fr.eni.javaee.encheres.EException;
+import fr.eni.javaee.encheres.bo.Categorie;
+import fr.eni.javaee.encheres.bo.Utilisateur;
 import fr.eni.javaee.encheres.dal.DAO;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +35,7 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
         setSQL_SELECT_BY_ID();
         setSQL_SELECT_ALL();
         setSQL_UPDATE();
+        setSQL_INSERT(this.fields.size());
     }
 
 
@@ -53,7 +58,6 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
      */
     @Override
     public T insert(T object) throws EException {
-        setSQL_INSERT(this.fields.size());
         try (Connection connection = JDBC.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(this.SQL_INSERT, PreparedStatement.RETURN_GENERATED_KEYS);
             generateStatementData(statement, object);
@@ -165,14 +169,18 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
                         entityClass.getMethod(method, int.class).invoke(instance, resultSet.getInt(field.getKey()));
                         break;
                     case "Date":
-                        entityClass.getMethod(method, LocalDate.class).invoke(instance, resultSet.getDate(field.getKey()));
+                        entityClass.getMethod(method, LocalDate.class).invoke(instance, resultSet.getDate(field.getKey()).toLocalDate());
                         break;
                     case "byte":
                         entityClass.getMethod(method, byte.class).invoke(instance, resultSet.getByte(field.getKey()));
                         break;
+                    default:
+                        int identifier = resultSet.getInt(field.getKey());
+                        GenericJDBCDAOImpl<T> implementation = (GenericJDBCDAOImpl<T>) Class.forName(field.getValue()).newInstance();
+                        entityClass.getMethod(method, implementation.getObject().getClass()).invoke(instance, implementation.selectById(identifier));
                 }
             }
-        } catch (IllegalAccessException | SQLException | InvocationTargetException | NoSuchMethodException exception) {
+        } catch (IllegalAccessException | SQLException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException | InstantiationException exception) {
             exception.printStackTrace();
             throw new EException(CodesExceptionJDBC.GENERATE_OBJECT_ERROR.get(this.getActualClassName()), exception);
         }
@@ -203,6 +211,11 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
                         break;
                     case "byte":
                         statement.setByte(parameterIndex, (byte) entityClass.getMethod(method).invoke(object));
+                        break;
+                    default:
+                        method = "getNo" + field.getKey().substring(0, 1).toUpperCase() + field.getKey().substring(1);
+                        System.out.println(method);
+                        statement.setInt(parameterIndex, (int) entityClass.getMethod(method).invoke(object));
                         break;
                 }
                 parameterIndex++;
@@ -259,7 +272,7 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
         StringBuilder fieldsSelection = new StringBuilder();
         String separator = "";
         for (Map.Entry<String, String> field : this.fields.entrySet()) {
-            if (this.identifiers.contains(field.getKey())) { continue; }
+            if (this.identifiers.contains(field.getKey()) && isUnknownParameter) { continue; }
             fieldsSelection.append(separator).append(field.getKey());
             if (isUnknownParameter) { fieldsSelection.append(" = ?"); }
             separator = ", ";

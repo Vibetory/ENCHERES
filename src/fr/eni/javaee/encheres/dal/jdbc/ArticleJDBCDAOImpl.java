@@ -27,9 +27,9 @@ public class ArticleJDBCDAOImpl extends GenericJDBCDAOImpl<Article> {
             put("dateFinEncheres", "Date");
             put("miseAPrix", "int");
             put("prixVente", "int");
-            put("vendeur", "int");
-            put("acquereur", "int");
-            put("categorie", "int");
+            put("vendeur", "fr.eni.javaee.encheres.dal.jdbc.UtilisateurJDBCDAOImpl");
+            put("acquereur", "fr.eni.javaee.encheres.dal.jdbc.UtilisateurJDBCDAOImpl");
+            put("categorie", "fr.eni.javaee.encheres.dal.jdbc.CategorieJDBCDAOImpl");
         }};
     }
 

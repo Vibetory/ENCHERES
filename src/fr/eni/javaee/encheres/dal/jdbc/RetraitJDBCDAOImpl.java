@@ -20,7 +20,7 @@ public class RetraitJDBCDAOImpl extends GenericJDBCDAOImpl<Retrait> {
     @Override
     protected void setFields() {
         this.fields = new LinkedHashMap<String, String>() {{
-            put("articleARetirer", "int");
+            put("articleARetirer", "fr.eni.javaee.encheres.dal.jdbc.ArticleJDBCDAOImpl");
             put("rue", "String");
             put("codePostal", "String");
             put("ville", "String");

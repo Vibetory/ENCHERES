@@ -21,8 +21,8 @@ public class EnchereJDBCDAOImpl extends GenericJDBCDAOImpl<Enchere> {
     @Override
     protected void setFields() {
         this.fields = new LinkedHashMap<String, String>() {{
-            put("articleVendu", "int");
-            put("encherisseur", "int");
+            put("articleVendu", "fr.eni.javaee.encheres.dal.jdbc.ArticleJDBCDAOImpl");
+            put("encherisseur", "fr.eni.javaee.encheres.dal.jdbc.UtilisateurJDBCDAOImpl");
             put("dateEnchère", "Date");
             put("montantEnchere", "int");
         }};

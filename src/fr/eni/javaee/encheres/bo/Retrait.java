@@ -35,5 +35,7 @@ public class Retrait {
 
     public Article getArticleARetirer() { return this.articleARetirer; }
 
+    public int getNoArticleARetirer() { return this.articleARetirer.getNoArticle(); }
+
     public void setArticleARetirer(Article articleARetirer) { this.articleARetirer = articleARetirer; }
 }
