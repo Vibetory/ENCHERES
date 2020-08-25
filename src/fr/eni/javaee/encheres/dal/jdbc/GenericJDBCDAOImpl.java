@@ -19,11 +19,12 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
     protected List<String> identifiers;
     protected Map<String, String> fields;
     protected Class<T> entityClass;
-    protected String SQL_DELETE;
-    protected String SQL_SELECT_BY_ID;
-    protected String SQL_SELECT_ALL;
     protected String SQL_INSERT;
     protected String SQL_UPDATE;
+    protected String SQL_SELECT_BY_ID;
+    protected String SQL_SELECT_ALL;
+    protected String SQL_DELETE;
+
 
     // CONSTRUCTOR
 
@@ -31,11 +32,11 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
         this.entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
         setIdentifiers();
         setFields();
-        setSQL_DELETE();
+        setSQL_INSERT(this.fields.size());
+        setSQL_UPDATE();
         setSQL_SELECT_BY_ID();
         setSQL_SELECT_ALL();
-        setSQL_UPDATE();
-        setSQL_INSERT(this.fields.size());
+        setSQL_DELETE();
     }
 
 
@@ -43,6 +44,10 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
 
     protected abstract void setIdentifiers();
 
+    /**
+     * The "fields" attribute must be a LinkedHashMap with the names of the fields as keys, and the data type as attribute.
+     * If the data type is a Business Object, the value must be the path to its DAO's implementation.
+     */
     protected abstract void setFields();
 
     protected abstract T getObject();
@@ -156,7 +161,7 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
      * @return T | Instance of the actual object with the data of the ResultSet.
      * @throws EException EException | GENERATE_OBJECT_ERROR.
      */
-    protected T generateObject(ResultSet resultSet) throws EException {
+    private T generateObject(ResultSet resultSet) throws EException {
         T instance = getObject();
         try {
             for (Map.Entry<String, String> field : this.fields.entrySet()) {
@@ -193,7 +198,7 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
      * @param update boolean | "true" if the statement is about an update.
      * @throws EException EException | GENERATE_STATEMENT_DATA_ERROR.
      */
-    protected void generateStatementData(PreparedStatement statement, T object, boolean update) throws EException {
+    private void generateStatementData(PreparedStatement statement, T object, boolean update) throws EException {
         try {
             int parameterIndex = 1;
             for (Map.Entry<String, String> field : this.fields.entrySet()) {
@@ -233,15 +238,15 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
         }
     }
 
-    protected void generateStatementData(PreparedStatement statement, T object) throws EException {
+    private void generateStatementData(PreparedStatement statement, T object) throws EException {
         generateStatementData(statement, object, false); // Default value.
     }
 
-    protected String getActualClassName() throws EException {
+    private String getActualClassName() throws EException {
         return this.entityClass.getSimpleName();
     }
 
-    protected void setStatementIdentifiers(PreparedStatement statement, int... identifiers) throws EException {
+    private void setStatementIdentifiers(PreparedStatement statement, int... identifiers) throws EException {
         try {
             for (int parameterIndex = 0; parameterIndex < identifiers.length; parameterIndex ++) {
                 statement.setInt(parameterIndex + 1, identifiers[parameterIndex]);
@@ -252,7 +257,7 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
         }
     }
 
-    protected String getIdentifiersConditions() {
+    private String getIdentifiersConditions() {
         StringBuilder identifiersConditions = new StringBuilder();
         for (int index = 0; index < this.identifiers.size(); index ++) {
             identifiersConditions.append(identifiers.get(index)).append(" = ?");
@@ -268,7 +273,7 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
      * @param isUnknownParameter boolean | "true" if the field is an unknown parameter in the query.
      * @return String | List of fields of the actual object.
      */
-    protected String getFieldsSelection(boolean isUnknownParameter) {
+    private String getFieldsSelection(boolean isUnknownParameter) {
         StringBuilder fieldsSelection = new StringBuilder();
         String separator = "";
         for (Map.Entry<String, String> field : this.fields.entrySet()) {
@@ -280,7 +285,7 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
         return fieldsSelection.toString();
     }
 
-    protected String getFieldsSelection() {
+    private String getFieldsSelection() {
         return getFieldsSelection(false); // Default value.
     }
 
