@@ -11,6 +11,13 @@ public class CodesExceptionBLL {
         put("Retrait", 20004);
         put("Utilisateur", 20005);
     }};
+    public static final Map<String, Integer> BO_NULL_ERROR = new HashMap<String, Integer>() {{
+        put("Article", 20201);
+        put("Categorie", 20202);
+        put("Enchere", 20203);
+        put("Retrait", 20204);
+        put("Utilisateur", 20205);
+    }};
     public static final Map<String, Integer> ADD_ERROR = new HashMap<String, Integer> () {{
         put("Article", 20301);
         put("Categorie", 20302);
@@ -20,7 +27,6 @@ public class CodesExceptionBLL {
     }};
     public static final int UTILISATEUR_ADD_EMAIL_ERROR = 21305;
     public static final int UTILISATEUR_ADD_PSEUDO_ERROR = 22305;
-    public static final int UTILISATEUR_NULL_ERROR = 28305;
     public static final int UTILISATEUR_ADD_CHECK_ERROR = 29305;
     public static final Map<String, Integer> GET_BY_ID_ERROR = new HashMap<String, Integer>() {{
         put("Article", 20601);
@@ -32,11 +38,14 @@ public class CodesExceptionBLL {
     public static final int UTILISATEUR_GET_BY_EMAIL_ERROR = 21605;
     public static final int UTILISATEUR_GET_BY_PSEUDO_ERROR = 22605;
     public static final int AUTHENTICATION_ERROR = 23605;
+    public static final int ARTICLE_GET_ALL_FROM_ERROR = 21621;
     public static final Map<String, Integer> GET_ALL_ERROR = new HashMap<String, Integer>() {{
-        put("Article", 20101);
-        put("Categorie", 20102);
-        put("Enchere", 20103);
-        put("Retrait", 20104);
-        put("Utilisateur", 20105);
+        put("Article", 20641);
+        put("Categorie", 20642);
+        put("Enchere", 20643);
+        put("Retrait", 20644);
+        put("Utilisateur", 20645);
     }};
+
+
 }

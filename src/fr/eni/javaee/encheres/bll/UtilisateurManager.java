@@ -1,8 +1,11 @@
 package fr.eni.javaee.encheres.bll;
 
 import fr.eni.javaee.encheres.EException;
+import fr.eni.javaee.encheres.bo.Article;
 import fr.eni.javaee.encheres.bo.Utilisateur;
 import fr.eni.javaee.encheres.bll.tools.Password;
+
+import java.util.List;
 
 public class UtilisateurManager extends GenericManager<Utilisateur> {
     public UtilisateurManager() throws EException {
@@ -32,18 +35,19 @@ public class UtilisateurManager extends GenericManager<Utilisateur> {
     }
 
     @Override
-    protected void doChecks(Utilisateur object) throws EException {
+    protected void doChecks(Utilisateur object, boolean update) throws EException {
         try {
             doCheckAttributes(object);
+            if (!update) { doCheckUnicity(object); }
         } catch (EException eException) {
             eException.printStackTrace();
             throw new EException(CodesExceptionBLL.UTILISATEUR_ADD_CHECK_ERROR, eException);
         }
-        object.setMotDePasse(Password.hashPassword(object.getMotDePasse()));
+        doHashPassword(object);
     }
 
     private void doCheckAttributes(Utilisateur utilisateur) throws EException {
-        if (utilisateur == null) { throw new EException(CodesExceptionBLL.UTILISATEUR_NULL_ERROR); }
+        if (utilisateur == null) { throw new EException(CodesExceptionBLL.BO_NULL_ERROR.get("Utilisateur")); }
         StringBuilder errors = new StringBuilder();
         if (utilisateur.getPseudo() == null || utilisateur.getPseudo().isEmpty()) {
             errors.append("Champs obligatoire. L'utilisateur n'a pas de pseudonyme.").append("\n");
@@ -69,8 +73,18 @@ public class UtilisateurManager extends GenericManager<Utilisateur> {
         if (utilisateur.getMotDePasse() == null || utilisateur.getMotDePasse().isEmpty()) {
             errors.append("Champs obligatoire. L'utilisateur n'a pas de mot de passe.").append("\n");
         }
+        if (utilisateur.getCredit() < 0) {
+            errors.append("Champs incorrecte. Le nombre de crédits ne peut pas être négatif").append("\n");
+        }
         if (!errors.toString().isEmpty()) { throw new EException(errors.toString()); }
+    }
+
+    private void doCheckUnicity(Utilisateur utilisateur) throws EException {
         if (getByEmail(utilisateur.getEmail()) != null) { throw new EException(CodesExceptionBLL.UTILISATEUR_ADD_EMAIL_ERROR); }
         if (getByPseudo(utilisateur.getPseudo()) != null) { throw new EException(CodesExceptionBLL.UTILISATEUR_ADD_PSEUDO_ERROR); }
+    }
+
+    private void doHashPassword(Utilisateur utilisateur) throws EException {
+        utilisateur.setMotDePasse(Password.hashPassword(utilisateur.getMotDePasse()));
     }
 }

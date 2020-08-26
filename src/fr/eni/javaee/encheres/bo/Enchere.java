@@ -1,6 +1,7 @@
 package fr.eni.javaee.encheres.bo;
 
 import java.time.LocalDate;
+import java.util.Collection;
 
 public class Enchere {
     private Article articleVendu;
@@ -12,15 +13,15 @@ public class Enchere {
 
     public Enchere() {};
 
-    public Enchere(Article article, Utilisateur encherisseur, int montantEnchere) {
-        setArticleVendu(article);
+    public Enchere(Article articleVendu, Utilisateur encherisseur, int montantEnchere) {
+        setArticleVendu(articleVendu);
         setEncherisseur(encherisseur);
         setDateEnchère(LocalDate.now());
         setMontantEnchere(montantEnchere);
     }
 
-    public Enchere(Article article, Utilisateur encherisseur, LocalDate dateEnchère, int montantEnchere) {
-        this(article,encherisseur, montantEnchere);
+    public Enchere(Article articleVendu, Utilisateur encherisseur, LocalDate dateEnchère, int montantEnchere) {
+        this(articleVendu, encherisseur, montantEnchere);
         setDateEnchère(dateEnchère);
     }
 

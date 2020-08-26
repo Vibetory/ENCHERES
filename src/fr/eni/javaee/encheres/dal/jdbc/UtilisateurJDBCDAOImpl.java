@@ -15,6 +15,7 @@ public class UtilisateurJDBCDAOImpl extends GenericJDBCDAOImpl<Utilisateur> {
     protected void setIdentifiers() {
         this.identifiers = new ArrayList<>();
         this.identifiers.add("noUtilisateur");
+        this.autoIdentifiers = 1;
     }
 
     @Override

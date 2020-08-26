@@ -15,8 +15,11 @@ public interface DAO<T> {
 
     public T selectById(int... identifiers) throws EException;
 
-    public T selectByField(String field, String fieldValue) throws EException;
+    public T selectByField(String field, Object fieldValue) throws EException;
 
     public List<T> selectAll() throws EException;
+
+    public List<T> selectAllByField(String field, Object fieldValue) throws EException;
+
 }
 

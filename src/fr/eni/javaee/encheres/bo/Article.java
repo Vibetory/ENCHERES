@@ -8,7 +8,7 @@ public class Article {
     private LocalDate dateDebutEncheres, dateFinEncheres;
     private Categorie categorie;
     private Utilisateur vendeur, acquereur;
-    private boolean retraitEffectue;
+    private boolean retraitEffectue = false;
 
     // CONSTRUCTORS
 
@@ -21,7 +21,6 @@ public class Article {
         setDateFinEncheres(dateFinEncheres);
         setCategorie(categorie);
         setVendeur(vendeur);
-        setRetraitEffectue(false); // Default value.
         setEtatVente();
     }
 

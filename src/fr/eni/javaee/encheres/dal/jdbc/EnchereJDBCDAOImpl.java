@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 public class EnchereJDBCDAOImpl extends GenericJDBCDAOImpl<Enchere> {
     public EnchereJDBCDAOImpl() throws EException {
         super();
+        setSQL_INSERT(this.fields.size() + 1);
     }
 
     @Override
@@ -16,6 +17,7 @@ public class EnchereJDBCDAOImpl extends GenericJDBCDAOImpl<Enchere> {
         this.identifiers = new ArrayList<>();
         this.identifiers.add("articleVendu");
         this.identifiers.add("encherisseur");
+        this.autoIdentifiers = 0;
     }
 
     @Override

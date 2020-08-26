@@ -15,6 +15,7 @@ public class CategorieJDBCDAOImpl extends GenericJDBCDAOImpl<Categorie> {
     protected void setIdentifiers() {
         this.identifiers = new ArrayList<>();
         this.identifiers.add("noCategorie");
+        this.autoIdentifiers = 1;
     }
 
     @Override
