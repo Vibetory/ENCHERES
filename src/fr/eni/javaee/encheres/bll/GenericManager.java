@@ -37,7 +37,7 @@ public abstract class GenericManager<T> {
     }
 
     public T add(T object) throws EException {
-        doChecks(object, false);
+        executeLogic(object, false);
         try { return (T) DAOBusinessObject.insert(object); }
         catch (EException eException) {
             eException.printStackTrace();
@@ -46,7 +46,7 @@ public abstract class GenericManager<T> {
     }
 
     public T update(T object) throws EException {
-        doChecks(object, true);
+        executeLogic(object, true);
         try { return (T) DAOBusinessObject.update(object); }
         catch (EException eException) {
             eException.printStackTrace();
@@ -54,7 +54,7 @@ public abstract class GenericManager<T> {
         }
     }
 
-    protected abstract void doChecks(T object, boolean update) throws EException;
+    protected abstract void executeLogic(T object, boolean update) throws EException;
 
     private String getActualClassName() { return this.entityClass.getSimpleName(); }
 }

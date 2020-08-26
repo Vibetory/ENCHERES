@@ -38,16 +38,16 @@ public class ArticleManager extends GenericManager<Article> {
     }
 
     @Override
-    protected void doChecks(Article object, boolean update) throws EException {
+    protected void executeLogic(Article object, boolean update) throws EException {
         try {
-            doCheckAttributes(object);
+            checkAttributes(object);
         } catch (EException eException) {
             eException.printStackTrace();
             throw new EException(CodesExceptionBLL.UTILISATEUR_ADD_CHECK_ERROR, eException);
         }
     }
 
-    private void doCheckAttributes(Article article) throws EException {
+    private void checkAttributes(Article article) throws EException {
         if (article == null) { throw new EException(CodesExceptionBLL.BO_NULL_ERROR.get("Article")); }
         StringBuilder errors = new StringBuilder();
         if (article.getNomArticle() == null || article.getNomArticle() .isEmpty()) {

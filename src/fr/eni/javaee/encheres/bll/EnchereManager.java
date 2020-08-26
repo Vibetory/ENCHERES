@@ -14,7 +14,7 @@ public class EnchereManager extends GenericManager<Enchere> {
     }
 
     @Override
-    protected void doChecks(Enchere object, boolean update) throws EException {
+    protected void executeLogic(Enchere object, boolean update) throws EException {
 
     }
 
