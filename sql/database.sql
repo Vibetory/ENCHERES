@@ -9,8 +9,8 @@ ALTER TABLE CATEGORIE
 
 CREATE TABLE ENCHERE
 (
-    encherisseur   INTEGER  NOT NULL,
     articleVendu   INTEGER  NOT NULL,
+    encherisseur   INTEGER  NOT NULL,
     dateEnchère    DATETIME NOT NULL,
     montantEnchere INTEGER  NOT NULL
 
