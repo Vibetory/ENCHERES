@@ -22,13 +22,14 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
     protected String SQL_INSERT;
     protected String SQL_UPDATE;
     protected String SQL_SELECT_BY_ID;
+    protected String SQL_SELECT_BY_FIELD;
     protected String SQL_SELECT_ALL;
     protected String SQL_DELETE;
 
 
     // CONSTRUCTOR
 
-    public GenericJDBCDAOImpl() throws EException {
+    protected GenericJDBCDAOImpl() throws EException {
         this.entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
         setIdentifiers();
         setFields();
@@ -127,10 +128,32 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
             setStatementIdentifiers(statement, identifiers);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) { instance = generateObject(resultSet); }
-
         } catch (SQLException exception) {
             exception.printStackTrace();
             throw new EException(CodesExceptionJDBC.CRUD_SELECT_ID_ERROR.get(this.getActualClassName()), exception);
+        }
+        return instance;
+    }
+
+    /**
+     *
+     * @param field String | Name of the field used as a conditional parameter.
+     * @param fieldValue String | Value of the field.
+     * @return T | Instance of the actual object with the provided identifier(s).
+     * @throws EException EException | CRUD_SELECT_FIELD_ERROR.
+     */
+    @Override
+    public T selectByField(String field, String fieldValue) throws EException {
+        T instance = null;
+        setSQL_SELECT_BY_FIELD(field);
+        try (Connection connection = JDBC.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(this.SQL_SELECT_BY_FIELD);
+            statement.setString(1, fieldValue);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) { instance = generateObject(resultSet); }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+            throw new EException(CodesExceptionJDBC.CRUD_SELECT_FIELD_ERROR.get(this.getActualClassName()), exception);
         }
         return instance;
     }
@@ -242,10 +265,6 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
         generateStatementData(statement, object, false); // Default value.
     }
 
-    private String getActualClassName() throws EException {
-        return this.entityClass.getSimpleName();
-    }
-
     private void setStatementIdentifiers(PreparedStatement statement, int... identifiers) throws EException {
         try {
             for (int parameterIndex = 0; parameterIndex < identifiers.length; parameterIndex ++) {
@@ -261,9 +280,7 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
         StringBuilder identifiersConditions = new StringBuilder();
         for (int index = 0; index < this.identifiers.size(); index ++) {
             identifiersConditions.append(identifiers.get(index)).append(" = ?");
-            if (index != this.identifiers.size() - 1) {
-                identifiersConditions.append(" AND ");
-            }
+            if (index != this.identifiers.size() - 1) { identifiersConditions.append(" AND "); }
         }
         return identifiersConditions.toString();
     }
@@ -289,22 +306,27 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
         return getFieldsSelection(false); // Default value.
     }
 
+    private String getActualClassName() { return this.entityClass.getSimpleName(); }
 
     // GETTERS & SETTERS
 
-    protected void setSQL_DELETE() throws EException {
+    protected void setSQL_DELETE() {
         this.SQL_DELETE = "DELETE FROM " + getActualClassName() + " WHERE " + getIdentifiersConditions();
     }
 
-    protected void setSQL_SELECT_BY_ID() throws EException {
+    protected void setSQL_SELECT_BY_ID() {
         this.SQL_SELECT_BY_ID = "SELECT " + getFieldsSelection() + " FROM " + getActualClassName() + " WHERE " + getIdentifiersConditions();
     }
 
-    protected void setSQL_SELECT_ALL() throws EException {
+    protected void setSQL_SELECT_BY_FIELD(String field) {
+        this.SQL_SELECT_BY_FIELD = "SELECT " + getFieldsSelection() + " FROM " + getActualClassName() + " WHERE " + field + "= ?";
+    }
+
+    protected void setSQL_SELECT_ALL() {
         this.SQL_SELECT_ALL = "SELECT " + getFieldsSelection() + " FROM " + getActualClassName();
     }
 
-    protected void setSQL_INSERT(int length) throws EException {
+    protected void setSQL_INSERT(int length) {
         StringBuilder unknownParameters = new StringBuilder();
         String separator = "";
         while (-- length > 0) {
@@ -314,7 +336,7 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
         this.SQL_INSERT = "INSERT INTO " + getActualClassName() + " VALUES ( " + unknownParameters.toString() + " ) ";
     }
 
-    protected void setSQL_UPDATE() throws EException {
+    protected void setSQL_UPDATE() {
         this.SQL_UPDATE = "UPDATE " + getActualClassName() + " SET " + getFieldsSelection(true) + " WHERE " + getIdentifiersConditions();
     }
 }

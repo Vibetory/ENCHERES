@@ -9,6 +9,8 @@ public class EException extends Exception{
 
     public EException() { super(); }
 
+    public EException(String message) { super(message); }
+
     public EException(int code) {
         super(decode(code));
         setCode(code);
@@ -34,6 +36,11 @@ public class EException extends Exception{
         return "Enchères | " + super.getMessage();
     }
 
+    @Override
+    public void printStackTrace() {
+        System.out.println(getMessage());
+        super.printStackTrace();
+    }
 
     // GETTERS & SETTERS
 

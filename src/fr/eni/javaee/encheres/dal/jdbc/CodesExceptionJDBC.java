@@ -4,58 +4,67 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class CodesExceptionJDBC {
-	public static final int DATABASE_ACCESS_ERROR = 10000;
-	public static final int CONNECTION_ERROR = 10001;
-	public static final int IDENTIFIER_STATEMENT_ERROR = 10010;
-	public static final Map<String, Integer> CRUD_DELETE_ERROR = new HashMap<String, Integer> () {{
-		CRUD_DELETE_ERROR.put("Article", 10020);
-		CRUD_DELETE_ERROR.put("Categorie", 10021);
-		CRUD_DELETE_ERROR.put("Enchere", 10022);
-		CRUD_DELETE_ERROR.put("Retrait", 10023);
-		CRUD_DELETE_ERROR.put("Utilisateur", 10024);
-	}};
+	public static final int DATABASE_ACCESS_ERROR = 10100;
+	public static final int CONNECTION_ERROR = 10101;
+	public static final int IDENTIFIER_STATEMENT_ERROR = 10200;
 	public static final Map<String, Integer> GENERATE_OBJECT_ERROR = new HashMap<String, Integer> () {{
-		CRUD_DELETE_ERROR.put("Article", 10030);
-		CRUD_DELETE_ERROR.put("Categorie", 10031);
-		CRUD_DELETE_ERROR.put("Enchere", 10032);
-		CRUD_DELETE_ERROR.put("Retrait", 10033);
-		CRUD_DELETE_ERROR.put("Utilisateur", 10034);
+		put("Article", 10201);
+		put("Categorie", 10202);
+		put("Enchere", 10203);
+		put("Retrait", 10204);
+		put("Utilisateur", 10205);
 	}};
 	public static final Map<String, Integer> GENERATE_STATEMENT_DATA_ERROR = new HashMap<String, Integer> () {{
-		CRUD_DELETE_ERROR.put("Article", 10035);
-		CRUD_DELETE_ERROR.put("Categorie", 10036);
-		CRUD_DELETE_ERROR.put("Enchere", 10037);
-		CRUD_DELETE_ERROR.put("Retrait", 10038);
-		CRUD_DELETE_ERROR.put("Utilisateur", 10039);
-	}};
-	public static final Map<String, Integer> CRUD_SELECT_ID_ERROR = new HashMap<String, Integer> () {{
-		CRUD_DELETE_ERROR.put("Article", 10040);
-		CRUD_DELETE_ERROR.put("Categorie", 10041);
-		CRUD_DELETE_ERROR.put("Enchere", 10042);
-		CRUD_DELETE_ERROR.put("Retrait", 10043);
-		CRUD_DELETE_ERROR.put("Utilisateur", 10044);
-	}};
-	public static final Map<String, Integer> CRUD_SELECT_ALL_ERROR = new HashMap<String, Integer> () {{
-		CRUD_DELETE_ERROR.put("Article", 10050);
-		CRUD_DELETE_ERROR.put("Categorie", 10051);
-		CRUD_DELETE_ERROR.put("Enchere", 10052);
-		CRUD_DELETE_ERROR.put("Retrait", 10053);
-		CRUD_DELETE_ERROR.put("Utilisateur", 10054);
+		put("Article", 10221);
+		put("Categorie", 10222);
+		put("Enchere", 10223);
+		put("Retrait", 10224);
+		put("Utilisateur", 10225);
 	}};
 	public static final Map<String, Integer> CRUD_INSERT = new HashMap<String, Integer> () {{
-		CRUD_DELETE_ERROR.put("Article", 10060);
-		CRUD_DELETE_ERROR.put("Categorie", 10061);
-		CRUD_DELETE_ERROR.put("Enchere", 10062);
-		CRUD_DELETE_ERROR.put("Retrait", 10063);
-		CRUD_DELETE_ERROR.put("Utilisateur", 10064);
+		put("Article", 10301);
+		put("Categorie", 10302);
+		put("Enchere", 10303);
+		put("Retrait", 10304);
+		put("Utilisateur", 10305);
 	}};
 	public static final Map<String, Integer> CRUD_UPDATE = new HashMap<String, Integer> () {{
-		CRUD_DELETE_ERROR.put("Article", 10070);
-		CRUD_DELETE_ERROR.put("Categorie", 10071);
-		CRUD_DELETE_ERROR.put("Enchere", 10072);
-		CRUD_DELETE_ERROR.put("Retrait", 10073);
-		CRUD_DELETE_ERROR.put("Utilisateur", 10074);
+		put("Article", 10401);
+		put("Categorie", 10402);
+		put("Enchere", 10403);
+		put("Retrait", 10404);
+		put("Utilisateur", 10405);
 	}};
+	public static final Map<String, Integer> CRUD_DELETE_ERROR = new HashMap<String, Integer> () {{
+		put("Article", 10501);
+		put("Categorie", 10502);
+		put("Enchere", 10503);
+		put("Retrait", 10504);
+		put("Utilisateur", 10505);
+	}};
+
+	public static final Map<String, Integer> CRUD_SELECT_ID_ERROR = new HashMap<String, Integer> () {{
+		put("Article", 10601);
+		put("Categorie", 10602);
+		put("Enchere", 10603);
+		put("Retrait", 10604);
+		put("Utilisateur", 10605);
+	}};
+	public static final Map<String, Integer> CRUD_SELECT_FIELD_ERROR = new HashMap<String, Integer> () {{
+		put("Article", 10621);
+		put("Categorie", 10622);
+		put("Enchere", 10623);
+		put("Retrait", 10624);
+		put("Utilisateur", 10625);
+	}};
+	public static final Map<String, Integer> CRUD_SELECT_ALL_ERROR = new HashMap<String, Integer> () {{
+		put("Article", 10641);
+		put("Categorie", 10642);
+		put("Enchere", 10643);
+		put("Retrait", 10644);
+		put("Utilisateur", 10645);
+	}};
+
 
 
 

@@ -14,7 +14,7 @@ public class Utilisateur {
 
     public Utilisateur() {}
 
-    public Utilisateur(String pseudo, String nom, String prenom, String email, String rue, String codePostal, String ville, String motDePasse, int credit, byte administrateur) {
+    public Utilisateur(String pseudo, String nom, String prenom, String email, String rue, String codePostal, String ville, String motDePasse) {
         setPseudo(pseudo);
         setNom(nom);
         setPrenom(prenom);
@@ -23,11 +23,15 @@ public class Utilisateur {
         setCodePostal(codePostal);
         setVille(ville);
         setMotDePasse(motDePasse);
+        setCredit(0);
+        setAdministrateur((byte) 0);
+    }
+
+    public Utilisateur(String pseudo, String nom, String prenom, String email, String rue, String codePostal, String ville, String motDePasse, int credit, byte administrateur) {
+        this(pseudo, nom, prenom, email, rue, codePostal, ville, motDePasse);
         setCredit(credit);
         setAdministrateur(administrateur);
     }
-
-    // CONSTRUCTORS
 
     public Utilisateur(String pseudo, String nom, String prenom, String email, String telephone, String rue, String codePostal, String ville, String motDePasse, int credit, byte administrateur) {
         this(pseudo, nom, prenom, email, rue, codePostal, ville, motDePasse, credit, administrateur);

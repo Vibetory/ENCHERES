@@ -33,10 +33,10 @@ ALTER TABLE RETRAIT
 CREATE TABLE UTILISATEUR
 (
     noUtilisateur  INTEGER IDENTITY (1,1) NOT NULL,
-    pseudo         VARCHAR(30)            NOT NULL,
+    pseudo         VARCHAR(30)            NOT NULL UNIQUE,
     nom            VARCHAR(30)            NOT NULL,
     prenom         VARCHAR(30)            NOT NULL,
-    email          VARCHAR(20)            NOT NULL,
+    email          VARCHAR(20)            NOT NULL UNIQUE,
     telephone      VARCHAR(15),
     rue            VARCHAR(30)            NOT NULL,
     codePostal     VARCHAR(10)            NOT NULL,
