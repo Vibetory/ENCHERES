@@ -18,9 +18,11 @@ public class EnchereManager extends GenericManager<Enchere> {
 
     }
 
-
     public Enchere getHighestBid(int identifier) throws EException {
-        return Collections.max(DAOBusinessObject.selectAllByField("articleVendu", identifier), Comparator.comparingInt(Enchere::getMontantEnchere));
+        return Collections.max(
+                DAOBusinessObject.selectAllByField("articleVendu", identifier),
+                Comparator.comparingInt(Enchere::getMontantEnchere)
+        );
     }
 
     public Enchere getHighestBid(Article article) throws EException {

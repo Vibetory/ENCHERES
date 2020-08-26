@@ -3,8 +3,9 @@ package fr.eni.javaee.encheres.bll;
 import fr.eni.javaee.encheres.EException;
 import fr.eni.javaee.encheres.bo.Article;
 import fr.eni.javaee.encheres.bo.Utilisateur;
+import org.apache.tomcat.jni.Local;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class ArticleManager extends GenericManager<Article> {
@@ -56,11 +57,12 @@ public class ArticleManager extends GenericManager<Article> {
         if (article.getDescription() == null || article.getDescription().isEmpty()) {
             errors.append("Champs obligatoire. L'article n'a pas de description.").append("\n");
         }
-        if (article.getDateDebutEncheres() == null) { article.setDateDebutEncheres(LocalDate.now()); }
+        if (article.getDateDebutEncheres() == null) { article.setDateDebutEncheres(LocalDateTime.now()); }
         if (article.getDateFinEncheres() == null) {
             errors.append("Champs obligatoire. L'article n'a pas de date de fin d'enchère.").append("\n");
         }
-        if (article.getDateFinEncheres().isBefore(LocalDate.now()) || article.getDateFinEncheres().isBefore(article.getDateDebutEncheres())) {
+        LocalDateTime dateFinEncheres = article.getDateFinEncheres();
+        if (dateFinEncheres.isBefore(LocalDateTime.now()) || dateFinEncheres.isBefore(article.getDateDebutEncheres())) {
             errors.append("Champs incorrecte. La date de fin d'enchère est invalide.").append("\n");
         }
         if (article.getVendeur() == null) {

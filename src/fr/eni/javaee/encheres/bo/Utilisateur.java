@@ -1,10 +1,5 @@
 package fr.eni.javaee.encheres.bo;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class Utilisateur {
     private int noUtilisateur, credit;
     private String pseudo, nom, prenom, email, telephone, rue, codePostal, ville, motDePasse;

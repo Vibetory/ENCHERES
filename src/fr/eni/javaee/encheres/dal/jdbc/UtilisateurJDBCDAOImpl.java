@@ -3,7 +3,8 @@ package fr.eni.javaee.encheres.dal.jdbc;
 import fr.eni.javaee.encheres.EException;
 import fr.eni.javaee.encheres.bo.Utilisateur;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 public class UtilisateurJDBCDAOImpl extends GenericJDBCDAOImpl<Utilisateur> {
 
@@ -21,7 +22,7 @@ public class UtilisateurJDBCDAOImpl extends GenericJDBCDAOImpl<Utilisateur> {
     @Override
     protected void setFields() {
         this.fields = new LinkedHashMap<String, String>() {{
-            put("noUtilisateur", "int");
+            put("noUtilisateur", "Integer");
             put("pseudo", "String");
             put("nom", "String");
             put("prenom", "String");
@@ -31,8 +32,8 @@ public class UtilisateurJDBCDAOImpl extends GenericJDBCDAOImpl<Utilisateur> {
             put("codePostal", "String");
             put("ville", "String");
             put("motDePasse", "String");
-            put("credit", "int");
-            put("administrateur", "byte");
+            put("credit", "Integer");
+            put("administrateur", "Byte");
         }};
     }
 

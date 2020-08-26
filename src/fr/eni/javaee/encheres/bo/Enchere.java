@@ -1,12 +1,11 @@
 package fr.eni.javaee.encheres.bo;
 
-import java.time.LocalDate;
-import java.util.Collection;
+import java.time.LocalDateTime;
 
 public class Enchere {
     private Article articleVendu;
     private Utilisateur encherisseur;
-    private LocalDate dateEnchère;
+    private LocalDateTime dateEnchère;
     private int montantEnchere;
 
     // CONSTRUCTORS
@@ -16,11 +15,11 @@ public class Enchere {
     public Enchere(Article articleVendu, Utilisateur encherisseur, int montantEnchere) {
         setArticleVendu(articleVendu);
         setEncherisseur(encherisseur);
-        setDateEnchère(LocalDate.now());
+        setDateEnchère(LocalDateTime.now());
         setMontantEnchere(montantEnchere);
     }
 
-    public Enchere(Article articleVendu, Utilisateur encherisseur, LocalDate dateEnchère, int montantEnchere) {
+    public Enchere(Article articleVendu, Utilisateur encherisseur, LocalDateTime dateEnchère, int montantEnchere) {
         this(articleVendu, encherisseur, montantEnchere);
         setDateEnchère(dateEnchère);
     }
@@ -40,9 +39,9 @@ public class Enchere {
 
     public void setEncherisseur(Utilisateur encherisseur) { this.encherisseur = encherisseur; }
 
-    public LocalDate getDateEnchère() { return this.dateEnchère; }
+    public LocalDateTime getDateEnchère() { return this.dateEnchère; }
 
-    public void setDateEnchère(LocalDate dateEnchère) { this.dateEnchère = dateEnchère; }
+    public void setDateEnchère(LocalDateTime dateEnchère) { this.dateEnchère = dateEnchère; }
 
     public int getMontantEnchere() { return this.montantEnchere; }
 

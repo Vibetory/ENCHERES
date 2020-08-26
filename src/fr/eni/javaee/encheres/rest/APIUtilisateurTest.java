@@ -1,8 +1,8 @@
 package fr.eni.javaee.encheres.rest;
 
 import fr.eni.javaee.encheres.EException;
-import fr.eni.javaee.encheres.bo.Utilisateur;
 import fr.eni.javaee.encheres.bll.UtilisateurManager;
+import fr.eni.javaee.encheres.bo.Utilisateur;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

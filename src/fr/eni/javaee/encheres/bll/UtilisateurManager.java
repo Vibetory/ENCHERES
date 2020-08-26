@@ -2,7 +2,7 @@ package fr.eni.javaee.encheres.bll;
 
 import fr.eni.javaee.encheres.EException;
 import fr.eni.javaee.encheres.bo.Utilisateur;
-import fr.eni.javaee.encheres.bll.tools.Password;
+import fr.eni.javaee.encheres.tools.PasswordTool;
 
 public class UtilisateurManager extends GenericManager<Utilisateur> {
     public UtilisateurManager() throws EException {
@@ -27,7 +27,9 @@ public class UtilisateurManager extends GenericManager<Utilisateur> {
 
     public Utilisateur getByPseudoAndPassword(String pseudo, String password) throws EException {
         Utilisateur utilisateur = getByPseudo(pseudo);
-        if (utilisateur != null && Password.checkPassword(password, utilisateur.getMotDePasse())) { return utilisateur; }
+        if (utilisateur != null && PasswordTool.checkPassword(password, utilisateur.getMotDePasse())) {
+            return utilisateur;
+        }
         else { throw new EException(CodesExceptionBLL.AUTHENTICATION_ERROR); }
     }
 
@@ -77,11 +79,15 @@ public class UtilisateurManager extends GenericManager<Utilisateur> {
     }
 
     private void checkUnicity(Utilisateur utilisateur) throws EException {
-        if (getByEmail(utilisateur.getEmail()) != null) { throw new EException(CodesExceptionBLL.UTILISATEUR_ADD_EMAIL_ERROR); }
-        if (getByPseudo(utilisateur.getPseudo()) != null) { throw new EException(CodesExceptionBLL.UTILISATEUR_ADD_PSEUDO_ERROR); }
+        if (getByEmail(utilisateur.getEmail()) != null) {
+            throw new EException(CodesExceptionBLL.UTILISATEUR_ADD_EMAIL_ERROR);
+        }
+        if (getByPseudo(utilisateur.getPseudo()) != null) {
+            throw new EException(CodesExceptionBLL.UTILISATEUR_ADD_PSEUDO_ERROR);
+        }
     }
 
     private void doHashPassword(Utilisateur utilisateur) throws EException {
-        utilisateur.setMotDePasse(Password.hashPassword(utilisateur.getMotDePasse()));
+        utilisateur.setMotDePasse(PasswordTool.hashPassword(utilisateur.getMotDePasse()));
     }
 }

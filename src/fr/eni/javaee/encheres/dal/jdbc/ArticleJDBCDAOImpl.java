@@ -21,13 +21,13 @@ public class ArticleJDBCDAOImpl extends GenericJDBCDAOImpl<Article> {
     @Override
     protected void setFields() {
         this.fields = new LinkedHashMap<String, String>() {{
-            put("noArticle", "int");
+            put("noArticle", "Integer");
             put("nomArticle", "String");
             put("description", "String");
-            put("dateDebutEncheres", "Date");
-            put("dateFinEncheres", "Date");
-            put("miseAPrix", "int");
-            put("prixVente", "int");
+            put("dateDebutEncheres", "LocalDateTime");
+            put("dateFinEncheres", "LocalDateTime");
+            put("miseAPrix", "Integer");
+            put("prixVente", "Integer");
             put("vendeur", "fr.eni.javaee.encheres.dal.jdbc.UtilisateurJDBCDAOImpl");
             put("acquereur", "fr.eni.javaee.encheres.dal.jdbc.UtilisateurJDBCDAOImpl");
             put("categorie", "fr.eni.javaee.encheres.dal.jdbc.CategorieJDBCDAOImpl");

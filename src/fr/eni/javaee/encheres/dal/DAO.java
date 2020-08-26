@@ -1,7 +1,6 @@
 package fr.eni.javaee.encheres.dal;
 
 import fr.eni.javaee.encheres.EException;
-import fr.eni.javaee.encheres.bo.Utilisateur;
 
 import java.util.List;
 

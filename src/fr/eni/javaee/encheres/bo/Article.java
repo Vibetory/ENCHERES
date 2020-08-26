@@ -1,11 +1,11 @@
 package fr.eni.javaee.encheres.bo;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Article {
     private int noArticle, miseAPrix, prixVente;
     private String nomArticle, description, etatVente;
-    private LocalDate dateDebutEncheres, dateFinEncheres;
+    private LocalDateTime dateDebutEncheres, dateFinEncheres;
     private Categorie categorie;
     private Utilisateur vendeur, acquereur;
     private boolean retraitEffectue = false;
@@ -14,42 +14,42 @@ public class Article {
 
     public Article() {};
 
-    public Article(String nomArticle, String description, LocalDate dateDebutEncheres, LocalDate dateFinEncheres, Utilisateur vendeur, Categorie categorie) {
+    public Article(String nomArticle, String description, LocalDateTime dateDebutEncheres, LocalDateTime dateFinEncheres, Utilisateur vendeur, Categorie categorie) {
         setNomArticle(nomArticle);
         setDescription(description);
-        setDateDebutEncheres(dateDebutEncheres == null ? LocalDate.now() : dateDebutEncheres);
+        setDateDebutEncheres(dateDebutEncheres == null ? LocalDateTime.now(): dateDebutEncheres);
         setDateFinEncheres(dateFinEncheres);
         setCategorie(categorie);
         setVendeur(vendeur);
         setEtatVente();
     }
 
-    public Article(String nomArticle, String description, LocalDate dateDebutEncheres, LocalDate dateFinEncheres, int miseAPrix, Utilisateur vendeur, Categorie categorie) {
+    public Article(String nomArticle, String description, LocalDateTime dateDebutEncheres, LocalDateTime dateFinEncheres, int miseAPrix, Utilisateur vendeur, Categorie categorie) {
         this(nomArticle, description, dateDebutEncheres, dateFinEncheres, vendeur, categorie);
         setMiseAPrix(miseAPrix);
     }
 
-    public Article(int noArticle, String nomArticle, String description, LocalDate dateDebutEncheres, LocalDate dateFinEncheres, int miseAPrix, Utilisateur vendeur, Categorie categorie) {
+    public Article(int noArticle, String nomArticle, String description, LocalDateTime dateDebutEncheres, LocalDateTime dateFinEncheres, int miseAPrix, Utilisateur vendeur, Categorie categorie) {
         this(nomArticle, description, dateDebutEncheres, dateFinEncheres, miseAPrix, vendeur, categorie);
         setNoArticle(noArticle);
     }
 
-    public Article (int noArticle, String nomArticle, String description, LocalDate dateDebutEncheres, LocalDate dateFinEncheres , int miseAPrix, int prixVente, Utilisateur vendeur, Categorie categorie) {
+    public Article (int noArticle, String nomArticle, String description, LocalDateTime dateDebutEncheres, LocalDateTime dateFinEncheres , int miseAPrix, int prixVente, Utilisateur vendeur, Categorie categorie) {
         this(noArticle, nomArticle, description, dateDebutEncheres, dateFinEncheres, miseAPrix, vendeur, categorie);
         setPrixVente(prixVente);
     }
 
-    public Article (int noArticle, String nomArticle, String description, LocalDate dateDebutEncheres, LocalDate dateFinEncheres , int miseAPrix, int prixVente, Utilisateur vendeur, Utilisateur acquereur, Categorie categorie) {
+    public Article (int noArticle, String nomArticle, String description, LocalDateTime dateDebutEncheres, LocalDateTime dateFinEncheres , int miseAPrix, int prixVente, Utilisateur vendeur, Utilisateur acquereur, Categorie categorie) {
         this(noArticle, nomArticle, description, dateDebutEncheres, dateFinEncheres, miseAPrix, prixVente, vendeur, categorie);
         setAcquereur(acquereur);
     }
 
-    public Article (int noArticle, String nomArticle, String description, LocalDate dateDebutEncheres, LocalDate dateFinEncheres , int miseAPrix, int prixVente, Utilisateur vendeur, Utilisateur acquereur, Categorie categorie, boolean retraitEffectue) {
+    public Article (int noArticle, String nomArticle, String description, LocalDateTime dateDebutEncheres, LocalDateTime dateFinEncheres , int miseAPrix, int prixVente, Utilisateur vendeur, Utilisateur acquereur, Categorie categorie, boolean retraitEffectue) {
         this(noArticle, nomArticle, description, dateDebutEncheres, dateFinEncheres, miseAPrix, prixVente, vendeur, acquereur, categorie);
         setRetraitEffectue(retraitEffectue);
     }
 
-    public Article (String nomArticle, String description, LocalDate dateDebutEncheres, LocalDate dateFinEncheres , int miseAPrix, int prixVente, Utilisateur vendeur, Utilisateur acquereur, Categorie categorie) {
+    public Article (String nomArticle, String description, LocalDateTime dateDebutEncheres, LocalDateTime dateFinEncheres , int miseAPrix, int prixVente, Utilisateur vendeur, Utilisateur acquereur, Categorie categorie) {
         this(nomArticle, description, dateDebutEncheres, dateFinEncheres, vendeur, categorie);
         setMiseAPrix(miseAPrix);
         setPrixVente(prixVente);
@@ -88,19 +88,19 @@ public class Article {
      * The status of a sale is automatically set according to the dates.
      */
     public void setEtatVente() {
-        if (this.dateDebutEncheres.isAfter(LocalDate.now())) { this.etatVente = "Créée"; }
-        else if (this.dateFinEncheres.isBefore(LocalDate.now())) {
+        if (this.dateDebutEncheres.isAfter(LocalDateTime.now())) { this.etatVente = "Créée"; }
+        else if (this.dateFinEncheres.isBefore(LocalDateTime.now())) {
             this.etatVente = this.retraitEffectue ? "Retrait effectué" : "Enchères terminées";
         } else { this.etatVente = "En cours"; }
     }
 
-    public LocalDate getDateDebutEncheres() { return this.dateDebutEncheres; }
+    public LocalDateTime getDateDebutEncheres() { return this.dateDebutEncheres; }
 
-    public void setDateDebutEncheres(LocalDate dateDebutEncheres) { this.dateDebutEncheres = dateDebutEncheres; }
+    public void setDateDebutEncheres(LocalDateTime dateDebutEncheres) { this.dateDebutEncheres = dateDebutEncheres; }
 
-    public LocalDate getDateFinEncheres() { return this.dateFinEncheres; }
+    public LocalDateTime getDateFinEncheres() { return this.dateFinEncheres; }
 
-    public void setDateFinEncheres(LocalDate dateFinEncheres) { this.dateFinEncheres = dateFinEncheres; }
+    public void setDateFinEncheres(LocalDateTime dateFinEncheres) { this.dateFinEncheres = dateFinEncheres; }
 
     public Categorie getCategorie() { return categorie; }
 
