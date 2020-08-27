@@ -9,7 +9,6 @@ import java.util.LinkedHashMap;
 public class RetraitJDBCDAOImpl extends GenericJDBCDAOImpl<Retrait> {
     public RetraitJDBCDAOImpl() throws EException {
         super();
-        setSQL_INSERT(this.fields.size() + 1);
     }
 
     @Override

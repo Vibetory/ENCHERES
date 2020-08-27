@@ -9,7 +9,6 @@ import java.util.LinkedHashMap;
 public class EnchereJDBCDAOImpl extends GenericJDBCDAOImpl<Enchere> {
     public EnchereJDBCDAOImpl() throws EException {
         super();
-        setSQL_INSERT(this.fields.size() + 1);
     }
 
     @Override
