@@ -5,6 +5,7 @@ import fr.eni.javaee.encheres.EException;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public interface DAO<T> {
 
@@ -20,10 +21,14 @@ public interface DAO<T> {
 
     public T selectByField(String field, Object fieldValue) throws EException;
 
+    public T selectByFields(Map<String, Object> fields) throws EException;
+
     public List<T> selectAll() throws EException;
 
     public List<T> selectAllBy(String query, Collection<Object> fieldsValues) throws EException;
 
     public List<T> selectAllByField(String field, Object fieldValue) throws EException;
+
+    public List<T> selectAllByFields(Map<String, Object> fields) throws EException;
 }
 

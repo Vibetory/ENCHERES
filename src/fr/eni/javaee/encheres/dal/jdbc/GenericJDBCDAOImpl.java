@@ -139,16 +139,8 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
      */
     @Override
     public T selectBy(String query, Collection<Object> fieldsValues) throws EException {
-        T instance = null;
-        try (Connection connection = JDBC.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(query);
-            setStatementParameters(statement, fieldsValues);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) { instance = generateObject(resultSet); }
-            resultSet.close();
-            statement.close();
-            return instance;
-        } catch (EException | SQLException exception) {
+        try { return selectAllBy(query, fieldsValues).get(0); } // Get the first element of the list.
+        catch (EException exception) {
             exception.printStackTrace();
             throw new EException(CodesExceptionJDBC.CRUD_SELECT_BY_ERROR, exception);
         }
@@ -160,7 +152,8 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
      * @throws EException EException | CRUD_SELECT_FIELD_ERROR.
      * @throws SQLException SQLException
      */
-    public T selectByFields(Map<String, Object> fields) throws EException, SQLException {
+    @Override
+    public T selectByFields(Map<String, Object> fields) throws EException {
         String SQL_SELECT_BY_FIELDS = generateSQL_SELECT(fields.keySet());
         return selectBy(SQL_SELECT_BY_FIELDS, fields.values());
     }
@@ -174,7 +167,7 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
     public T selectById(int... identifiers) throws EException {
         Map<String, Object> fields = generateIdentifiersMap(identifiers);
         try { return selectByFields(fields); }
-        catch (EException | SQLException exception) {
+        catch (EException exception) {
             exception.printStackTrace();
             throw new EException(CodesExceptionJDBC.CRUD_SELECT_ID_ERROR.get(this.getActualClassName()), exception);
         }
@@ -192,7 +185,7 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
             put(field, fieldValue);
         }};
         try { return selectByFields(fields); }
-        catch (EException | SQLException exception) {
+        catch (EException exception) {
             exception.printStackTrace();
             throw new EException(CodesExceptionJDBC.CRUD_SELECT_FIELD_ERROR.get(this.getActualClassName()), exception);
         }
@@ -252,7 +245,8 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
      * @throws EException EEXception
      * @throws SQLException SQLException
      */
-    public List<T> selectAllByFields(Map<String, Object> fields) throws EException, SQLException {
+    @Override
+    public List<T> selectAllByFields(Map<String, Object> fields) throws EException {
         String SQL_SELECT_ALL_BY_FIELDS = generateSQL_SELECT(fields.keySet());
         return selectAllBy(SQL_SELECT_ALL_BY_FIELDS, fields.values());
     }
@@ -269,7 +263,7 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
             put(field, fieldValue);
         }};
         try { return selectAllByFields(fields); }
-        catch (EException | SQLException exception) {
+        catch (EException exception) {
             exception.printStackTrace();
             throw new EException(CodesExceptionJDBC.CRUD_SELECT_FIELD_ERROR.get(this.getActualClassName()), exception);
         }
