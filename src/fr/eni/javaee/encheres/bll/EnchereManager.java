@@ -3,7 +3,7 @@ package fr.eni.javaee.encheres.bll;
 import fr.eni.javaee.encheres.EException;
 import fr.eni.javaee.encheres.bo.Article;
 import fr.eni.javaee.encheres.bo.Enchere;
-import fr.eni.javaee.encheres.dal.TransactSQLQueries;
+import fr.eni.javaee.encheres.dal.jdbc.TransactSQLQueries;
 
 
 import java.sql.SQLException;
@@ -25,7 +25,7 @@ public class EnchereManager extends GenericManager<Enchere> {
 //                DAOBusinessObject.selectAllByField("articleVendu", identifier),
 //                Comparator.comparingInt(Enchere::getMontantEnchere)
 //        );
-        return (Enchere) DAOBusinessObject.selectBy(TransactSQLQueries.SQL_SELECT_MAX_MONTANT_ENCHERE, Collections.singleton(identifier));
+        return (Enchere) DAOBusinessObject.selectBy(TransactSQLQueries.SELECT_MAX_MONTANT_ENCHERE(), Collections.singleton(identifier));
     }
 
     public Enchere getHighestBid(Article article) throws EException, SQLException {
