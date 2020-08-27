@@ -2,11 +2,12 @@ package fr.eni.javaee.encheres.bll;
 
 import fr.eni.javaee.encheres.EException;
 import fr.eni.javaee.encheres.bo.Article;
+import fr.eni.javaee.encheres.bo.Categorie;
 import fr.eni.javaee.encheres.bo.Utilisateur;
-import org.apache.tomcat.jni.Local;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ArticleManager extends GenericManager<Article> {
 
@@ -38,13 +39,20 @@ public class ArticleManager extends GenericManager<Article> {
         return getArticlesFrom("acquereur", acquereur);
     }
 
+    public List<Article> getArticlesFromVendeurByEtat(Utilisateur vendeur, String etatVente) throws EException {
+        return getArticlesFromVendeur(vendeur)
+                .stream()
+                .filter(article -> article.getEtatVente().equals(etatVente))
+                .collect(Collectors.toList());
+    }
+
     @Override
-    protected void executeLogic(Article object, boolean isUpdate) throws EException {
+    protected void executePreLogic(Article object, String operationCRUD) throws EException {
         try {
             checkAttributes(object);
         } catch (EException eException) {
             eException.printStackTrace();
-            throw new EException(CodesExceptionBLL.UTILISATEUR_ADD_CHECK_ERROR, eException);
+            throw new EException(CodesExceptionBLL.CHECK_ERROR.get("Article"), eException);
         }
     }
 
@@ -71,11 +79,14 @@ public class ArticleManager extends GenericManager<Article> {
         if (article.getCategorie() == null) {
             errors.append("Champs obligatoire. L'article n'a pas de catégorie.").append("\n");
         }
+        if (new CategorieManager().getById(article.getNoCategorie()) == null) {
+            errors.append("Champs incorrect. La catégorie renseignée n'existe pas.").append("\n");
+        }
         if (article.getMiseAPrix() < 0) {
-            errors.append("Champs incorrecte. La mise à prix ne peut pas être négative.").append("\n");
+            errors.append("Champs incorrect. La mise à prix ne peut pas être négative.").append("\n");
         }
         if (article.getPrixVente() < 0) {
-            errors.append("Champs incorrecte. Le prix de vente ne peut pas être négatif").append("\n");
+            errors.append("Champs incorrect. Le prix de vente ne peut pas être négatif").append("\n");
         }
         if (!errors.toString().isEmpty()) { throw new EException(errors.toString()); }
     }

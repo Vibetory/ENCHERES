@@ -32,7 +32,7 @@ public class UtilisateurJDBCDAOImpl extends GenericJDBCDAOImpl<Utilisateur> {
             put("codePostal", "String");
             put("ville", "String");
             put("motDePasse", "String");
-            put("credit", "Integer");
+            put("credits", "Integer");
             put("administrateur", "Byte");
         }};
     }

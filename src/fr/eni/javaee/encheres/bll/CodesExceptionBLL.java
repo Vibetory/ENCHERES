@@ -18,6 +18,13 @@ public class CodesExceptionBLL {
         put("Retrait", 20204);
         put("Utilisateur", 20205);
     }};
+    public static final Map<String, Integer> CHECK_ERROR = new HashMap<String, Integer> () {{
+        put("Article", 29201);
+        put("Categorie", 29202);
+        put("Enchere", 29203);
+        put("Retrait", 29204);
+        put("Utilisateur", 29205);
+    }};
     public static final Map<String, Integer> ADD_ERROR = new HashMap<String, Integer> () {{
         put("Article", 20301);
         put("Categorie", 20302);
@@ -25,9 +32,20 @@ public class CodesExceptionBLL {
         put("Retrait", 20304);
         put("Utilisateur", 20305);
     }};
-    public static final int UTILISATEUR_ADD_EMAIL_ERROR = 21305;
-    public static final int UTILISATEUR_ADD_PSEUDO_ERROR = 22305;
-    public static final int UTILISATEUR_ADD_CHECK_ERROR = 29305;
+    public static final Map<String, Integer> ADD_ALREADY_EXIST_ERROR = new HashMap<String, Integer> () {{
+        put("Article", 21301);
+        put("Categorie", 21302);
+        put("Enchere", 21303);
+        put("Retrait", 21304);
+        put("Utilisateur", 21305);
+    }};
+    public static final Map<String, Integer> UPDATE_NOT_EXIST_ERROR = new HashMap<String, Integer> () {{
+        put("Article", 21401);
+        put("Categorie", 21402);
+        put("Enchere", 21403);
+        put("Retrait", 21404);
+        put("Utilisateur", 21405);
+    }};
     public static final Map<String, Integer> GET_BY_ID_ERROR = new HashMap<String, Integer>() {{
         put("Article", 20601);
         put("Categorie", 20602);

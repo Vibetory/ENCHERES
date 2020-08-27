@@ -34,13 +34,15 @@ public class UtilisateurManager extends GenericManager<Utilisateur> {
     }
 
     @Override
-    protected void executeLogic(Utilisateur object, boolean isUpdate) throws EException {
+    protected void executePreLogic(Utilisateur object, String operationCRUD) throws EException {
         try {
+            boolean alreadyExists = checkUnicity(object);
+            if (operationCRUD.equals("INSERT") && alreadyExists) { throw new EException(CodesExceptionBLL.ADD_ALREADY_EXIST_ERROR.get("Utilisateur")); }
+            if (operationCRUD.equals("UPDATE") && !alreadyExists) { throw new EException(CodesExceptionBLL.UPDATE_NOT_EXIST_ERROR.get("Utilisateur")); }
             checkAttributes(object);
-            if (!isUpdate) { checkUnicity(object); }
         } catch (EException eException) {
             eException.printStackTrace();
-            throw new EException(CodesExceptionBLL.UTILISATEUR_ADD_CHECK_ERROR, eException);
+            throw new EException(CodesExceptionBLL.CHECK_ERROR.get("Utilisateur"), eException);
         }
         doHashPassword(object);
     }
@@ -72,19 +74,14 @@ public class UtilisateurManager extends GenericManager<Utilisateur> {
         if (utilisateur.getMotDePasse() == null || utilisateur.getMotDePasse().isEmpty()) {
             errors.append("Champs obligatoire. L'utilisateur n'a pas de mot de passe.").append("\n");
         }
-        if (utilisateur.getCredit() < 0) {
+        if (utilisateur.getCredits() < 0) {
             errors.append("Champs incorrecte. Le nombre de crédits ne peut pas être négatif").append("\n");
         }
         if (!errors.toString().isEmpty()) { throw new EException(errors.toString()); }
     }
 
-    private void checkUnicity(Utilisateur utilisateur) throws EException {
-        if (getByEmail(utilisateur.getEmail()) != null) {
-            throw new EException(CodesExceptionBLL.UTILISATEUR_ADD_EMAIL_ERROR);
-        }
-        if (getByPseudo(utilisateur.getPseudo()) != null) {
-            throw new EException(CodesExceptionBLL.UTILISATEUR_ADD_PSEUDO_ERROR);
-        }
+    private boolean checkUnicity(Utilisateur utilisateur) throws EException {
+        return getByEmail(utilisateur.getEmail()) != null && getByPseudo(utilisateur.getPseudo()) != null;
     }
 
     private void doHashPassword(Utilisateur utilisateur) throws EException {

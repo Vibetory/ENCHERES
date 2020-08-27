@@ -1,7 +1,7 @@
 CREATE TABLE CATEGORIE
 (
     noCategorie INTEGER IDENTITY (1,1) NOT NULL,
-    libelle     VARCHAR(30)            NOT NULL
+    libelle     VARCHAR(30)            NOT NULL UNIQUE
 )
 
 ALTER TABLE CATEGORIE
@@ -42,7 +42,7 @@ CREATE TABLE UTILISATEUR
     codePostal     VARCHAR(10)            NOT NULL,
     ville          VARCHAR(30)            NOT NULL,
     motDePasse     VARCHAR(30)            NOT NULL,
-    credit         INTEGER                NOT NULL,
+    credits         INTEGER                NOT NULL,
     administrateur bit                    NOT NULL
 )
 
