@@ -9,7 +9,7 @@ public class CategorieManager extends GenericManager<Categorie> {
     }
 
     @Override
-    protected void executeLogic(Categorie object, boolean update) throws EException {
+    protected void executeLogic(Categorie object, boolean isUpdate) throws EException {
 
     }
 

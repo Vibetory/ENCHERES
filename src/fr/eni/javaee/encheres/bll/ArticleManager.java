@@ -39,7 +39,7 @@ public class ArticleManager extends GenericManager<Article> {
     }
 
     @Override
-    protected void executeLogic(Article object, boolean update) throws EException {
+    protected void executeLogic(Article object, boolean isUpdate) throws EException {
         try {
             checkAttributes(object);
         } catch (EException eException) {

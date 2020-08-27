@@ -9,7 +9,7 @@ public class RetraitManager extends GenericManager {
     }
 
     @Override
-    protected void executeLogic(Object object, boolean update) throws EException {
+    protected void executeLogic(Object object, boolean isUpdate) throws EException {
 
     }
 }

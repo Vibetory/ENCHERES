@@ -34,10 +34,10 @@ public class UtilisateurManager extends GenericManager<Utilisateur> {
     }
 
     @Override
-    protected void executeLogic(Utilisateur object, boolean update) throws EException {
+    protected void executeLogic(Utilisateur object, boolean isUpdate) throws EException {
         try {
             checkAttributes(object);
-            if (!update) { checkUnicity(object); }
+            if (!isUpdate) { checkUnicity(object); }
         } catch (EException eException) {
             eException.printStackTrace();
             throw new EException(CodesExceptionBLL.UTILISATEUR_ADD_CHECK_ERROR, eException);

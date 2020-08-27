@@ -16,7 +16,7 @@ public class EnchereManager extends GenericManager<Enchere> {
     }
 
     @Override
-    protected void executeLogic(Enchere object, boolean update) throws EException {
+    protected void executeLogic(Enchere object, boolean isUpdate) throws EException {
 
     }
 
@@ -25,7 +25,7 @@ public class EnchereManager extends GenericManager<Enchere> {
 //                DAOBusinessObject.selectAllByField("articleVendu", identifier),
 //                Comparator.comparingInt(Enchere::getMontantEnchere)
 //        );
-        return (Enchere) DAOBusinessObject.selectBy(TransactSQLQueries.SQL_ENCHERE_SELECT_MAX_MONTANT_ENCHERE, Collections.singleton(identifier));
+        return (Enchere) DAOBusinessObject.selectBy(TransactSQLQueries.SQL_SELECT_MAX_MONTANT_ENCHERE, Collections.singleton(identifier));
     }
 
     public Enchere getHighestBid(Article article) throws EException, SQLException {
