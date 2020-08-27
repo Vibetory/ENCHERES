@@ -3,7 +3,9 @@ package fr.eni.javaee.encheres.dal.jdbc;
 import fr.eni.javaee.encheres.EException;
 import fr.eni.javaee.encheres.bo.Enchere;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 
 public class EnchereJDBCDAOImpl extends GenericJDBCDAOImpl<Enchere> {

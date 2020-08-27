@@ -3,9 +3,11 @@ package fr.eni.javaee.encheres.bll;
 import fr.eni.javaee.encheres.EException;
 import fr.eni.javaee.encheres.bo.Article;
 import fr.eni.javaee.encheres.bo.Enchere;
+import fr.eni.javaee.encheres.dal.TransactSQLQueries;
 
+
+import java.sql.SQLException;
 import java.util.Collections;
-import java.util.Comparator;
 
 public class EnchereManager extends GenericManager<Enchere> {
 
@@ -18,14 +20,15 @@ public class EnchereManager extends GenericManager<Enchere> {
 
     }
 
-    public Enchere getHighestBid(int identifier) throws EException {
-        return Collections.max(
-                DAOBusinessObject.selectAllByField("articleVendu", identifier),
-                Comparator.comparingInt(Enchere::getMontantEnchere)
-        );
+    public Enchere getHighestBid(int identifier) throws EException, SQLException {
+//        return Collections.max(
+//                DAOBusinessObject.selectAllByField("articleVendu", identifier),
+//                Comparator.comparingInt(Enchere::getMontantEnchere)
+//        );
+        return (Enchere) DAOBusinessObject.selectBy(TransactSQLQueries.SQL_ENCHERE_SELECT_MAX_MONTANT_ENCHERE, Collections.singleton(identifier));
     }
 
-    public Enchere getHighestBid(Article article) throws EException {
+    public Enchere getHighestBid(Article article) throws EException, SQLException {
         return getHighestBid(article.getNoArticle());
     }
 }

@@ -11,6 +11,7 @@ import fr.eni.javaee.encheres.bo.Utilisateur;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 @Path("/enchere")
@@ -22,8 +23,8 @@ public class APIEnchereTest {
         try {
             Article article = new ArticleManager().getById(1);
             return new EnchereManager().getHighestBid(article);
-        } catch (EException eException) {
-            eException.printStackTrace();
+        } catch (EException | SQLException exception) {
+            exception.printStackTrace();
         }
         return null;
     }
