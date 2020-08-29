@@ -22,6 +22,11 @@ public class Utilisateur {
         setAdministrateur((byte) 0);
     }
 
+    public Utilisateur(String pseudo, String nom, String prenom, String email, String telephone, String rue, String codePostal, String ville, String motDePasse) {
+        this(pseudo, nom, prenom, email, rue, codePostal, ville, motDePasse);
+        setTelephone(telephone);
+    }
+
     public Utilisateur(String pseudo, String nom, String prenom, String email, String rue, String codePostal, String ville, String motDePasse, int credits, byte administrateur) {
         this(pseudo, nom, prenom, email, rue, codePostal, ville, motDePasse);
         setCredits(credits);

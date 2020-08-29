@@ -1,16 +1,22 @@
 package fr.eni.javaee.encheres.bll;
 
 import fr.eni.javaee.encheres.EException;
+import fr.eni.javaee.encheres.bo.Article;
 import fr.eni.javaee.encheres.bo.Utilisateur;
+import fr.eni.javaee.encheres.dal.DAO;
+import fr.eni.javaee.encheres.dal.DAOFactory;
 import fr.eni.javaee.encheres.tools.PasswordTool;
 
 public class UtilisateurManager extends GenericManager<Utilisateur> {
+    private final DAO<Utilisateur> DAOUtilisateur;
+
     public UtilisateurManager() throws EException {
         super();
+        this.DAOUtilisateur = DAOFactory.getUtilisateurDAO();
     }
 
     public Utilisateur getByPseudo(String pseudo) throws EException {
-        try { return (Utilisateur) this.DAOBusinessObject.selectByField("pseudo", pseudo); }
+        try { return this.DAOUtilisateur.selectByField("pseudo", pseudo); }
         catch (EException eException) {
             eException.printStackTrace();
             throw new EException(CodesExceptionBLL.UTILISATEUR_GET_BY_PSEUDO_ERROR, eException);
@@ -18,7 +24,7 @@ public class UtilisateurManager extends GenericManager<Utilisateur> {
     }
 
     public Utilisateur getByEmail(String email) throws EException {
-        try { return (Utilisateur) this.DAOBusinessObject.selectByField("email", email); }
+        try { return DAOUtilisateur.selectByField("email", email); }
         catch (EException eException) {
             eException.printStackTrace();
             throw new EException(CodesExceptionBLL.UTILISATEUR_GET_BY_EMAIL_ERROR, eException);

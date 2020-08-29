@@ -11,6 +11,8 @@ public class EException extends Exception{
 
     public EException(String message) { super(message); }
 
+    public EException(String message, Exception exception) { super(message, exception); }
+
     public EException(int code) {
         super(decode(code));
         setCode(code);

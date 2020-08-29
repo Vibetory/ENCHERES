@@ -3,15 +3,18 @@ package fr.eni.javaee.encheres.bll;
 import fr.eni.javaee.encheres.EException;
 import fr.eni.javaee.encheres.bo.Article;
 import fr.eni.javaee.encheres.bo.Enchere;
+import fr.eni.javaee.encheres.dal.DAO;
+import fr.eni.javaee.encheres.dal.DAOFactory;
 import fr.eni.javaee.encheres.dal.jdbc.TransactSQLQueries;
 
 import java.util.Collections;
-import java.util.List;
 
 public class EnchereManager extends GenericManager<Enchere> {
+    private final DAO<Enchere> DAOEnchere;
 
     public EnchereManager() throws EException {
         super();
+        this.DAOEnchere = DAOFactory.getEnchereDAO();
     }
 
     @Override
@@ -30,10 +33,10 @@ public class EnchereManager extends GenericManager<Enchere> {
 
     public Enchere getHighestBid(int identifier) throws EException {
 //        return Collections.max(
-//                DAOBusinessObject.selectAllByField("articleVendu", identifier),
+//                DAOEnchere.selectAllByField("articleVendu", identifier),
 //                Comparator.comparingInt(Enchere::getMontantEnchere)
 //        );
-        return (Enchere) DAOBusinessObject.selectBy(TransactSQLQueries.SELECT_MAX_MONTANT_ENCHERE(), Collections.singleton(identifier));
+        return DAOEnchere.selectBy(TransactSQLQueries.SELECT_ENCHERE_MAX(), Collections.singleton(identifier));
     }
 
     public Enchere getHighestBid(Article article) throws EException {
@@ -49,10 +52,10 @@ public class EnchereManager extends GenericManager<Enchere> {
         if (enchere.getEncherisseur() == null) {
             errors.append("Champs obligatoire. L'enchère n'a pas d'utilisateur associé.").append("\n");
         }
-        if (enchere.getDateEnchère() == null) {
+        if (enchere.getDateEnchere() == null) {
             errors.append("Champs obligatoire. L'enchère n'a pas de date associée").append("\n");
         }
-        if (enchere.getDateEnchère().isAfter(enchere.getArticleVendu().getDateFinEncheres())) {
+        if (enchere.getDateEnchere().isAfter(enchere.getArticleVendu().getDateFinEncheres())) {
             errors.append("Champs incorrect. L'enchère sur l'article associée est déjà terminée.").append("\n");
         }
         Enchere highestBid = getHighestBid(enchere.getArticleVendu());

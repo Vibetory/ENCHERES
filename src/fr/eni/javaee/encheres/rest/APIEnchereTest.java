@@ -23,7 +23,7 @@ public class APIEnchereTest {
         try {
             Article article = new ArticleManager().getById(1);
             return new EnchereManager().getHighestBid(article);
-        } catch (EException | SQLException exception) {
+        } catch (EException exception) {
             exception.printStackTrace();
         }
         return null;

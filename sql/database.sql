@@ -11,7 +11,7 @@ CREATE TABLE ENCHERE
 (
     articleVendu   INTEGER  NOT NULL,
     encherisseur   INTEGER  NOT NULL,
-    dateEnchère    DATETIME NOT NULL,
+    dateEnchere    DATETIME NOT NULL,
     montantEnchere INTEGER  NOT NULL
 
 )
@@ -34,14 +34,14 @@ CREATE TABLE UTILISATEUR
 (
     noUtilisateur  INTEGER IDENTITY (1,1) NOT NULL,
     pseudo         VARCHAR(30)            NOT NULL UNIQUE,
-    nom            VARCHAR(30)            NOT NULL,
-    prenom         VARCHAR(30)            NOT NULL,
-    email          VARCHAR(20)            NOT NULL UNIQUE,
+    nom            VARCHAR(80)            NOT NULL,
+    prenom         VARCHAR(80)            NOT NULL,
+    email          VARCHAR(50)            NOT NULL UNIQUE,
     telephone      VARCHAR(15),
-    rue            VARCHAR(30)            NOT NULL,
+    rue            VARCHAR(50)            NOT NULL,
     codePostal     VARCHAR(10)            NOT NULL,
     ville          VARCHAR(30)            NOT NULL,
-    motDePasse     VARCHAR(30)            NOT NULL,
+    motDePasse     VARCHAR(80)            NOT NULL,
     credits         INTEGER                NOT NULL,
     administrateur bit                    NOT NULL
 )

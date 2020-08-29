@@ -52,7 +52,7 @@ public abstract class GenericManager<T> {
         try { return (T) DAOBusinessObject.update(object); }
         catch (EException eException) {
             eException.printStackTrace();
-            throw new EException(CodesExceptionBLL.ADD_ERROR.get(this.getActualClassName()), eException);
+            throw new EException(CodesExceptionBLL.UPDATE_ERROR.get(this.getActualClassName()), eException);
         }
     }
 

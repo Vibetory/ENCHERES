@@ -3,16 +3,23 @@ package fr.eni.javaee.encheres.bll;
 import fr.eni.javaee.encheres.EException;
 import fr.eni.javaee.encheres.bo.Article;
 import fr.eni.javaee.encheres.bo.Categorie;
+import fr.eni.javaee.encheres.bo.Enchere;
 import fr.eni.javaee.encheres.bo.Utilisateur;
+import fr.eni.javaee.encheres.dal.DAO;
+import fr.eni.javaee.encheres.dal.DAOFactory;
+import fr.eni.javaee.encheres.dal.jdbc.TransactSQLQueries;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ArticleManager extends GenericManager<Article> {
+    private final DAO<Article> DAOArticle;
 
     public ArticleManager() throws EException {
         super();
+        this.DAOArticle = DAOFactory.getArticleDAO();
     }
 
     @Override
@@ -24,7 +31,7 @@ public class ArticleManager extends GenericManager<Article> {
 
     private List<Article> getArticlesFrom(String field, Utilisateur utilisateur) throws EException {
         int noUtilisateur = utilisateur.getNoUtilisateur();
-        try { return this.DAOBusinessObject.selectAllByField(field, noUtilisateur); }
+        try { return this.DAOArticle.selectAllByField(field, noUtilisateur); }
         catch (EException eException) {
             eException.printStackTrace();
             throw new EException(CodesExceptionBLL.ARTICLE_GET_ALL_FROM_ERROR, eException);
@@ -44,6 +51,10 @@ public class ArticleManager extends GenericManager<Article> {
                 .stream()
                 .filter(article -> article.getEtatVente().equals(etatVente))
                 .collect(Collectors.toList());
+    }
+
+    public List<Article> getArticlesByNomOrCategorie(String variable) throws EException {
+        return DAOArticle.selectAllBy(TransactSQLQueries.SELECT_ARTICLES_LIKE(variable), null);
     }
 
     @Override

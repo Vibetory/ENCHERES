@@ -7,6 +7,14 @@ public class Retrait {
     // CONSTRUCTORS
     public Retrait() {}
 
+    public Retrait(Article articleARetirer) {
+        setArticleARetirer(articleARetirer);
+        setRue(articleARetirer.getVendeur().getRue());
+        setCodePostal(articleARetirer.getVendeur().getCodePostal());
+        setVille(articleARetirer.getVendeur().getVille());
+    }
+
+
     public Retrait(Article articleARetirer, String rue, String codePostal, String ville) {
         setArticleARetirer(articleARetirer);
         setRue(rue);

@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class Enchere {
     private Article articleVendu;
     private Utilisateur encherisseur;
-    private LocalDateTime dateEnchère;
+    private LocalDateTime dateEnchere;
     private int montantEnchere;
 
     // CONSTRUCTORS
@@ -15,13 +15,13 @@ public class Enchere {
     public Enchere(Article articleVendu, Utilisateur encherisseur, int montantEnchere) {
         setArticleVendu(articleVendu);
         setEncherisseur(encherisseur);
-        setDateEnchère(LocalDateTime.now());
+        setDateEnchere(LocalDateTime.now());
         setMontantEnchere(montantEnchere);
     }
 
-    public Enchere(Article articleVendu, Utilisateur encherisseur, LocalDateTime dateEnchère, int montantEnchere) {
+    public Enchere(Article articleVendu, Utilisateur encherisseur, LocalDateTime dateEnchere, int montantEnchere) {
         this(articleVendu, encherisseur, montantEnchere);
-        setDateEnchère(dateEnchère);
+        setDateEnchere(dateEnchere);
     }
 
 
@@ -39,9 +39,9 @@ public class Enchere {
 
     public void setEncherisseur(Utilisateur encherisseur) { this.encherisseur = encherisseur; }
 
-    public LocalDateTime getDateEnchère() { return this.dateEnchère; }
+    public LocalDateTime getDateEnchere() { return this.dateEnchere; }
 
-    public void setDateEnchère(LocalDateTime dateEnchère) { this.dateEnchère = dateEnchère; }
+    public void setDateEnchere(LocalDateTime dateEnchere) { this.dateEnchere = dateEnchere; }
 
     public int getMontantEnchere() { return this.montantEnchere; }
 

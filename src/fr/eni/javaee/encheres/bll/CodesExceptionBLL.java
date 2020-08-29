@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CodesExceptionBLL {
+    // Error during the initialization using DAOFactory.
     public static final Map<String, Integer> INITIALIZATION_DAO_ERROR = new HashMap<String, Integer>() {{
         put("Article", 20001);
         put("Categorie", 20002);
@@ -11,6 +12,7 @@ public class CodesExceptionBLL {
         put("Retrait", 20004);
         put("Utilisateur", 20005);
     }};
+    // Business object is null.
     public static final Map<String, Integer> BO_NULL_ERROR = new HashMap<String, Integer>() {{
         put("Article", 20201);
         put("Categorie", 20202);
@@ -18,6 +20,7 @@ public class CodesExceptionBLL {
         put("Retrait", 20204);
         put("Utilisateur", 20205);
     }};
+    // Business object data are missing or invalid.
     public static final Map<String, Integer> CHECK_ERROR = new HashMap<String, Integer> () {{
         put("Article", 29201);
         put("Categorie", 29202);
@@ -25,6 +28,7 @@ public class CodesExceptionBLL {
         put("Retrait", 29204);
         put("Utilisateur", 29205);
     }};
+    // Error while attempting to insert a business object to the database.
     public static final Map<String, Integer> ADD_ERROR = new HashMap<String, Integer> () {{
         put("Article", 20301);
         put("Categorie", 20302);
@@ -32,6 +36,7 @@ public class CodesExceptionBLL {
         put("Retrait", 20304);
         put("Utilisateur", 20305);
     }};
+    // Business object already exist in the database.
     public static final Map<String, Integer> ADD_ALREADY_EXIST_ERROR = new HashMap<String, Integer> () {{
         put("Article", 21301);
         put("Categorie", 21302);
@@ -39,6 +44,15 @@ public class CodesExceptionBLL {
         put("Retrait", 21304);
         put("Utilisateur", 21305);
     }};
+    // Error while attempting to update a business object to the database.
+    public static final Map<String, Integer> UPDATE_ERROR = new HashMap<String, Integer> () {{
+        put("Article", 20401);
+        put("Categorie", 20402);
+        put("Enchere", 20403);
+        put("Retrait", 20404);
+        put("Utilisateur", 20405);
+    }};
+    // Business object doesn't exist in the database.
     public static final Map<String, Integer> UPDATE_NOT_EXIST_ERROR = new HashMap<String, Integer> () {{
         put("Article", 21401);
         put("Categorie", 21402);
@@ -46,6 +60,7 @@ public class CodesExceptionBLL {
         put("Retrait", 21404);
         put("Utilisateur", 21405);
     }};
+    // Error while retrieving a business object by ID.
     public static final Map<String, Integer> GET_BY_ID_ERROR = new HashMap<String, Integer>() {{
         put("Article", 20601);
         put("Categorie", 20602);
@@ -53,10 +68,11 @@ public class CodesExceptionBLL {
         put("Retrait", 20604);
         put("Utilisateur", 20605);
     }};
-    public static final int UTILISATEUR_GET_BY_EMAIL_ERROR = 21605;
-    public static final int UTILISATEUR_GET_BY_PSEUDO_ERROR = 22605;
+    public static final int UTILISATEUR_GET_BY_PSEUDO_ERROR = 21605;
+    public static final int UTILISATEUR_GET_BY_EMAIL_ERROR = 22605;
     public static final int AUTHENTICATION_ERROR = 23605;
     public static final int ARTICLE_GET_ALL_FROM_ERROR = 21621;
+    // Error while retrieving a list of business objects by ID.
     public static final Map<String, Integer> GET_ALL_ERROR = new HashMap<String, Integer>() {{
         put("Article", 20641);
         put("Categorie", 20642);
