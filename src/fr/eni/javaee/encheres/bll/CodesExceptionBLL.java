@@ -20,14 +20,6 @@ public class CodesExceptionBLL {
         put("Retrait", 20204);
         put("Utilisateur", 20205);
     }};
-    // Business object data are missing or invalid.
-    public static final Map<String, Integer> CHECK_ERROR = new HashMap<String, Integer> () {{
-        put("Article", 29201);
-        put("Categorie", 29202);
-        put("Enchere", 29203);
-        put("Retrait", 29204);
-        put("Utilisateur", 29205);
-    }};
     // Error while attempting to insert a business object to the database.
     public static final Map<String, Integer> ADD_ERROR = new HashMap<String, Integer> () {{
         put("Article", 20301);
@@ -59,6 +51,14 @@ public class CodesExceptionBLL {
         put("Enchere", 21403);
         put("Retrait", 21404);
         put("Utilisateur", 21405);
+    }};
+    // Business object doesn't exist in the database.
+    public static final Map<String, Integer> DELETE_NOT_EXIST_ERROR = new HashMap<String, Integer> () {{
+        put("Article", 21501);
+        put("Categorie", 21502);
+        put("Enchere", 21503);
+        put("Retrait", 21504);
+        put("Utilisateur", 21505);
     }};
     // Error while retrieving a business object by ID.
     public static final Map<String, Integer> GET_BY_ID_ERROR = new HashMap<String, Integer>() {{

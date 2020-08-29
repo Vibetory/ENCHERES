@@ -18,24 +18,18 @@ public class EnchereManager extends GenericManager<Enchere> {
     }
 
     @Override
-    protected void executePreLogic(Enchere enchere, String operationCRUD) throws EException {
-        try {
-            boolean alreadyExists = checkUnicity(enchere);
-            if (operationCRUD.equals("INSERT") && alreadyExists) { throw new EException(CodesExceptionBLL.ADD_ALREADY_EXIST_ERROR.get("Enchere")); }
-            if (operationCRUD.equals("UPDATE") && !alreadyExists) { throw new EException(CodesExceptionBLL.UPDATE_NOT_EXIST_ERROR.get("Enchere")); }
-            Enchere highestBid = checkAttributes(enchere);
-            setCredits(highestBid, enchere);
-        } catch (EException eException) {
-            eException.printStackTrace();
-            throw new EException(CodesExceptionBLL.CHECK_ERROR.get("Enchere"));
-        }
+    protected int[] executeLogic(Enchere enchere, String operationCRUD) throws EException {
+        boolean alreadyExists = checkUnicity(enchere);
+        Enchere highestBid;
+        if (operationCRUD.equals("INSERT") && alreadyExists) { throw new EException(CodesExceptionBLL.ADD_ALREADY_EXIST_ERROR.get("Enchere")); }
+        if (operationCRUD.equals("UPDATE") && !alreadyExists) { throw new EException(CodesExceptionBLL.UPDATE_NOT_EXIST_ERROR.get("Enchere")); }
+        if (operationCRUD.equals("DELETE") && !alreadyExists) { throw new EException(CodesExceptionBLL.DELETE_NOT_EXIST_ERROR.get("Enchere")); }
+        else { highestBid = checkAttributes(enchere); }
+        setCredits(highestBid, enchere);
+        return new int[] {enchere.getNoArticleVendu(), enchere.getNoEncherisseur()};
     }
 
     public Enchere getHighestBid(int identifier) throws EException {
-//        return Collections.max(
-//                DAOEnchere.selectAllByField("articleVendu", identifier),
-//                Comparator.comparingInt(Enchere::getMontantEnchere)
-//        );
         return DAOEnchere.selectBy(TransactSQLQueries.SELECT_ENCHERE_MAX(), Collections.singleton(identifier));
     }
 

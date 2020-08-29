@@ -1,7 +1,6 @@
 package fr.eni.javaee.encheres.bll;
 
 import fr.eni.javaee.encheres.EException;
-import fr.eni.javaee.encheres.bo.Article;
 import fr.eni.javaee.encheres.bo.Utilisateur;
 import fr.eni.javaee.encheres.dal.DAO;
 import fr.eni.javaee.encheres.dal.DAOFactory;
@@ -40,17 +39,19 @@ public class UtilisateurManager extends GenericManager<Utilisateur> {
     }
 
     @Override
-    protected void executePreLogic(Utilisateur object, String operationCRUD) throws EException {
-        try {
-            boolean alreadyExists = checkUnicity(object);
-            if (operationCRUD.equals("INSERT") && alreadyExists) { throw new EException(CodesExceptionBLL.ADD_ALREADY_EXIST_ERROR.get("Utilisateur")); }
-            if (operationCRUD.equals("UPDATE") && !alreadyExists) { throw new EException(CodesExceptionBLL.UPDATE_NOT_EXIST_ERROR.get("Utilisateur")); }
-            checkAttributes(object);
-        } catch (EException eException) {
-            eException.printStackTrace();
-            throw new EException(CodesExceptionBLL.CHECK_ERROR.get("Utilisateur"), eException);
+    protected int[] executeLogic(Utilisateur utilisateur, String operationCRUD) throws EException {
+        boolean alreadyExists = checkUnicity(utilisateur);
+        if (operationCRUD.equals("INSERT") && alreadyExists) {
+            throw new EException(CodesExceptionBLL.ADD_ALREADY_EXIST_ERROR.get("Utilisateur"));
         }
-        doHashPassword(object);
+        if (operationCRUD.equals("UPDATE") && !alreadyExists) {
+            throw new EException(CodesExceptionBLL.UPDATE_NOT_EXIST_ERROR.get("Utilisateur"));
+        }
+        if (operationCRUD.equals("DELETE") && !alreadyExists) {
+            throw new EException(CodesExceptionBLL.DELETE_NOT_EXIST_ERROR.get("Utilisateur"));
+        } else { checkAttributes(utilisateur); }
+        doHashPassword(utilisateur);
+        return operationCRUD.equals("INSERT") ? null : new int[] {utilisateur.getNoUtilisateur()};
     }
 
     private void checkAttributes(Utilisateur utilisateur) throws EException {

@@ -17,10 +17,8 @@ public class JDBC {
             context = new InitialContext();
             dataSource = (DataSource) context.lookup("java:comp/env/jdbc/pool_cnx");
         } catch (NamingException namingException) {
-            namingException.printStackTrace();
             try { throw new EException(CodesExceptionJDBC.DATABASE_ACCESS_ERROR, namingException); }
             catch (EException eException) {
-                System.out.println(eException.getMessage());;
                 throw new RuntimeException();
             }
         }
@@ -29,7 +27,6 @@ public class JDBC {
     public static Connection getConnection() throws EException {
         try { return dataSource.getConnection(); }
         catch (SQLException sqlException) {
-            sqlException.printStackTrace();
             throw new EException(CodesExceptionJDBC.CONNECTION_ERROR, sqlException);
         }
     }

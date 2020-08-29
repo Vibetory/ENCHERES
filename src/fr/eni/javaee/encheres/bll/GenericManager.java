@@ -15,7 +15,6 @@ public abstract class GenericManager<T> {
         this.entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
         try { DAOBusinessObject = DAOFactory.getBusinessObjectDAO(this.getActualClassName()); }
         catch (EException eException) {
-            eException.printStackTrace();
             throw new EException(CodesExceptionBLL.INITIALIZATION_DAO_ERROR.get(this.getActualClassName()), eException);
         }
     }
@@ -23,7 +22,6 @@ public abstract class GenericManager<T> {
     public List<T> getAll() throws EException {
         try { return DAOBusinessObject.selectAll(); }
         catch (EException eException) {
-            eException.printStackTrace();
             throw new EException(CodesExceptionBLL.GET_ALL_ERROR.get(this.getActualClassName()), eException);
         }
     }
@@ -31,32 +29,37 @@ public abstract class GenericManager<T> {
     public T getById(int... identifiers) throws EException {
         try { return (T) DAOBusinessObject.selectById(identifiers); }
         catch (EException eException) {
-            eException.printStackTrace();
             throw new EException(CodesExceptionBLL.GET_BY_ID_ERROR.get(this.getActualClassName()), eException);
         }
     }
 
     public T add(T object) throws EException {
         try {
-            executePreLogic(object, "INSERT");
+            executeLogic(object, "INSERT");
             return (T) DAOBusinessObject.insert(object);
         }
         catch (EException eException) {
-            eException.printStackTrace();
             throw new EException(CodesExceptionBLL.ADD_ERROR.get(this.getActualClassName()), eException);
         }
     }
 
     public T update(T object) throws EException {
-        executePreLogic(object, "UPDATE");
+        executeLogic(object, "UPDATE");
         try { return (T) DAOBusinessObject.update(object); }
         catch (EException eException) {
-            eException.printStackTrace();
             throw new EException(CodesExceptionBLL.UPDATE_ERROR.get(this.getActualClassName()), eException);
         }
     }
 
-    protected abstract void executePreLogic(T object, String operationCRUD) throws EException;
+    public void delete(T object) throws EException {
+        int[] identifiers = executeLogic(object, "DELETE");
+        try { DAOBusinessObject.delete(identifiers); }
+        catch (EException eException) {
+            throw new EException(CodesExceptionBLL.UPDATE_ERROR.get(this.getActualClassName()), eException);
+        }
+    }
+
+    protected abstract int[] executeLogic(T object, String operationCRUD) throws EException;
 
     private String getActualClassName() { return this.entityClass.getSimpleName(); }
 }

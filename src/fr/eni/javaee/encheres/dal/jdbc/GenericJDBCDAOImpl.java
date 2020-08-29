@@ -68,7 +68,6 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
             }
             statement.close();
         } catch (IllegalAccessException | SQLException | NoSuchMethodException | InvocationTargetException exception) {
-            exception.printStackTrace();
             throw new EException(CodesExceptionJDBC.CRUD_INSERT_OR_UPDATE_ERROR, exception);
         }
         return object;
@@ -86,7 +85,6 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
         String SQL_INSERT = TransactSQLQueries.INSERT(getActualClassName(), numberOfParameters);
         try { insertOrUpdate(object, SQL_INSERT, false); }
         catch (EException eException) {
-            eException.printStackTrace();
             throw new EException(CodesExceptionJDBC.CRUD_INSERT.get(this.getActualClassName()), eException);
         }
         return object;
@@ -107,7 +105,6 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
         );
         try { insertOrUpdate(object, SQL_UPDATE, true); }
         catch (EException eException) {
-            eException.printStackTrace();
             throw new EException(CodesExceptionJDBC.CRUD_UPDATE.get(this.getActualClassName()), eException);
         }
         return object;
@@ -128,7 +125,6 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
             statement.executeUpdate();
             statement.close();
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
             throw new EException(CodesExceptionJDBC.CRUD_DELETE_ERROR.get(this.getActualClassName()), sqlException);
         }
     }
@@ -149,7 +145,6 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
             return instances.size() > 0 ? instances.get(0) : null; // Get the first element of the list.
         }
         catch (EException exception) {
-            exception.printStackTrace();
             throw new EException(CodesExceptionJDBC.CRUD_SELECT_BY_ERROR, exception);
         }
     }
@@ -180,7 +175,6 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
         Map<String, Object> fields = generateIdentifiersMap(identifiers);
         try { return selectByFields(fields); }
         catch (EException exception) {
-            exception.printStackTrace();
             throw new EException(CodesExceptionJDBC.CRUD_SELECT_ID_ERROR.get(this.getActualClassName()), exception);
         }
     }
@@ -198,7 +192,6 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
         }};
         try { return selectByFields(fields); }
         catch (EException exception) {
-            exception.printStackTrace();
             throw new EException(CodesExceptionJDBC.CRUD_SELECT_FIELD_ERROR.get(this.getActualClassName()), exception);
         }
     }
@@ -225,7 +218,6 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
             statement.close();
             return instances;
         } catch (EException | SQLException exception) {
-            exception.printStackTrace();
             throw new EException(CodesExceptionJDBC.CRUD_SELECT_ALL_BY_ERROR, exception);
         }
     }
@@ -259,7 +251,6 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
         }};
         try { return selectAllByFields(fields); }
         catch (EException exception) {
-            exception.printStackTrace();
             throw new EException(CodesExceptionJDBC.CRUD_SELECT_FIELD_ERROR.get(this.getActualClassName()), exception);
         }
     }
@@ -274,7 +265,6 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
         try (Connection connection = JDBC.getConnection()) {
             return selectAllBy(SQL_SELECT_ALL,null);
         } catch (SQLException exception) {
-            exception.printStackTrace();
             throw new EException(CodesExceptionJDBC.CRUD_SELECT_ALL_ERROR.get(this.getActualClassName()), exception);
         }
     }
@@ -312,7 +302,6 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
                 }
             }
         } catch (IllegalAccessException | SQLException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException | InstantiationException exception) {
-            exception.printStackTrace();
             throw new EException(CodesExceptionJDBC.GENERATE_OBJECT_ERROR.get(this.getActualClassName()), exception);
         }
         return instance;
@@ -360,7 +349,6 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
                 }
             }
         } catch (InvocationTargetException | NoSuchMethodException | SQLException | IllegalAccessException exception){
-            exception.printStackTrace();
             throw new EException(CodesExceptionJDBC.GENERATE_STATEMENT_DATA_ERROR.get(this.getActualClassName()), exception);
         }
     }
@@ -384,7 +372,6 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
                 parameterIndex ++;
             }
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
             throw new EException(CodesExceptionJDBC.GENERATE_STATEMENT_DATA_ERROR.get(this.getActualClassName()), sqlException);
         }
     }

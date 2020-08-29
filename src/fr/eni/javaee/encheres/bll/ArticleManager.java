@@ -2,15 +2,12 @@ package fr.eni.javaee.encheres.bll;
 
 import fr.eni.javaee.encheres.EException;
 import fr.eni.javaee.encheres.bo.Article;
-import fr.eni.javaee.encheres.bo.Categorie;
-import fr.eni.javaee.encheres.bo.Enchere;
 import fr.eni.javaee.encheres.bo.Utilisateur;
 import fr.eni.javaee.encheres.dal.DAO;
 import fr.eni.javaee.encheres.dal.DAOFactory;
 import fr.eni.javaee.encheres.dal.jdbc.TransactSQLQueries;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,25 +43,42 @@ public class ArticleManager extends GenericManager<Article> {
         return getArticlesFrom("acquereur", acquereur);
     }
 
-    public List<Article> getArticlesFromVendeurByEtat(Utilisateur vendeur, String etatVente) throws EException {
-        return getArticlesFromVendeur(vendeur)
+    public List<Article> getArticlesByNomOrDescription(String variable) throws EException {
+        return DAOArticle.selectAllBy(TransactSQLQueries.SELECT_ARTICLES_LIKE(variable), null);
+    }
+
+    /**
+     * @param articles List<Article> | List of articles to filter by categorie.
+     * @param etatVente String | etatVente to apply the filter on.
+     * @return List<Article> | List of filtered articles.
+     * @throws EException EException
+     */
+    public List<Article> filterByEtat(List<Article> articles, String etatVente) throws EException {
+        return articles
                 .stream()
                 .filter(article -> article.getEtatVente().equals(etatVente))
                 .collect(Collectors.toList());
     }
 
-    public List<Article> getArticlesByNomOrCategorie(String variable) throws EException {
-        return DAOArticle.selectAllBy(TransactSQLQueries.SELECT_ARTICLES_LIKE(variable), null);
+    /**
+     * @param articles List<Article> | List of articles to filter by categorie.
+     * @param categorie String | Categorie to apply the filter on.
+     * @return List<Article> | List of filtered articles.
+     * @throws EException EException
+     */
+    public List<Article> filteredByCategorie(List<Article> articles,  String categorie) throws EException {
+        return articles
+                .stream()
+                .filter(article -> article.getCategorie().getLibelle().equals(categorie))
+                .collect(Collectors.toList());
     }
 
     @Override
-    protected void executePreLogic(Article object, String operationCRUD) throws EException {
-        try {
-            checkAttributes(object);
-        } catch (EException eException) {
-            eException.printStackTrace();
-            throw new EException(CodesExceptionBLL.CHECK_ERROR.get("Article"), eException);
-        }
+    protected int[] executeLogic(Article article, String operationCRUD) throws EException {
+        if (operationCRUD.equals("UPDATE") && !checkUnicity(article)) { throw new EException(CodesExceptionBLL.UPDATE_NOT_EXIST_ERROR.get("Article")); }
+        if (operationCRUD.equals("DELETE") && !checkUnicity(article)) { throw new EException(CodesExceptionBLL.DELETE_NOT_EXIST_ERROR.get("Article")); }
+        else { checkAttributes(article); }
+        return operationCRUD.equals("INSERT") ? null : new int[] {article.getNoArticle()};
     }
 
     private void checkAttributes(Article article) throws EException {
@@ -102,4 +116,7 @@ public class ArticleManager extends GenericManager<Article> {
         if (!errors.toString().isEmpty()) { throw new EException(errors.toString()); }
     }
 
+    private boolean checkUnicity(Article article) throws EException {
+        return getById(article.getNoArticle()) != null;
+    }
 }

@@ -22,23 +22,9 @@ public class UtilisateurREST {
     @Consumes(MediaType.APPLICATION_JSON)
     public Object create(Map<String, String> utilisateur) {
         try {
-            Utilisateur newUtilisateur = new Utilisateur(
-                    utilisateur.get("pseudo"),
-                    utilisateur.get("nom"),
-                    utilisateur.get("prenom"),
-                    utilisateur.get("email"),
-                    utilisateur.get("telephone"),
-                    utilisateur.get("rue"),
-                    utilisateur.get("codePostal"),
-                    utilisateur.get("ville"),
-                    utilisateur.get("motDePasse")
-            );
+            Utilisateur newUtilisateur = generateNewUtilisateur(utilisateur);
             newUtilisateur = new UtilisateurManager().add(newUtilisateur);
-            HttpSession session = getSession(request);
-            session.setAttribute("noUtilisateur", newUtilisateur.getNoUtilisateur());
-            session.setAttribute("pseudo", newUtilisateur.getPseudo());
-            session.setAttribute("motDePasse", PasswordTool.hashPassword(newUtilisateur.getMotDePasse()));
-            System.out.println(session.getId());
+            HttpSession session = generateNewSession(newUtilisateur);
             return newUtilisateur;
         } catch (EException eException) {
             eException.printStackTrace();
@@ -50,7 +36,7 @@ public class UtilisateurREST {
     @GET
     @Path("/signin")
     public Object authenticate(@QueryParam("pseudo") String pseudo, @QueryParam("motDePasse") String motDePasse) {
-        HttpSession session = getSession(request);
+        HttpSession session = request.getSession(true);
         Utilisateur utilisateur = null;
         try { utilisateur = new UtilisateurManager().getByPseudoAndPassword(pseudo, motDePasse); }
         catch (EException eException) {
@@ -68,8 +54,23 @@ public class UtilisateurREST {
     @GET
     @Path("/signout")
     public void logout() {
-        HttpSession session = getSession(request);
+        HttpSession session = request.getSession(false);
         session.invalidate();
+    }
+
+    @PUT
+    @Path("/modify")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Object update(Map<String, String> utilisateur) {
+        try {
+            Utilisateur newUtilisateur = generateNewUtilisateur(utilisateur);
+            newUtilisateur = new UtilisateurManager().update(newUtilisateur);
+            HttpSession session = generateNewSession(newUtilisateur);
+            return newUtilisateur;
+        } catch (EException eException) {
+            eException.printStackTrace();
+            return eException;
+        }
     }
 
     @GET
@@ -102,9 +103,25 @@ public class UtilisateurREST {
         }
     }
 
-    public HttpSession getSession(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (session == null) { session =  request.getSession(); }
+    public Utilisateur generateNewUtilisateur(Map<String, String> utilisateur) {
+        return new Utilisateur(
+                utilisateur.get("pseudo"),
+                utilisateur.get("nom"),
+                utilisateur.get("prenom"),
+                utilisateur.get("email"),
+                utilisateur.get("telephone"),
+                utilisateur.get("rue"),
+                utilisateur.get("codePostal"),
+                utilisateur.get("ville"),
+                utilisateur.get("motDePasse")
+        );
+    }
+
+    public HttpSession generateNewSession(Utilisateur utilisateur) {
+        HttpSession session = request.getSession();
+        session.setAttribute("noUtilisateur", utilisateur.getNoUtilisateur());
+        session.setAttribute("pseudo", utilisateur.getPseudo());
+        session.setAttribute("motDePasse", PasswordTool.hashPassword(utilisateur.getMotDePasse()));
         return session;
     }
 
@@ -127,7 +144,7 @@ public class UtilisateurREST {
             }
             return null;
         } catch (EException eException) {
-            throw new EException("Exception à créer", eException);
+            throw new EException(CodesExceptionREST.SESSION_VALIDATION_ERROR, eException);
         }
     }
 }
