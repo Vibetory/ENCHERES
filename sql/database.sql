@@ -62,7 +62,7 @@ CREATE TABLE ARTICLE
     prixVente         INTEGER,
     vendeur           INTEGER                NOT NULL,
     acquereur         INTEGER,
-    categorie         INTEGER                NOT NULL
+    categorie         INTEGER
 )
 
 ALTER TABLE ARTICLE

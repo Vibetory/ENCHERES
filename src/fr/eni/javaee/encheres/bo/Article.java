@@ -14,14 +14,18 @@ public class Article {
 
     public Article() {};
 
-    public Article(String nomArticle, String description, LocalDateTime dateDebutEncheres, LocalDateTime dateFinEncheres, Utilisateur vendeur, Categorie categorie) {
+    public Article(String nomArticle, String description, LocalDateTime dateDebutEncheres, LocalDateTime dateFinEncheres, Utilisateur vendeur) {
         setNomArticle(nomArticle);
         setDescription(description);
         setDateDebutEncheres(dateDebutEncheres == null ? LocalDateTime.now(): dateDebutEncheres);
         setDateFinEncheres(dateFinEncheres);
-        setCategorie(categorie);
         setVendeur(vendeur);
         setEtatVente();
+    }
+
+    public Article(String nomArticle, String description, LocalDateTime dateDebutEncheres, LocalDateTime dateFinEncheres, Utilisateur vendeur, Categorie categorie) {
+        this(nomArticle, description, dateDebutEncheres, dateFinEncheres, vendeur);
+        setCategorie(categorie);
     }
 
     public Article(String nomArticle, String description, LocalDateTime dateDebutEncheres, LocalDateTime dateFinEncheres, int miseAPrix, Utilisateur vendeur, Categorie categorie) {

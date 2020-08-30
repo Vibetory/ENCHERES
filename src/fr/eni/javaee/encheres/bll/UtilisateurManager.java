@@ -1,10 +1,15 @@
 package fr.eni.javaee.encheres.bll;
 
 import fr.eni.javaee.encheres.EException;
+import fr.eni.javaee.encheres.bo.Article;
+import fr.eni.javaee.encheres.bo.Enchere;
 import fr.eni.javaee.encheres.bo.Utilisateur;
 import fr.eni.javaee.encheres.dal.DAO;
 import fr.eni.javaee.encheres.dal.DAOFactory;
 import fr.eni.javaee.encheres.tools.PasswordTool;
+
+import java.util.HashMap;
+import java.util.List;
 
 public class UtilisateurManager extends GenericManager<Utilisateur> {
     private final DAO<Utilisateur> DAOUtilisateur;
@@ -39,22 +44,31 @@ public class UtilisateurManager extends GenericManager<Utilisateur> {
     }
 
     @Override
-    protected int[] executeLogic(Utilisateur utilisateur, String operationCRUD) throws EException {
-        boolean alreadyExists = checkUnicity(utilisateur);
-        if (operationCRUD.equals("INSERT") && alreadyExists) {
-            throw new EException(CodesExceptionBLL.ADD_ALREADY_EXIST_ERROR.get("Utilisateur"));
-        }
-        if (operationCRUD.equals("UPDATE") && !alreadyExists) {
-            throw new EException(CodesExceptionBLL.UPDATE_NOT_EXIST_ERROR.get("Utilisateur"));
-        }
-        if (operationCRUD.equals("DELETE") && !alreadyExists) {
-            throw new EException(CodesExceptionBLL.DELETE_NOT_EXIST_ERROR.get("Utilisateur"));
-        } else { checkAttributes(utilisateur); }
+    public Utilisateur add(Utilisateur utilisateur) throws EException {
         doHashPassword(utilisateur);
-        return operationCRUD.equals("INSERT") ? null : new int[] {utilisateur.getNoUtilisateur()};
+        return super.add(utilisateur);
     }
 
-    private void checkAttributes(Utilisateur utilisateur) throws EException {
+    @Override
+    public Utilisateur update(Utilisateur utilisateur) throws EException {
+        doHashPassword(utilisateur);
+        return super.update(utilisateur);
+    }
+
+    @Override
+    protected int[] getIdentifiers(Utilisateur utilisateur) {
+        return new int[] {utilisateur.getNoUtilisateur()};
+    }
+
+    @Override
+    protected void executeUpdate(Utilisateur utilisateur, String operationCRUD) throws EException {
+        if (operationCRUD.equals("DELETE")) {
+            new EnchereManager().deleteAllBy(utilisateur);
+            new ArticleManager().deleteAllByVendeur(utilisateur);
+        }
+    }
+
+    protected void checkAttributes(Utilisateur utilisateur) throws EException {
         if (utilisateur == null) { throw new EException(CodesExceptionBLL.BO_NULL_ERROR.get("Utilisateur")); }
         StringBuilder errors = new StringBuilder();
         if (utilisateur.getPseudo() == null || utilisateur.getPseudo().isEmpty()) {
@@ -87,7 +101,7 @@ public class UtilisateurManager extends GenericManager<Utilisateur> {
         if (!errors.toString().isEmpty()) { throw new EException(errors.toString()); }
     }
 
-    private boolean checkUnicity(Utilisateur utilisateur) throws EException {
+    protected boolean checkUnicity(Utilisateur utilisateur) throws EException {
         return getByEmail(utilisateur.getEmail()) != null && getByPseudo(utilisateur.getPseudo()) != null;
     }
 

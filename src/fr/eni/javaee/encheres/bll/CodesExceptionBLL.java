@@ -68,10 +68,15 @@ public class CodesExceptionBLL {
         put("Retrait", 20604);
         put("Utilisateur", 20605);
     }};
+    public static final int AUTHENTICATION_ERROR = 23605;
+    public static final int ARTICLE_GET_ALL_FROM_ERROR = 21601;
+    public static final int ARTICLE_GET_ALL_BY_NAME_DESCRIPTION = 22601;
+    public static final int ARTICLE_SET_ARTICLES_WON = 23601;
+    public static final int ENCHERE_GET_HIGHEST_BID = 21603;
+    public static final int ENCHERE_GET_ENCHERES_FROM = 22603;
+    public static final int ENCHERE_DELETE_ALL_BY = 23603;
     public static final int UTILISATEUR_GET_BY_PSEUDO_ERROR = 21605;
     public static final int UTILISATEUR_GET_BY_EMAIL_ERROR = 22605;
-    public static final int AUTHENTICATION_ERROR = 23605;
-    public static final int ARTICLE_GET_ALL_FROM_ERROR = 21621;
     // Error while retrieving a list of business objects by ID.
     public static final Map<String, Integer> GET_ALL_ERROR = new HashMap<String, Integer>() {{
         put("Article", 20641);

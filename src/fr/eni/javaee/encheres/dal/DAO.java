@@ -8,12 +8,17 @@ import java.util.List;
 import java.util.Map;
 
 public interface DAO<T> {
+    
+    public List<String> identifiers = null;
 
     public T insert(T object) throws EException;
 
     public T update(T object) throws EException;
 
+    public void deleteByFields(Map<String, Object> fields) throws EException;
+
     public void delete(int... identifiers) throws EException;
+
 
     public T selectBy(String query, Collection<Object> fieldsValues) throws EException;
 

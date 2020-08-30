@@ -20,7 +20,7 @@ public class UtilisateurREST {
     @POST
     @Path("/signup")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Object create(Map<String, String> utilisateur) {
+    public Object create(Map<String, Object> utilisateur) {
         try {
             Utilisateur newUtilisateur = generateNewUtilisateur(utilisateur);
             newUtilisateur = new UtilisateurManager().add(newUtilisateur);
@@ -61,7 +61,7 @@ public class UtilisateurREST {
     @PUT
     @Path("/modify")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Object update(Map<String, String> utilisateur) {
+    public Object update(Map<String, Object> utilisateur) {
         try {
             Utilisateur newUtilisateur = generateNewUtilisateur(utilisateur);
             newUtilisateur = new UtilisateurManager().update(newUtilisateur);
@@ -103,18 +103,29 @@ public class UtilisateurREST {
         }
     }
 
-    public Utilisateur generateNewUtilisateur(Map<String, String> utilisateur) {
-        return new Utilisateur(
-                utilisateur.get("pseudo"),
-                utilisateur.get("nom"),
-                utilisateur.get("prenom"),
-                utilisateur.get("email"),
-                utilisateur.get("telephone"),
-                utilisateur.get("rue"),
-                utilisateur.get("codePostal"),
-                utilisateur.get("ville"),
-                utilisateur.get("motDePasse")
+    public Utilisateur generateNewUtilisateur(Map<String, Object> utilisateur) {
+        Utilisateur newUtilisateur = new Utilisateur(
+                (String) utilisateur.get("pseudo"),
+                (String) utilisateur.get("nom"),
+                (String) utilisateur.get("prenom"),
+                (String) utilisateur.get("email"),
+                (String) utilisateur.get("telephone"),
+                (String) utilisateur.get("rue"),
+                (String) utilisateur.get("codePostal"),
+                (String) utilisateur.get("ville"),
+                (String) utilisateur.get("motDePasse")
         );
+        if (utilisateur.get("noUtilisateur") != null) {
+            newUtilisateur.setNoUtilisateur((Integer) utilisateur.get("noUtilisateur"));
+        }
+        if (utilisateur.get("credits") != null) {
+            newUtilisateur.setCredits((Integer) utilisateur.get("credits"));
+        }
+        if (utilisateur.get("administrateur") != null) {
+            int administrateur = (int) utilisateur.get("administrateur");
+            newUtilisateur.setAdministrateur((byte) administrateur);
+        }
+        return newUtilisateur;
     }
 
     public HttpSession generateNewSession(Utilisateur utilisateur) {

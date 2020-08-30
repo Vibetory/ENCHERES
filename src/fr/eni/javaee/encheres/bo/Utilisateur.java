@@ -18,13 +18,18 @@ public class Utilisateur {
         setCodePostal(codePostal);
         setVille(ville);
         setMotDePasse(motDePasse);
-        setCredits(0);
+        setCredits(500);
         setAdministrateur((byte) 0);
     }
 
     public Utilisateur(String pseudo, String nom, String prenom, String email, String telephone, String rue, String codePostal, String ville, String motDePasse) {
         this(pseudo, nom, prenom, email, rue, codePostal, ville, motDePasse);
         setTelephone(telephone);
+    }
+
+    public Utilisateur(String pseudo, String nom, String prenom, String email, String telephone, String rue, String codePostal, String ville, String motDePasse, int credits) {
+        this(pseudo, nom, prenom, email, telephone, rue, codePostal, ville, motDePasse);
+        setCredits(credits);
     }
 
     public Utilisateur(String pseudo, String nom, String prenom, String email, String rue, String codePostal, String ville, String motDePasse, int credits, byte administrateur) {

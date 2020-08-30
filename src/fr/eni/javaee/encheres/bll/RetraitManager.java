@@ -1,7 +1,6 @@
 package fr.eni.javaee.encheres.bll;
 
 import fr.eni.javaee.encheres.EException;
-import fr.eni.javaee.encheres.bo.Enchere;
 import fr.eni.javaee.encheres.bo.Retrait;
 
 public class RetraitManager extends GenericManager<Retrait> {
@@ -11,16 +10,18 @@ public class RetraitManager extends GenericManager<Retrait> {
     }
 
     @Override
-    protected int[] executeLogic(Retrait retrait, String operationCRUD) throws EException {
-        boolean alreadyExists = checkUnicity(retrait);
-        if (operationCRUD.equals("INSERT") && alreadyExists) { throw new EException(CodesExceptionBLL.ADD_ALREADY_EXIST_ERROR.get("Retrait")); }
-        if (operationCRUD.equals("UPDATE") && !alreadyExists) { throw new EException(CodesExceptionBLL.UPDATE_NOT_EXIST_ERROR.get("Retrait")); }
-        if (operationCRUD.equals("DELETE") && !alreadyExists) { throw new EException(CodesExceptionBLL.DELETE_NOT_EXIST_ERROR.get("Retrait")); }
-        else { checkAttributes(retrait); }
-        return new int[] {retrait.getNoArticleARetirer()};
+    protected int[] getIdentifiers(Retrait retrait) {
+        return  new int[] {retrait.getNoArticleARetirer()};
     }
 
-    private void checkAttributes(Retrait retrait) throws EException {
+    @Override
+    protected void executeUpdate(Retrait retrait, String operationCRUD) throws EException {
+        if(operationCRUD.equals("DELETE")) {
+            retrait.getArticleARetirer().setRetraitEffectue(true);
+        }
+    }
+
+    protected void checkAttributes(Retrait retrait) throws EException {
         if (retrait == null) { throw new EException(CodesExceptionBLL.BO_NULL_ERROR.get("Retrait")); }
         StringBuilder errors = new StringBuilder();
         if (retrait.getArticleARetirer() == null) {
@@ -38,7 +39,7 @@ public class RetraitManager extends GenericManager<Retrait> {
         if (!errors.toString().isEmpty()) { throw new EException(errors.toString()); }
     }
 
-    private boolean checkUnicity(Retrait retrait) throws EException {
+    protected boolean checkUnicity(Retrait retrait) throws EException {
         return getById(retrait.getNoArticleARetirer()) != null;
     }
 }

@@ -1,10 +1,12 @@
 package fr.eni.javaee.encheres.bll;
 
 import fr.eni.javaee.encheres.EException;
+import fr.eni.javaee.encheres.bo.Enchere;
 import fr.eni.javaee.encheres.dal.DAO;
 import fr.eni.javaee.encheres.dal.DAOFactory;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.HashMap;
 import java.util.List;
 
 public abstract class GenericManager<T> {
@@ -35,8 +37,14 @@ public abstract class GenericManager<T> {
 
     public T add(T object) throws EException {
         try {
-            executeLogic(object, "INSERT");
-            return (T) DAOBusinessObject.insert(object);
+            boolean alreadyExists = checkUnicity(object);
+            if (alreadyExists) {
+                throw new EException(CodesExceptionBLL.ADD_ALREADY_EXIST_ERROR.get(getActualClassName()));
+            }
+            checkAttributes(object);
+            object = (T) DAOBusinessObject.insert(object);
+            executeUpdate(object, "INSERT");
+            return object;
         }
         catch (EException eException) {
             throw new EException(CodesExceptionBLL.ADD_ERROR.get(this.getActualClassName()), eException);
@@ -44,22 +52,43 @@ public abstract class GenericManager<T> {
     }
 
     public T update(T object) throws EException {
-        executeLogic(object, "UPDATE");
-        try { return (T) DAOBusinessObject.update(object); }
+        try {
+            boolean alreadyExists = checkUnicity(object);
+            if (!alreadyExists) {
+                throw new EException(CodesExceptionBLL.UPDATE_NOT_EXIST_ERROR.get(getActualClassName()));
+            }
+            checkAttributes(object);
+            object = (T) DAOBusinessObject.update(object);
+            executeUpdate(object, "UPDATE");
+            return object;
+        }
         catch (EException eException) {
             throw new EException(CodesExceptionBLL.UPDATE_ERROR.get(this.getActualClassName()), eException);
         }
     }
 
     public void delete(T object) throws EException {
-        int[] identifiers = executeLogic(object, "DELETE");
-        try { DAOBusinessObject.delete(identifiers); }
+        try {
+            boolean alreadyExists = checkUnicity(object);
+            if (!alreadyExists) {
+                throw new EException(CodesExceptionBLL.DELETE_NOT_EXIST_ERROR.get(getActualClassName()));
+            }
+            int[] identifiers = getIdentifiers(object);
+            DAOBusinessObject.delete(identifiers);
+            executeUpdate(object, "DELETE");
+        }
         catch (EException eException) {
             throw new EException(CodesExceptionBLL.UPDATE_ERROR.get(this.getActualClassName()), eException);
         }
     }
 
-    protected abstract int[] executeLogic(T object, String operationCRUD) throws EException;
+
+    protected abstract int[] getIdentifiers(T object);
+
+    protected abstract void executeUpdate(T object, String operationCRUD) throws EException;
+    protected abstract boolean checkUnicity(T Object) throws EException;
+    protected abstract void checkAttributes(T Object) throws EException;
+
 
     private String getActualClassName() { return this.entityClass.getSimpleName(); }
 }
