@@ -30,11 +30,11 @@ public class CodesExceptionBLL {
     }};
     // Business object already exist in the database.
     public static final Map<String, Integer> ADD_ALREADY_EXIST_ERROR = new HashMap<String, Integer> () {{
-        put("Article", 21301);
-        put("Categorie", 21302);
-        put("Enchere", 21303);
-        put("Retrait", 21304);
-        put("Utilisateur", 21305);
+        put("Article", 20311);
+        put("Categorie", 20312);
+        put("Enchere", 20313);
+        put("Retrait", 20314);
+        put("Utilisateur", 20315);
     }};
     // Error while attempting to update a business object to the database.
     public static final Map<String, Integer> UPDATE_ERROR = new HashMap<String, Integer> () {{
@@ -46,19 +46,27 @@ public class CodesExceptionBLL {
     }};
     // Business object doesn't exist in the database.
     public static final Map<String, Integer> UPDATE_NOT_EXIST_ERROR = new HashMap<String, Integer> () {{
-        put("Article", 21401);
-        put("Categorie", 21402);
-        put("Enchere", 21403);
-        put("Retrait", 21404);
-        put("Utilisateur", 21405);
+        put("Article", 20411);
+        put("Categorie", 20412);
+        put("Enchere", 20413);
+        put("Retrait", 20414);
+        put("Utilisateur", 20415);
+    }};
+    // Error while attempting to delete a business object to the database.
+    public static final Map<String, Integer> DELETE_ERROR = new HashMap<String, Integer> () {{
+        put("Article", 20501);
+        put("Categorie", 20502);
+        put("Enchere", 20503);
+        put("Retrait", 20504);
+        put("Utilisateur", 20505);
     }};
     // Business object doesn't exist in the database.
     public static final Map<String, Integer> DELETE_NOT_EXIST_ERROR = new HashMap<String, Integer> () {{
-        put("Article", 21501);
-        put("Categorie", 21502);
-        put("Enchere", 21503);
-        put("Retrait", 21504);
-        put("Utilisateur", 21505);
+        put("Article", 20511);
+        put("Categorie", 20512);
+        put("Enchere", 20513);
+        put("Retrait", 20514);
+        put("Utilisateur", 20515);
     }};
     // Error while retrieving a business object by ID.
     public static final Map<String, Integer> GET_BY_ID_ERROR = new HashMap<String, Integer>() {{
@@ -68,23 +76,25 @@ public class CodesExceptionBLL {
         put("Retrait", 20604);
         put("Utilisateur", 20605);
     }};
-    public static final int AUTHENTICATION_ERROR = 23605;
-    public static final int ARTICLE_GET_ALL_FROM_ERROR = 21601;
-    public static final int ARTICLE_GET_ALL_BY_NAME_DESCRIPTION = 22601;
-    public static final int ARTICLE_SET_ARTICLES_WON = 23601;
-    public static final int ENCHERE_GET_HIGHEST_BID = 21603;
-    public static final int ENCHERE_GET_ENCHERES_FROM = 22603;
-    public static final int ENCHERE_DELETE_ALL_BY = 23603;
-    public static final int UTILISATEUR_GET_BY_PSEUDO_ERROR = 21605;
-    public static final int UTILISATEUR_GET_BY_EMAIL_ERROR = 22605;
     // Error while retrieving a list of business objects by ID.
     public static final Map<String, Integer> GET_ALL_ERROR = new HashMap<String, Integer>() {{
-        put("Article", 20641);
-        put("Categorie", 20642);
-        put("Enchere", 20643);
-        put("Retrait", 20644);
-        put("Utilisateur", 20645);
+        put("Article", 20611);
+        put("Categorie", 20612);
+        put("Enchere", 20613);
+        put("Retrait", 20614);
+        put("Utilisateur", 20615);
     }};
-
+    // Error specific to the ArticleManager.
+    public static final int ARTICLE_SET_ARTICLES_WON = 21421;
+    public static final int ARTICLE_GET_ALL_FROM_ERROR = 21601;
+    public static final int ARTICLE_GET_ALL_BY_NAME_DESCRIPTION = 21611;
+    // Error specific to the EnchereManager.
+    public static final int ENCHERE_DELETE_ALL_BY = 23503;
+    public static final int ENCHERE_GET_ENCHERES_FROM = 23603;
+    public static final int ENCHERE_GET_HIGHEST_BID = 23613;
+    // Error specific to the UtilisateurManager.
+    public static final int AUTHENTICATION_ERROR = 25605;
+    public static final int UTILISATEUR_GET_BY_PSEUDO_ERROR = 25615;
+    public static final int UTILISATEUR_GET_BY_EMAIL_ERROR = 25625;
 
 }

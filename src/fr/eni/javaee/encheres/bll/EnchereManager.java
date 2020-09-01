@@ -152,6 +152,9 @@ public class EnchereManager extends GenericManager<Enchere> {
         return super.update(enchere);
     }
 
+
+    // LOGIC  & CHECKS
+
     /**
      * Get an array of the identifiers values for a given Enchere.
      */
@@ -196,7 +199,7 @@ public class EnchereManager extends GenericManager<Enchere> {
         if (!errors.toString().isEmpty()) { throw new EException(errors.toString()); }
     }
 
-    protected boolean checkUnicity(Enchere enchere) throws EException {
+    protected boolean checkUnity(Enchere enchere) throws EException {
         return getById(enchere.getNoArticleVendu(), enchere.getNoEncherisseur()) != null;
     }
 

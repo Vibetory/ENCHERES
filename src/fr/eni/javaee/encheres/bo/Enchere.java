@@ -29,13 +29,17 @@ public class Enchere {
 
     public Article getArticleVendu() { return this.articleVendu; }
 
-    public int getNoArticleVendu() { return this.articleVendu.getNoArticle(); }
+    public int getNoArticleVendu() {
+        return this.articleVendu != null ? this.articleVendu.getNoArticle() : 0;
+    }
 
     public void setArticleVendu(Article articleVendu) { this.articleVendu = articleVendu; }
 
     public Utilisateur getEncherisseur() { return this.encherisseur; }
 
-    public int getNoEncherisseur() { return this.encherisseur.getNoUtilisateur(); }
+    public int getNoEncherisseur() {
+        return this.encherisseur != null ? this.encherisseur.getNoUtilisateur() : 0;
+    }
 
     public void setEncherisseur(Utilisateur encherisseur) { this.encherisseur = encherisseur; }
 

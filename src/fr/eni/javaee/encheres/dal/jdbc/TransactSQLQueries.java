@@ -2,6 +2,8 @@ package fr.eni.javaee.encheres.dal.jdbc;
 
 import fr.eni.javaee.encheres.EException;
 
+import java.util.Collection;
+
 public class TransactSQLQueries {
 
     // GENERIC
@@ -35,13 +37,13 @@ public class TransactSQLQueries {
 
 
     // ARTICLE
-    public static String SELECT_ARTICLES_LIKE(String variable) throws EException {
+    public static String SELECT_ARTICLES_LIKE(String variable, String categorie) throws EException {
         return "SELECT " + new ArticleJDBCDAOImpl().generateQueryFields() + " " +
                 "FROM Article " +
                 "WHERE nomArticle LIKE '%" + variable + "%' OR description LIKE '%" + variable + "%' " +
+                (categorie == null ? "" : "AND categorie = " + categorie + " ") +
                 "ORDER BY nomArticle";
     }
-
 
     // ENCHERE
 

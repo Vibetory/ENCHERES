@@ -5,7 +5,7 @@ import java.util.Map;
 
 public abstract class CodesExceptionJDBC {
 	public static final int DATABASE_ACCESS_ERROR = 10100;
-	public static final int CONNECTION_ERROR = 10101;
+	public static final int CONNECTION_ERROR = 10110;
 	public static final int CRUD_INSERT_OR_UPDATE_ERROR = 10200;
 	public static final Map<String, Integer> GENERATE_OBJECT_ERROR = new HashMap<String, Integer> () {{
 		put("Article", 10201);
@@ -51,19 +51,19 @@ public abstract class CodesExceptionJDBC {
 		put("Utilisateur", 10605);
 	}};
 	public static final Map<String, Integer> CRUD_SELECT_FIELD_ERROR = new HashMap<String, Integer> () {{
+		put("Article", 10611);
+		put("Categorie", 10612);
+		put("Enchere", 10613);
+		put("Retrait", 10614);
+		put("Utilisateur", 10615);
+	}};
+	public static final int CRUD_SELECT_ALL_BY_ERROR = 10620;
+	public static final Map<String, Integer> CRUD_SELECT_ALL_ERROR = new HashMap<String, Integer> () {{
 		put("Article", 10621);
 		put("Categorie", 10622);
 		put("Enchere", 10623);
 		put("Retrait", 10624);
 		put("Utilisateur", 10625);
-	}};
-	public static final int CRUD_SELECT_ALL_BY_ERROR = 10600;
-	public static final Map<String, Integer> CRUD_SELECT_ALL_ERROR = new HashMap<String, Integer> () {{
-		put("Article", 10641);
-		put("Categorie", 10642);
-		put("Enchere", 10643);
-		put("Retrait", 10644);
-		put("Utilisateur", 10645);
 	}};
 
 

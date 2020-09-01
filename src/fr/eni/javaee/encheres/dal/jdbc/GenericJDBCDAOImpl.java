@@ -311,9 +311,13 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
                         entityClass.getMethod(method, implementation.getObject().getClass()).invoke(instance, implementation.selectById(identifier));
                 }
             }
-        } catch (IllegalAccessException | SQLException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException | InstantiationException exception) {
-            throw new EException(CodesExceptionJDBC.GENERATE_OBJECT_ERROR.get(this.getActualClassName()), exception);
-        }
+        } catch (IllegalAccessException |
+                SQLException |
+                InvocationTargetException |
+                NoSuchMethodException |
+                ClassNotFoundException |
+                InstantiationException exception
+        ) { throw new EException(CodesExceptionJDBC.GENERATE_OBJECT_ERROR.get(this.getActualClassName()), exception); }
         return instance;
     }
 
@@ -342,7 +346,10 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
                         break;
                     default:
                         method = "getNo" + field.getKey().substring(0, 1).toUpperCase() + field.getKey().substring(1);
+                        int noIdentifier = (int) entityClass.getMethod(method).invoke(object);
+                        if (noIdentifier != 0) {
                         statement.setInt(parameterIndex, (int) entityClass.getMethod(method).invoke(object));
+                        } else { statement.setNull(parameterIndex, Types.INTEGER); }
                         break;
                 }
                 parameterIndex++;
@@ -350,8 +357,6 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
             if (isUpdate) {
                 for (String identifier : this.identifiers) {
                     String method = "get" + identifier.substring(0, 1).toUpperCase() + identifier.substring(1);
-                    System.out.println(method);
-                    System.out.println((int) entityClass.getMethod(method).invoke(object));
                     statement.setInt(parameterIndex, (int) entityClass.getMethod(method).invoke(object));
                     parameterIndex ++;
                 }
@@ -370,10 +375,10 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
     private void setStatementParameters(PreparedStatement statement, Collection<Object> fieldsValues) throws EException {
         try {
             int parameterIndex = 1;
-            for (Object fieldValues : fieldsValues) {
-                if (fieldValues  instanceof  LocalDateTime) {
-                    statement.setTimestamp(parameterIndex, Timestamp.valueOf((LocalDateTime) fieldValues));
-                } else { statement.setObject(parameterIndex, fieldValues); }
+            for (Object fieldValue : fieldsValues) {
+                if (fieldValue instanceof LocalDateTime) {
+                    statement.setTimestamp(parameterIndex, Timestamp.valueOf((LocalDateTime) fieldValue));
+                } else { statement.setObject(parameterIndex, fieldValue); }
                 parameterIndex ++;
             }
         } catch (SQLException sqlException) {
@@ -381,6 +386,9 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
         }
     }
 
+    /**
+     * @return String | Simple name of the actual class T.
+     */
     protected String getActualClassName() { return this.entityClass.getSimpleName(); }
 
     /**
@@ -406,6 +414,9 @@ public abstract class GenericJDBCDAOImpl<T> implements DAO<T> {
         return generateQueryFields(this.fields.keySet(), false, false, false); // Default values.
     }
 
+    /**
+     * Generate a map with the identifiers fields names as keys, and the given arguments as values.
+     */
     protected Map<String, Object> generateIdentifiersMap(int... identifiers) {
         Map<String, Object> fields = new HashMap<String, Object>();
         int index = 0;

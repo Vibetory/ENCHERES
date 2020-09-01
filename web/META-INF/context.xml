@@ -11,4 +11,5 @@
             maxIdle="30"
             maxWaitMillis="10000"
     />
+    <CookieProcessor sameSiteCookies="lax"/>
 </Context>

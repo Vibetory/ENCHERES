@@ -9,10 +9,9 @@ import fr.eni.javaee.encheres.dal.DAO;
 import fr.eni.javaee.encheres.dal.DAOFactory;
 import fr.eni.javaee.encheres.dal.jdbc.TransactSQLQueries;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ArticleManager extends GenericManager<Article> {
@@ -24,14 +23,15 @@ public class ArticleManager extends GenericManager<Article> {
         this.DAOArticle = DAOFactory.getArticleDAO();
     }
 
+
+    // CRUD
+
     /**
-     * Get an article by its identifier, and set its "etatVente".
+     * Delete all the articles from a given seller.
      */
-    @Override
-    public Article getById(int... identifiers) throws EException {
-        Article article =  super.getById(identifiers);
-        article.setEtatVente();
-        return article;
+    void deleteAllByVendeur(Utilisateur utilisateur) throws EException {
+        List<Article> articles = getArticlesFromVendeur(utilisateur);
+        for (Article article : articles) { delete(article); }
     }
 
     /**
@@ -57,10 +57,9 @@ public class ArticleManager extends GenericManager<Article> {
     }
 
     /**
-     * Call getArticlesFrom with "acquereur" after updating the list of articles won by the user.
+     * Call getArticlesFrom with "acquereur".
      */
     public List<Article> getArticlesFromAcquereur(Utilisateur acquereur) throws EException {
-        setArticlesObtenus(acquereur);
         return getArticlesFrom("acquereur", acquereur);
     }
 
@@ -69,8 +68,8 @@ public class ArticleManager extends GenericManager<Article> {
      * @return List<Article> | List of articles including part of the variable in their name or description.
      * @throws EException EException |
      */
-    public List<Article> getArticlesByNomOrDescription(String variable) throws EException {
-        try { return DAOArticle.selectAllBy(TransactSQLQueries.SELECT_ARTICLES_LIKE(variable), null); }
+    public List<Article> getArticlesLike(String variable, String categorie) throws EException {
+        try { return DAOArticle.selectAllBy(TransactSQLQueries.SELECT_ARTICLES_LIKE(variable, categorie), null); }
         catch (EException eException) { throw new EException(CodesExceptionBLL.ARTICLE_GET_ALL_BY_NAME_DESCRIPTION, eException); }
     }
 
@@ -104,6 +103,18 @@ public class ArticleManager extends GenericManager<Article> {
     }
 
     /**
+     * @return long | Time in milliseconds until the next sale is ending.
+     */
+    public long getTimeUntilNextEnd() throws EException {
+        setAllArticlesObtenus();
+        long milliseconds = Long.MAX_VALUE;
+        for (Article article : getAll()) {
+            milliseconds = Math.min(milliseconds, Duration.between(LocalDateTime.now(), article.getDateFinEncheres()).toMillis());
+        }
+        return milliseconds;
+    }
+
+    /**
      * Set an article as having been picked up.
      */
     public void setRetraitEffectue(Article article) throws EException {
@@ -114,22 +125,13 @@ public class ArticleManager extends GenericManager<Article> {
         update(article);
     }
 
-    /**
-     * Delete all the articles from a given seller.
-     */
-    void deleteAllByVendeur(Utilisateur utilisateur) throws EException {
-        List<Article> articles = getArticlesFromVendeur(utilisateur);
-        for (Article article : articles) { delete(article); }
-    }
 
+    // FILTERS
 
     /**
-     * @param articles List<Article> | List of articles to filter by categorie.
-     * @param etatVente String | etatVente to apply the filter on.
-     * @return List<Article> | List of filtered articles.
-     * @throws EException EException
+     * Filter a list of articles by "etatVente".
      */
-    public List<Article> filterByEtat(List<Article> articles, String etatVente) throws EException {
+    public List<Article> filterByEtat(List<Article> articles, String etatVente) {
         return articles
                 .stream()
                 .filter(article -> article.getEtatVente().equals(etatVente))
@@ -137,17 +139,62 @@ public class ArticleManager extends GenericManager<Article> {
     }
 
     /**
-     * @param articles List<Article> | List of articles to filter by categorie.
-     * @param categorie String | Categorie to apply the filter on.
-     * @return List<Article> | List of filtered articles.
-     * @throws EException EException
+     * Filter a list of articles by categorie.
      */
-    public List<Article> filteredByCategorie(List<Article> articles,  String categorie) throws EException {
+    public List<Article> filterByCategorie(List<Article> articles, String categorie) {
         return articles
                 .stream()
                 .filter(article -> article.getCategorie().getLibelle().equals(categorie))
                 .collect(Collectors.toList());
     }
+
+    /**
+     * Filter a list of articles by acquereur.
+     */
+    public List<Article> filterByAcquereur(List<Article> articles, int noUtilisateur) {
+        return articles
+                .stream()
+                .filter(article -> article.getAcquereur().getNoUtilisateur() == noUtilisateur)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Filter the articles for which the sales are over.
+     */
+    public List<Article> filterByIsOver(List<Article> articles) {
+        return articles
+                .stream()
+                .filter(article -> article.getDateFinEncheres().isBefore(LocalDateTime.now()))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Filter the articles for which the sales are over.
+     */
+    public List<Article> filterByVendeur(List<Article> articles, int noUtilisateur) throws EException {
+        setArticlesObtenus(new UtilisateurManager().getById(noUtilisateur));
+        return articles
+                .stream()
+                .filter(article -> article.getVendeur().getNoUtilisateur() == noUtilisateur)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Filter a list of articles by encherisseur.
+     */
+    public List<Article> filterByEncherisseur(List<Article> articles, int encherisseur) {
+        return articles
+                .stream()
+                .filter(article -> {
+                    try { return new EnchereManager().getById(article.getNoArticle(), encherisseur) != null; }
+                    catch (EException eException) { eException.printStackTrace(); }
+                    return false;
+                })
+                .collect(Collectors.toList());
+    }
+
+
+    // LOGIC  & CHECKS
 
     /**
      * Get an array of the identifiers values for a given Article.
@@ -200,7 +247,7 @@ public class ArticleManager extends GenericManager<Article> {
         if (article.getVendeur() == null) {
             errors.append("Champs obligatoire. L'article n'a pas de vendeur.").append("\n");
         }
-        if (new CategorieManager().getById(article.getNoCategorie()) == null) {
+        if (article.getCategorie() != null && new CategorieManager().getById(article.getNoCategorie()) == null) {
             errors.append("Champs incorrect. La catégorie renseignée n'existe pas.").append("\n");
         }
         if (article.getMiseAPrix() < 0) {
@@ -215,7 +262,7 @@ public class ArticleManager extends GenericManager<Article> {
     /**
      * Check if an article already exists in the database.
      */
-    protected boolean checkUnicity(Article article) throws EException {
+    protected boolean checkUnity(Article article) throws EException {
         Map<String, Object> fields = new HashMap<String, Object>() {{
             put("nomArticle", article.getNomArticle());
             put("description", article.getDescription());

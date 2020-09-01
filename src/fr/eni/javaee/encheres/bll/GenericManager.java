@@ -1,18 +1,17 @@
 package fr.eni.javaee.encheres.bll;
 
 import fr.eni.javaee.encheres.EException;
-import fr.eni.javaee.encheres.bo.Enchere;
 import fr.eni.javaee.encheres.dal.DAO;
 import fr.eni.javaee.encheres.dal.DAOFactory;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.HashMap;
 import java.util.List;
 
 public abstract class GenericManager<T> {
     protected Class<T> entityClass;
     protected DAO DAOBusinessObject;
 
+    // CONSTRUCTOR
     public GenericManager() throws EException {
         this.entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
         try { DAOBusinessObject = DAOFactory.getBusinessObjectDAO(this.getActualClassName()); }
@@ -21,6 +20,17 @@ public abstract class GenericManager<T> {
         }
     }
 
+    /**
+     * @return String | Simple name of the actual class T.
+     */
+    private String getActualClassName() { return this.entityClass.getSimpleName(); }
+
+
+    // CRUD
+
+    /**
+     * SELECT List<T>
+     */
     public List<T> getAll() throws EException {
         try { return DAOBusinessObject.selectAll(); }
         catch (EException eException) {
@@ -28,6 +38,9 @@ public abstract class GenericManager<T> {
         }
     }
 
+    /**
+     * SELECT T
+     */
     public T getById(int... identifiers) throws EException {
         try { return (T) DAOBusinessObject.selectById(identifiers); }
         catch (EException eException) {
@@ -35,9 +48,12 @@ public abstract class GenericManager<T> {
         }
     }
 
+    /**
+     * INSERT T
+     */
     public T add(T object) throws EException {
         try {
-            boolean alreadyExists = checkUnicity(object);
+            boolean alreadyExists = checkUnity(object);
             if (alreadyExists) {
                 throw new EException(CodesExceptionBLL.ADD_ALREADY_EXIST_ERROR.get(getActualClassName()));
             }
@@ -51,9 +67,12 @@ public abstract class GenericManager<T> {
         }
     }
 
+    /**
+     * UPDATE T
+     */
     public T update(T object) throws EException {
         try {
-            boolean alreadyExists = checkUnicity(object);
+            boolean alreadyExists = checkUnity(object);
             if (!alreadyExists) {
                 throw new EException(CodesExceptionBLL.UPDATE_NOT_EXIST_ERROR.get(getActualClassName()));
             }
@@ -67,28 +86,38 @@ public abstract class GenericManager<T> {
         }
     }
 
-    public void delete(T object) throws EException {
+    /**
+     * DELETE T
+     */
+    private void delete(T object, int... identifiers) throws EException {
         try {
-            boolean alreadyExists = checkUnicity(object);
+            boolean alreadyExists = checkUnity(object);
             if (!alreadyExists) {
                 throw new EException(CodesExceptionBLL.DELETE_NOT_EXIST_ERROR.get(getActualClassName()));
             }
-            int[] identifiers = getIdentifiers(object);
             DAOBusinessObject.delete(identifiers);
             executeUpdate(object, "DELETE");
         }
         catch (EException eException) {
-            throw new EException(CodesExceptionBLL.UPDATE_ERROR.get(this.getActualClassName()), eException);
+            throw new EException(CodesExceptionBLL.DELETE_ERROR.get(this.getActualClassName()), eException);
         }
     }
 
+    public void delete(T object) throws EException {
+        int[] identifiers = getIdentifiers(object);
+        delete(object, identifiers);
+    }
+
+    public void delete(int... identifiers) throws EException {
+        T object = getById(identifiers);
+        delete(object, identifiers);
+    }
+
+
+    // ABSTRACT METHODS
 
     protected abstract int[] getIdentifiers(T object);
-
     protected abstract void executeUpdate(T object, String operationCRUD) throws EException;
-    protected abstract boolean checkUnicity(T Object) throws EException;
+    protected abstract boolean checkUnity(T Object) throws EException;
     protected abstract void checkAttributes(T Object) throws EException;
-
-
-    private String getActualClassName() { return this.entityClass.getSimpleName(); }
 }

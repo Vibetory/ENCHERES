@@ -104,25 +104,37 @@ public class Article {
 
     public LocalDateTime getDateFinEncheres() { return this.dateFinEncheres; }
 
-    public void setDateFinEncheres(LocalDateTime dateFinEncheres) { this.dateFinEncheres = dateFinEncheres; }
+    public void setDateFinEncheres(LocalDateTime dateFinEncheres) {
+        this.dateFinEncheres = dateFinEncheres;
+        setEtatVente();
+    }
 
     public Categorie getCategorie() { return categorie; }
 
-    public int getNoCategorie() { return this.categorie.getNoCategorie(); }
+    public int getNoCategorie() {
+        return this.categorie != null ? this.categorie.getNoCategorie() : 0;
+    }
 
     public void setCategorie(Categorie categorie) { this.categorie = (Categorie) categorie; }
 
     public Utilisateur getVendeur() { return this.vendeur; }
 
-    public int getNoVendeur() { return this.vendeur.getNoUtilisateur(); }
+    public int getNoVendeur() {
+        return this.vendeur != null ? this.vendeur.getNoUtilisateur() : 0;
+    }
 
     public void setVendeur(Utilisateur vendeur) { this.vendeur = (Utilisateur) vendeur; }
 
     public Utilisateur getAcquereur() { return this.acquereur; }
 
-    public int getNoAcquereur() { return this.acquereur.getNoUtilisateur(); }
+    public int getNoAcquereur() {
+        return this.acquereur != null ? this.acquereur.getNoUtilisateur() : 0;
+    }
 
-    public void setAcquereur(Utilisateur acquereur) { this.acquereur = (Utilisateur) acquereur; }
+    public void setAcquereur(Utilisateur acquereur) {
+        setEtatVente();
+        this.acquereur = (Utilisateur) acquereur;
+    }
 
     public boolean isRetraitEffectue() { return this.retraitEffectue; }
 

@@ -18,6 +18,9 @@ public class CategorieManager extends GenericManager<Categorie> {
         this.DAOCategorie = DAOFactory.getCategorieDAO();
     }
 
+
+    // LOGIC  & CHECKS
+
     /**
      * Get an array of the identifiers values for a given Categorie.
      */
@@ -56,7 +59,7 @@ public class CategorieManager extends GenericManager<Categorie> {
     /**
      * Check if an article already exists in the database.
      */
-    protected boolean checkUnicity(Categorie categorie) throws EException {
+    protected boolean checkUnity(Categorie categorie) throws EException {
         return DAOCategorie.selectByField("libelle", categorie.getLibelle()) != null;
     }
 

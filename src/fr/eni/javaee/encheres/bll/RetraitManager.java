@@ -5,9 +5,13 @@ import fr.eni.javaee.encheres.bo.Retrait;
 
 public class RetraitManager extends GenericManager<Retrait> {
 
+    // CONSTRUCTOR
     public RetraitManager() throws EException {
         super();
     }
+
+
+    // LOGIC  & CHECKS
 
     @Override
     protected int[] getIdentifiers(Retrait retrait) {
@@ -21,6 +25,11 @@ public class RetraitManager extends GenericManager<Retrait> {
         }
     }
 
+    /**
+     * Check all the attributes of an retrait.
+     * @param retrait Retrait | Retrait to check.
+     * @throws EException EException | Newly created exception.
+     */
     protected void checkAttributes(Retrait retrait) throws EException {
         if (retrait == null) { throw new EException(CodesExceptionBLL.BO_NULL_ERROR.get("Retrait")); }
         StringBuilder errors = new StringBuilder();
@@ -39,7 +48,10 @@ public class RetraitManager extends GenericManager<Retrait> {
         if (!errors.toString().isEmpty()) { throw new EException(errors.toString()); }
     }
 
-    protected boolean checkUnicity(Retrait retrait) throws EException {
+    /**
+     * Check if a "retrait" already exists in the database.
+     */
+    protected boolean checkUnity(Retrait retrait) throws EException {
         return getById(retrait.getNoArticleARetirer()) != null;
     }
 }

@@ -19,7 +19,6 @@ public interface DAO<T> {
 
     public void delete(int... identifiers) throws EException;
 
-
     public T selectBy(String query, Collection<Object> fieldsValues) throws EException;
 
     public T selectById(int... identifiers) throws EException;

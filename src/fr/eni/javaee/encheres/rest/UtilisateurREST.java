@@ -3,13 +3,11 @@ package fr.eni.javaee.encheres.rest;
 import fr.eni.javaee.encheres.EException;
 import fr.eni.javaee.encheres.bll.UtilisateurManager;
 import fr.eni.javaee.encheres.bo.Utilisateur;
-import fr.eni.javaee.encheres.tools.PasswordTool;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import java.util.Map;
 
 @Path("/utilisateur")
@@ -19,10 +17,12 @@ public class UtilisateurREST {
 
     @POST
     @Path("/signup")
-    @Consumes(MediaType.APPLICATION_JSON)
     public Object create(Map<String, Object> utilisateur) {
         try {
             Utilisateur newUtilisateur = generateNewUtilisateur(utilisateur);
+            if (newUtilisateur.getMotDePasse() == null) {
+                throw new EException(CodesExceptionREST.UTILISATEUR_ADD_PASSWORD_MISSING_ERROR);
+            }
             newUtilisateur = new UtilisateurManager().add(newUtilisateur);
             HttpSession session = generateNewSession(newUtilisateur);
             return newUtilisateur;
@@ -30,6 +30,27 @@ public class UtilisateurREST {
             eException.printStackTrace();
             return eException;
         }
+    }
+
+    @PUT
+    @Path("/modify")
+    public Object update(Map<String, Object> utilisateur) {
+        try {
+            Utilisateur newUtilisateur = generateNewUtilisateur(utilisateur);
+            newUtilisateur = new UtilisateurManager().update(newUtilisateur);
+            HttpSession session = generateNewSession(newUtilisateur);
+            return newUtilisateur;
+        } catch (EException eException) {
+            eException.printStackTrace();
+            return eException;
+        }
+    }
+
+    @DELETE
+    @Path("/{noUtilisateur: \\d+}")
+    public void delete(@PathParam("noUtilisateur") int noUtilisateur)  {
+        try { new UtilisateurManager().delete(noUtilisateur); }
+        catch (EException eException) { eException.printStackTrace(); }
     }
 
 
@@ -46,37 +67,23 @@ public class UtilisateurREST {
         if (utilisateur != null) {
             session.setAttribute("noUtilisateur", utilisateur.getNoUtilisateur());
             session.setAttribute("pseudo", utilisateur.getPseudo());
-            session.setAttribute("motDePasse", PasswordTool.hashPassword(utilisateur.getMotDePasse()));
+            session.setAttribute("motDePasse", utilisateur.getMotDePasse());
         }
         return utilisateur;
     }
 
     @GET
     @Path("/signout")
-    public void logout() {
+    public Object logout() {
         HttpSession session = request.getSession(false);
         session.invalidate();
-    }
-
-    @PUT
-    @Path("/modify")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Object update(Map<String, Object> utilisateur) {
-        try {
-            Utilisateur newUtilisateur = generateNewUtilisateur(utilisateur);
-            newUtilisateur = new UtilisateurManager().update(newUtilisateur);
-            HttpSession session = generateNewSession(newUtilisateur);
-            return newUtilisateur;
-        } catch (EException eException) {
-            eException.printStackTrace();
-            return eException;
-        }
+        return false;
     }
 
     @GET
     @Path("/{noUtilisateur: \\d+}")
-    public Object selectById(@PathParam("noUtilisateur") int identifier)  {
-        try { return new UtilisateurManager().getById(identifier); }
+    public Object selectById(@PathParam("noUtilisateur") int noUtilisateur)  {
+        try { return new UtilisateurManager().getById(noUtilisateur); }
         catch (EException eException) {
             eException.printStackTrace();
             return eException;
@@ -84,7 +91,6 @@ public class UtilisateurREST {
     }
 
     @GET
-    @Path("/all")
     public Object selectAll()  {
         try { return new UtilisateurManager().getAll(); }
         catch (EException eException) {
@@ -112,9 +118,11 @@ public class UtilisateurREST {
                 (String) utilisateur.get("telephone"),
                 (String) utilisateur.get("rue"),
                 (String) utilisateur.get("codePostal"),
-                (String) utilisateur.get("ville"),
-                (String) utilisateur.get("motDePasse")
+                (String) utilisateur.get("ville")
         );
+        if (utilisateur.get("motDePasse") != null) {
+            newUtilisateur.setMotDePasse((String) utilisateur.get("motDePasse"));
+        }
         if (utilisateur.get("noUtilisateur") != null) {
             newUtilisateur.setNoUtilisateur((Integer) utilisateur.get("noUtilisateur"));
         }
@@ -132,7 +140,7 @@ public class UtilisateurREST {
         HttpSession session = request.getSession();
         session.setAttribute("noUtilisateur", utilisateur.getNoUtilisateur());
         session.setAttribute("pseudo", utilisateur.getPseudo());
-        session.setAttribute("motDePasse", PasswordTool.hashPassword(utilisateur.getMotDePasse()));
+        session.setAttribute("motDePasse", utilisateur.getMotDePasse());
         return session;
     }
 
@@ -141,19 +149,19 @@ public class UtilisateurREST {
      * @return Utilisateur | "null" if the session is not active.
      * @throws EException EException
      */
-    public Utilisateur validateSession(HttpServletRequest request) throws EException {
+    public Object validateSession(HttpServletRequest request) throws EException {
         HttpSession session = request.getSession(false);
-        if (session == null) { return null; }
+        if (session == null) { return false; }
         String pseudo = (String) session.getAttribute("pseudo");
         String motDePasse = (String) session.getAttribute("motDePasse");
         int noUtilisateur = (int) session.getAttribute("noUtilisateur");
         try {
             Utilisateur utilisateur = new UtilisateurManager().getById(noUtilisateur);
             if (utilisateur.getPseudo().equals(pseudo) &&
-                    PasswordTool.checkPassword(motDePasse, PasswordTool.hashPassword(utilisateur.getMotDePasse()))) {
+                    utilisateur.getMotDePasse().equals(motDePasse)) {
                 return utilisateur;
             }
-            return null;
+            return false;
         } catch (EException eException) {
             throw new EException(CodesExceptionREST.SESSION_VALIDATION_ERROR, eException);
         }

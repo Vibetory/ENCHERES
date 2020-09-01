@@ -9,7 +9,7 @@ public class Utilisateur {
 
     public Utilisateur() {}
 
-    public Utilisateur(String pseudo, String nom, String prenom, String email, String rue, String codePostal, String ville, String motDePasse) {
+    public Utilisateur(String pseudo, String nom, String prenom, String email, String rue, String codePostal, String ville) {
         setPseudo(pseudo);
         setNom(nom);
         setPrenom(prenom);
@@ -17,14 +17,18 @@ public class Utilisateur {
         setRue(rue);
         setCodePostal(codePostal);
         setVille(ville);
-        setMotDePasse(motDePasse);
         setCredits(500);
         setAdministrateur((byte) 0);
     }
 
-    public Utilisateur(String pseudo, String nom, String prenom, String email, String telephone, String rue, String codePostal, String ville, String motDePasse) {
-        this(pseudo, nom, prenom, email, rue, codePostal, ville, motDePasse);
+    public Utilisateur(String pseudo, String nom, String prenom, String email, String telephone, String rue, String codePostal, String ville) {
+        this(pseudo, nom, prenom, email, rue, codePostal, ville);
         setTelephone(telephone);
+    }
+
+    public Utilisateur(String pseudo, String nom, String prenom, String email, String telephone, String rue, String codePostal, String ville, String motDePasse) {
+        this(pseudo, nom, prenom, email, telephone, rue, codePostal, ville);
+        setMotDePasse(motDePasse);
     }
 
     public Utilisateur(String pseudo, String nom, String prenom, String email, String telephone, String rue, String codePostal, String ville, String motDePasse, int credits) {
@@ -33,7 +37,8 @@ public class Utilisateur {
     }
 
     public Utilisateur(String pseudo, String nom, String prenom, String email, String rue, String codePostal, String ville, String motDePasse, int credits, byte administrateur) {
-        this(pseudo, nom, prenom, email, rue, codePostal, ville, motDePasse);
+        this(pseudo, nom, prenom, email, rue, codePostal, ville);
+        setMotDePasse(motDePasse);
         setCredits(credits);
         setAdministrateur(administrateur);
     }

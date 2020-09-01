@@ -1,23 +1,22 @@
 package fr.eni.javaee.encheres.bll;
 
 import fr.eni.javaee.encheres.EException;
-import fr.eni.javaee.encheres.bo.Article;
-import fr.eni.javaee.encheres.bo.Enchere;
 import fr.eni.javaee.encheres.bo.Utilisateur;
 import fr.eni.javaee.encheres.dal.DAO;
 import fr.eni.javaee.encheres.dal.DAOFactory;
 import fr.eni.javaee.encheres.tools.PasswordTool;
 
-import java.util.HashMap;
-import java.util.List;
-
 public class UtilisateurManager extends GenericManager<Utilisateur> {
     private final DAO<Utilisateur> DAOUtilisateur;
 
+    // CONSTRUCTOR
     public UtilisateurManager() throws EException {
         super();
         this.DAOUtilisateur = DAOFactory.getUtilisateurDAO();
     }
+
+
+    // CRUD
 
     public Utilisateur getByPseudo(String pseudo) throws EException {
         try { return this.DAOUtilisateur.selectByField("pseudo", pseudo); }
@@ -55,6 +54,9 @@ public class UtilisateurManager extends GenericManager<Utilisateur> {
         return super.update(utilisateur);
     }
 
+
+    // LOGIC  & CHECKS
+
     @Override
     protected int[] getIdentifiers(Utilisateur utilisateur) {
         return new int[] {utilisateur.getNoUtilisateur()};
@@ -68,6 +70,11 @@ public class UtilisateurManager extends GenericManager<Utilisateur> {
         }
     }
 
+    /**
+     * Check all the attributes of an utilisateur.
+     * @param utilisateur Utilisateur | Utilisateur to check.
+     * @throws EException EException | Newly created exception.
+     */
     protected void checkAttributes(Utilisateur utilisateur) throws EException {
         if (utilisateur == null) { throw new EException(CodesExceptionBLL.BO_NULL_ERROR.get("Utilisateur")); }
         StringBuilder errors = new StringBuilder();
@@ -101,7 +108,7 @@ public class UtilisateurManager extends GenericManager<Utilisateur> {
         if (!errors.toString().isEmpty()) { throw new EException(errors.toString()); }
     }
 
-    protected boolean checkUnicity(Utilisateur utilisateur) throws EException {
+    protected boolean checkUnity(Utilisateur utilisateur) throws EException {
         return getByEmail(utilisateur.getEmail()) != null && getByPseudo(utilisateur.getPseudo()) != null;
     }
 
