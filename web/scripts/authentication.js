@@ -1,5 +1,5 @@
-const authenticate = async function (pseudo, password) {
-    await getData(`utilisateur/signin?pseudo=${pseudo}&motDePasse=${password}`);
+const authenticate = async function (pseudo, password, rememberMe) {
+    await getData(`utilisateur/signin?pseudo=${pseudo}&motDePasse=${password}&rememberMe=${rememberMe}`);
     await getSession();
 }
 

@@ -4,7 +4,9 @@ import fr.eni.javaee.encheres.EException;
 import fr.eni.javaee.encheres.bll.UtilisateurManager;
 import fr.eni.javaee.encheres.bo.Utilisateur;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -14,6 +16,8 @@ import java.util.Map;
 public class UtilisateurREST {
     @Context
     private HttpServletRequest request;
+    @Context
+    private HttpServletResponse response;
 
     @POST
     @Path("/signup")
@@ -56,8 +60,12 @@ public class UtilisateurREST {
 
     @GET
     @Path("/signin")
-    public Object authenticate(@QueryParam("pseudo") String pseudo, @QueryParam("motDePasse") String motDePasse) {
-        HttpSession session = request.getSession(true);
+    public Object authenticate(
+            @QueryParam("pseudo") String pseudo,
+            @QueryParam("motDePasse") String motDePasse,
+            @QueryParam("rememberMe") boolean rememberMe
+            ) {
+
         Utilisateur utilisateur = null;
         try { utilisateur = new UtilisateurManager().getByPseudoAndPassword(pseudo, motDePasse); }
         catch (EException eException) {
@@ -65,9 +73,7 @@ public class UtilisateurREST {
             return eException;
         }
         if (utilisateur != null) {
-            session.setAttribute("noUtilisateur", utilisateur.getNoUtilisateur());
-            session.setAttribute("pseudo", utilisateur.getPseudo());
-            session.setAttribute("motDePasse", utilisateur.getMotDePasse());
+            HttpSession session = generateNewSession(utilisateur, rememberMe);
         }
         return utilisateur;
     }
@@ -75,8 +81,15 @@ public class UtilisateurREST {
     @GET
     @Path("/signout")
     public Object logout() {
+        for (int index = 0; index < request.getCookies().length; index ++) {
+            Cookie cookie = request.getCookies()[index];
+            if (cookie.getName().equals("CookieIDUtilisateur")) {
+                cookie.setMaxAge(0);
+                response.addCookie(cookie); // Send back an expired cookie.
+            }
+        }
         HttpSession session = request.getSession(false);
-        session.invalidate();
+        if (session != null) { session.invalidate(); }
         return false;
     }
 
@@ -101,8 +114,8 @@ public class UtilisateurREST {
 
     @GET
     @Path("/session")
-    public Object checkValidity() {
-        try { return validateSession(request); }
+    public Object checkValidity(@CookieParam("CookieIDUtilisateur") String noUtilisateur) {
+        try { return validateSession(noUtilisateur); }
         catch (EException eException){
             eException.printStackTrace();
             return eException;
@@ -136,32 +149,31 @@ public class UtilisateurREST {
         return newUtilisateur;
     }
 
-    public HttpSession generateNewSession(Utilisateur utilisateur) {
+    public HttpSession generateNewSession(Utilisateur utilisateur, boolean rememberMe) {
         HttpSession session = request.getSession();
-        session.setAttribute("noUtilisateur", utilisateur.getNoUtilisateur());
-        session.setAttribute("pseudo", utilisateur.getPseudo());
-        session.setAttribute("motDePasse", utilisateur.getMotDePasse());
+        session.setAttribute("utilisateur", utilisateur.getNoUtilisateur());
+        if (rememberMe) {
+            String identifier = String.valueOf(utilisateur.getNoUtilisateur());
+            Cookie cookie = new Cookie("CookieIDUtilisateur", identifier);
+            cookie.setMaxAge(Integer.MAX_VALUE);
+            response.addCookie(cookie);
+        }
         return session;
     }
 
+    public HttpSession generateNewSession(Utilisateur utilisateur) {
+        return generateNewSession(utilisateur, false);
+    }
+
     /**
-     * @param request HttpServletRequest | Request in the current context.
-     * @return Utilisateur | "null" if the session is not active.
-     * @throws EException EException
+     * @return Object | Instance of the current user or "false" if the session is not active.
      */
-    public Object validateSession(HttpServletRequest request) throws EException {
-        HttpSession session = request.getSession(false);
-        if (session == null) { return false; }
-        String pseudo = (String) session.getAttribute("pseudo");
-        String motDePasse = (String) session.getAttribute("motDePasse");
-        int noUtilisateur = (int) session.getAttribute("noUtilisateur");
+    public Object validateSession(String noUtilisateur) throws EException {
         try {
-            Utilisateur utilisateur = new UtilisateurManager().getById(noUtilisateur);
-            if (utilisateur.getPseudo().equals(pseudo) &&
-                    utilisateur.getMotDePasse().equals(motDePasse)) {
-                return utilisateur;
-            }
-            return false;
+            if (noUtilisateur != null) { return new UtilisateurManager().getById(Integer.parseInt(noUtilisateur)); }
+            HttpSession session = request.getSession(false);
+            if (session == null) { return false; }
+            return new UtilisateurManager().getById((int) session.getAttribute("noUtilisateur"));
         } catch (EException eException) {
             throw new EException(CodesExceptionREST.SESSION_VALIDATION_ERROR, eException);
         }

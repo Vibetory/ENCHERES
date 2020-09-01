@@ -40,7 +40,7 @@ public class TransactSQLQueries {
     public static String SELECT_ARTICLES_LIKE(String variable, String categorie) throws EException {
         return "SELECT " + new ArticleJDBCDAOImpl().generateQueryFields() + " " +
                 "FROM Article " +
-                "WHERE nomArticle LIKE '%" + variable + "%' OR description LIKE '%" + variable + "%' " +
+                "WHERE (nomArticle LIKE '%" + variable + "%' OR description LIKE '%" + variable + "%') " +
                 (categorie == null ? "" : "AND categorie = " + categorie + " ") +
                 "ORDER BY nomArticle";
     }

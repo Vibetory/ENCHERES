@@ -8,10 +8,7 @@ import fr.eni.javaee.encheres.bo.Article;
 import fr.eni.javaee.encheres.bo.Categorie;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -51,17 +48,19 @@ public class ArticleREST {
 
     @GET
     @Path("/buy")
-    public Object searchArticles(Map<String, Object> parameters)  {
+    public Object searchArticles(
+            @QueryParam("userSearch") String userSearch,
+            @QueryParam("categorie") String categorie,
+            @QueryParam("saleIsOpen") boolean saleIsOpen,
+            @QueryParam("isCurrentUser") boolean isCurrentUser,
+            @QueryParam("saleIsWon") boolean saleIsWon
+    )  {
         try {
             ArticleManager articleManager = new ArticleManager();
-            String userSearch = (String) parameters.get("userSearch");
-            String categorie = parameters.get("categorie") != null ? (String) parameters.get("categorie") : null;
-            boolean saleIsOpen = parameters.get("saleIsOpen") != null && (boolean) parameters.get("saleIsOpen");
-            boolean isCurrentUser = parameters.get("isCurrentUser") != null && (boolean) parameters.get("isCurrentUser");
-            boolean isWon =  parameters.get("isWon") != null && (boolean) parameters.get("isWon");
+            if (categorie.isEmpty()) { categorie = null; }
             List<Article> articles = articleManager.getArticlesLike(userSearch, categorie);
             List<Article> wonArticles = new ArrayList<>();
-            if (isWon) {
+            if (saleIsWon) {
                 int acquereur = (int) request.getSession().getAttribute("noUtilisateur");
                 wonArticles = articleManager.filterByAcquereur(articles, acquereur);
             }
@@ -83,15 +82,17 @@ public class ArticleREST {
 
     @GET
     @Path("/sell")
-    public Object searchSales(Map<String, Object> parameters)  {
+    public Object searchSales(
+            @QueryParam("userSearch") String userSearch,
+            @QueryParam("categorie") String categorie,
+            @QueryParam("saleIsOpen") boolean saleIsOpen,
+            @QueryParam("saleIsCreated") boolean saleIsCreated,
+            @QueryParam("saleIsOver") boolean saleIsOver
+    ) {
         try {
             ArticleManager articleManager = new ArticleManager();
-            String userSearch = (String) parameters.get("userSearch");
-            String categorie = parameters.get("categorie") != null ? (String) parameters.get("categorie") : null;
             int vendeur = (int) request.getSession().getAttribute("noUtilisateur");
-            boolean saleIsOpen = parameters.get("saleIsOpen") != null && (boolean) parameters.get("saleIsOpen");
-            boolean saleIsCreated = parameters.get("saleIsCreated") != null && (boolean) parameters.get("saleIsCreated");
-            boolean saleIsOver =  parameters.get("isWon") != null && (boolean) parameters.get("isWon");
+            if (categorie.equals("null")) { categorie = null; }
             List<Article> articles = articleManager.filterByVendeur(articleManager.getArticlesLike(userSearch, categorie), vendeur);
             List<Article> openArticles = new ArrayList<>();
             List<Article> createdArticles = new ArrayList<>();

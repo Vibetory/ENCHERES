@@ -1,5 +1,6 @@
 const ajax = async (method, endpoint = "", data = "") => {
     const parameters = { method: method, headers: {'Accept': 'application/json'} }
+    console.log(endpoint);
     if (data) {
         parameters.headers['Content-type'] = 'application/json';
         parameters.body = JSON.stringify(data);
@@ -8,7 +9,7 @@ const ajax = async (method, endpoint = "", data = "") => {
     return await response.json();
 }
 
-const getData = async (endpoint, data = "") => { return await ajax("GET", endpoint || data["endpoint"], data); }
+const getData = async (endpoint) => { return await ajax("GET", endpoint); }
 
 const deleteData = async (endpoint) => { await ajax("DELETE", endpoint); }
 
