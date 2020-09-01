@@ -171,11 +171,10 @@ public class ArticleManager extends GenericManager<Article> {
     /**
      * Filter the articles for which the sales are over.
      */
-    public List<Article> filterByVendeur(List<Article> articles, int noUtilisateur) throws EException {
-        setArticlesObtenus(new UtilisateurManager().getById(noUtilisateur));
+    public List<Article> filterByVendeur(List<Article> articles, int noVendeur) throws EException {
         return articles
                 .stream()
-                .filter(article -> article.getVendeur().getNoUtilisateur() == noUtilisateur)
+                .filter(article -> article.getVendeur().getNoUtilisateur() == noVendeur)
                 .collect(Collectors.toList());
     }
 

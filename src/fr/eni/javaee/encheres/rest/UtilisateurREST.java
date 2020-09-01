@@ -124,8 +124,8 @@ public class UtilisateurREST {
 
     @GET
     @Path("/session")
-    public Object checkValidity(@CookieParam("CookieIDUtilisateur") String noUtilisateur) {
-        try { return validateSession(noUtilisateur); }
+    public Object checkValidity(@CookieParam("CookieIDUtilisateur") String identifier) {
+        try { return validateSession(identifier); }
         catch (EException eException){
             eException.printStackTrace();
             return eException;
@@ -150,9 +150,9 @@ public class UtilisateurREST {
     /**
      * @return Object | Instance of the current user or "false" if the session is not active.
      */
-    public Object validateSession(String noUtilisateur) throws EException {
+    public Object validateSession(String identifier) throws EException {
         try {
-            if (noUtilisateur != null) { return new UtilisateurManager().getById(Integer.parseInt(noUtilisateur)); }
+            if (identifier != null) { return new UtilisateurManager().getById(Integer.parseInt(identifier)); }
             HttpSession session = request.getSession(false);
             if (session == null) { return false; }
             return new UtilisateurManager().getById((int) session.getAttribute("noUtilisateur"));

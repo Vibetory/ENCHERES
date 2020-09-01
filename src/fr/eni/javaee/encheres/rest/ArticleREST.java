@@ -53,21 +53,21 @@ public class ArticleREST {
             @QueryParam("categorie") String categorie,
             @QueryParam("saleIsOpen") boolean saleIsOpen,
             @QueryParam("isCurrentUser") boolean isCurrentUser,
-            @QueryParam("saleIsWon") boolean saleIsWon
+            @QueryParam("saleIsWon") boolean saleIsWon,
+            @CookieParam("CookieIDUtilisateur") String identifier
     )  {
         try {
             ArticleManager articleManager = new ArticleManager();
             if (categorie.isEmpty()) { categorie = null; }
             List<Article> articles = articleManager.getArticlesLike(userSearch, categorie);
             List<Article> wonArticles = new ArrayList<>();
-            if (saleIsWon) {
-                int acquereur = (int) request.getSession().getAttribute("noUtilisateur");
-                wonArticles = articleManager.filterByAcquereur(articles, acquereur);
-            }
-            if (saleIsOpen || isCurrentUser) { articles = articleManager.filterByEtat(articles, "En cours"); }
-            if (isCurrentUser) {
-                int encherisseur = (int) request.getSession().getAttribute("noUtilisateur");
-                articles = articleManager.filterByEncherisseur(articles, encherisseur);
+            if (saleIsOpen || isCurrentUser || saleIsWon) {
+                int noUtilisateur = identifier != null ?
+                        Integer.parseInt(identifier) :
+                        (int) request.getSession().getAttribute("noUtilisateur");
+                if (saleIsWon) { wonArticles = articleManager.filterByAcquereur(articles, noUtilisateur); }
+                if (saleIsOpen || isCurrentUser) { articles = articleManager.filterByEtat(articles, "En cours"); }
+                if (isCurrentUser) { articles = articleManager.filterByEncherisseur(articles, noUtilisateur); }
             }
             return Stream.of(articles, wonArticles)
                     .flatMap(Collection::stream)
@@ -86,13 +86,16 @@ public class ArticleREST {
             @QueryParam("categorie") String categorie,
             @QueryParam("saleIsOpen") boolean saleIsOpen,
             @QueryParam("saleIsCreated") boolean saleIsCreated,
-            @QueryParam("saleIsOver") boolean saleIsOver
+            @QueryParam("saleIsOver") boolean saleIsOver,
+            @CookieParam("CookieIDUtilisateur") String identifier
     ) {
         try {
             ArticleManager articleManager = new ArticleManager();
-            int vendeur = (int) request.getSession().getAttribute("noUtilisateur");
+            int noVendeur = identifier != null ?
+                    Integer.parseInt(identifier) :
+                    (int) request.getSession().getAttribute("noUtilisateur");
             if (categorie.equals("null")) { categorie = null; }
-            List<Article> articles = articleManager.filterByVendeur(articleManager.getArticlesLike(userSearch, categorie), vendeur);
+            List<Article> articles = articleManager.filterByVendeur(articleManager.getArticlesLike(userSearch, categorie), noVendeur);
             List<Article> openArticles = new ArrayList<>();
             List<Article> createdArticles = new ArrayList<>();
             if (saleIsOpen) { openArticles = articleManager.filterByEtat(articles, "En cours"); }
