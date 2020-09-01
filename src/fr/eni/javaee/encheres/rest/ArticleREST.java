@@ -3,9 +3,11 @@ package fr.eni.javaee.encheres.rest;
 import fr.eni.javaee.encheres.EException;
 import fr.eni.javaee.encheres.bll.ArticleManager;
 import fr.eni.javaee.encheres.bll.CategorieManager;
+import fr.eni.javaee.encheres.bll.RetraitManager;
 import fr.eni.javaee.encheres.bll.UtilisateurManager;
 import fr.eni.javaee.encheres.bo.Article;
-import fr.eni.javaee.encheres.bo.Categorie;
+import fr.eni.javaee.encheres.bo.Retrait;
+import fr.eni.javaee.encheres.bo.Utilisateur;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -36,10 +38,26 @@ public class ArticleREST {
 
     @POST
     @Path("/new")
-    public Object create(Map<String, Object> article) {
+    public Object create(Map<String, Object> data, @CookieParam("CookieIDUtilisateur") String identifier) {
         try {
-            Article newArticle = generateNewArticle(article);
-            return new ArticleManager().add(newArticle);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            int noVendeur = identifier != null ?
+                    Integer.parseInt(identifier) :
+                    (int) request.getSession().getAttribute("noUtilisateur");
+            Utilisateur vendeur = new UtilisateurManager().getById(noVendeur);
+            Article newArticle = new Article(
+                    (String) data.get("nomArticle"),
+                    (String) data.get("description"),
+                    LocalDateTime.parse((String) data.get("dateDebutEncheres"), formatter),
+                    LocalDateTime.parse((String) data.get("dateFinEncheres"), formatter),
+                    (int) data.get("miseAPrix"),
+                    vendeur,
+                    data.get("categorie") != null ? new CategorieManager().getById((int) data.get("categorie")) : null
+            );
+            Article article = new ArticleManager().add(newArticle);
+            // The instance of retrait is automatically added. It is updated if the address data have been modified.
+            updateRetrait(vendeur, article, data);
+            return article;
         } catch (EException eException) {
             eException.printStackTrace();
             return eException;
@@ -124,19 +142,19 @@ public class ArticleREST {
         }
     }
 
-    public Article generateNewArticle(Map<String, Object> article) throws EException {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        Article newArticle = new Article(
-                (String) article.get("nomArticle"),
-                (String) article.get("description"),
-                LocalDateTime.parse((String) article.get("dateDebutEncheres"), formatter),
-                LocalDateTime.parse((String) article.get("dateFinEncheres"), formatter),
-                new UtilisateurManager().getById((int) article.get("vendeur")));
-        if (article.get("categorie") != null) {
-            Categorie categorie = new CategorieManager().getById((int) article.get("categorie"));
-            newArticle.setCategorie(categorie);
+    private void updateRetrait(Utilisateur vendeur, Article article, Map<String, Object> data) throws EException {
+        String rue, codePostal, ville;
+        boolean modifyRue = !(rue = (String) data.get("rue")).equals(vendeur.getRue());
+        boolean modifyCodePostal = !(codePostal = (String) data.get("codePostal")).equals(vendeur.getCodePostal());
+        boolean modifyVille = !(ville = (String) data.get("ville")).equals(vendeur.getVille());
+        if (modifyRue || modifyCodePostal || modifyVille) {
+            RetraitManager retraitManager = new RetraitManager();
+            Retrait retrait = retraitManager.getById(article.getNoArticle());
+            retrait.setRue(rue);
+            retrait.setCodePostal(codePostal);
+            retrait.setVille(ville);
+            retraitManager.update(retrait);
         }
-        return newArticle;
     }
 
 }
