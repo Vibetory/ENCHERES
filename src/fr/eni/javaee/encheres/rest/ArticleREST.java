@@ -73,8 +73,7 @@ public class ArticleREST {
                     .flatMap(Collection::stream)
                     .distinct()
                     .collect(Collectors.toList());
-        }
-        catch (EException eException) {
+        } catch (EException eException) {
             eException.printStackTrace();
             return eException;
         }
@@ -103,7 +102,6 @@ public class ArticleREST {
                     .flatMap(Collection::stream)
                     .distinct()
                     .collect(Collectors.toList());
-
         } catch (EException eException) {
             eException.printStackTrace();
             return eException;

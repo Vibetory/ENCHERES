@@ -13,6 +13,6 @@ const getData = async (endpoint) => { return await ajax("GET", endpoint); }
 
 const deleteData = async (endpoint) => { await ajax("DELETE", endpoint); }
 
-const addData = async (data) => { await ajax("POST", data["endpoint"], data); }
+const addData = async (endpoint, data) => { await ajax("POST", endpoint, data); }
 
-const updateData = async (data) => { await ajax("PUT", data["endpoint"], data); }
+const updateData = async (endpoint, data) => { await ajax("PUT", endpoint, data); }

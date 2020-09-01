@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 @Path("/utilisateur")
@@ -21,14 +22,21 @@ public class UtilisateurREST {
 
     @POST
     @Path("/signup")
-    public Object create(Map<String, Object> utilisateur) {
+    public Object create(Map<String, String> data) {
         try {
-            Utilisateur newUtilisateur = generateNewUtilisateur(utilisateur);
-            if (newUtilisateur.getMotDePasse() == null) {
-                throw new EException(CodesExceptionREST.UTILISATEUR_ADD_PASSWORD_MISSING_ERROR);
-            }
-            newUtilisateur = new UtilisateurManager().add(newUtilisateur);
-            HttpSession session = generateNewSession(newUtilisateur);
+            Utilisateur newUtilisateur = new Utilisateur(
+                    data.get("pseudo"),
+                    data.get("nom"),
+                    data.get("prenom"),
+                    data.get("email"),
+                    data.get("telephone"),
+                    data.get("rue"),
+                    data.get("codePostal"),
+                    data.get("ville"),
+                    data.get("motDePasse")
+            );
+            Utilisateur utilisateur = new UtilisateurManager().add(newUtilisateur);
+            generateNewSession(utilisateur);
             return newUtilisateur;
         } catch (EException eException) {
             eException.printStackTrace();
@@ -38,15 +46,19 @@ public class UtilisateurREST {
 
     @PUT
     @Path("/modify")
-    public Object update(Map<String, Object> utilisateur) {
+    public Object update(Map<String, String> data) {
         try {
-            Utilisateur newUtilisateur = generateNewUtilisateur(utilisateur);
-            newUtilisateur = new UtilisateurManager().update(newUtilisateur);
-            HttpSession session = generateNewSession(newUtilisateur);
-            return newUtilisateur;
-        } catch (EException eException) {
-            eException.printStackTrace();
-            return eException;
+            String pseudo = (String) data.get("pseudo");
+            String motDePasse = (String) data.remove("motDePasseActuel");
+            Utilisateur utilisateur = new UtilisateurManager().getByPseudoAndPassword(pseudo, motDePasse);
+            for (Map.Entry<String, String> attribute : data.entrySet()) {
+                String method = "set" + attribute.getKey().substring(0, 1).toUpperCase() + attribute.getKey().substring(1);
+                Utilisateur.class.getMethod(method, String.class).invoke(utilisateur, attribute.getValue());
+            }
+            return new UtilisateurManager().update(utilisateur);
+        }  catch(EException | InvocationTargetException | NoSuchMethodException | IllegalAccessException exception){
+                exception.printStackTrace();
+                return exception;
         }
     }
 
@@ -65,17 +77,15 @@ public class UtilisateurREST {
             @QueryParam("motDePasse") String motDePasse,
             @QueryParam("rememberMe") boolean rememberMe
             ) {
-
-        Utilisateur utilisateur = null;
-        try { utilisateur = new UtilisateurManager().getByPseudoAndPassword(pseudo, motDePasse); }
+        try {
+            Utilisateur utilisateur = new UtilisateurManager().getByPseudoAndPassword(pseudo, motDePasse);
+            if (utilisateur != null) { generateNewSession(utilisateur, rememberMe); }
+            return utilisateur;
+        }
         catch (EException eException) {
             eException.printStackTrace();
             return eException;
         }
-        if (utilisateur != null) {
-            HttpSession session = generateNewSession(utilisateur, rememberMe);
-        }
-        return utilisateur;
     }
 
     @GET
@@ -122,35 +132,8 @@ public class UtilisateurREST {
         }
     }
 
-    public Utilisateur generateNewUtilisateur(Map<String, Object> utilisateur) {
-        Utilisateur newUtilisateur = new Utilisateur(
-                (String) utilisateur.get("pseudo"),
-                (String) utilisateur.get("nom"),
-                (String) utilisateur.get("prenom"),
-                (String) utilisateur.get("email"),
-                (String) utilisateur.get("telephone"),
-                (String) utilisateur.get("rue"),
-                (String) utilisateur.get("codePostal"),
-                (String) utilisateur.get("ville")
-        );
-        if (utilisateur.get("motDePasse") != null) {
-            newUtilisateur.setMotDePasse((String) utilisateur.get("motDePasse"));
-        }
-        if (utilisateur.get("noUtilisateur") != null) {
-            newUtilisateur.setNoUtilisateur((Integer) utilisateur.get("noUtilisateur"));
-        }
-        if (utilisateur.get("credits") != null) {
-            newUtilisateur.setCredits((Integer) utilisateur.get("credits"));
-        }
-        if (utilisateur.get("administrateur") != null) {
-            int administrateur = (int) utilisateur.get("administrateur");
-            newUtilisateur.setAdministrateur((byte) administrateur);
-        }
-        return newUtilisateur;
-    }
-
-    public HttpSession generateNewSession(Utilisateur utilisateur, boolean rememberMe) {
-        HttpSession session = request.getSession();
+    public void generateNewSession(Utilisateur utilisateur, boolean rememberMe) {
+        HttpSession session = request.getSession(true);
         session.setAttribute("utilisateur", utilisateur.getNoUtilisateur());
         if (rememberMe) {
             String identifier = String.valueOf(utilisateur.getNoUtilisateur());
@@ -158,11 +141,10 @@ public class UtilisateurREST {
             cookie.setMaxAge(Integer.MAX_VALUE);
             response.addCookie(cookie);
         }
-        return session;
     }
 
-    public HttpSession generateNewSession(Utilisateur utilisateur) {
-        return generateNewSession(utilisateur, false);
+    public void generateNewSession(Utilisateur utilisateur) {
+        generateNewSession(utilisateur, false);
     }
 
     /**

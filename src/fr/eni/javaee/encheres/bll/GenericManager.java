@@ -48,6 +48,13 @@ public abstract class GenericManager<T> {
         }
     }
 
+    public T getByField(String field, Object fieldValue) throws EException {
+        try { return (T) DAOBusinessObject.selectByField(field, fieldValue); }
+        catch (EException eException) {
+            throw new EException(CodesExceptionBLL.GET_BY_FIELD_ERROR.get(this.getActualClassName()), eException);
+        }
+    }
+
     /**
      * INSERT T
      */

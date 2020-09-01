@@ -76,13 +76,21 @@ public class CodesExceptionBLL {
         put("Retrait", 20604);
         put("Utilisateur", 20605);
     }};
-    // Error while retrieving a list of business objects by ID.
-    public static final Map<String, Integer> GET_ALL_ERROR = new HashMap<String, Integer>() {{
+    // Error while retrieving a business object by field.
+    public static final Map<String, Integer> GET_BY_FIELD_ERROR = new HashMap<String, Integer>() {{
         put("Article", 20611);
         put("Categorie", 20612);
         put("Enchere", 20613);
         put("Retrait", 20614);
         put("Utilisateur", 20615);
+    }};
+    // Error while retrieving a list of business objects by ID.
+    public static final Map<String, Integer> GET_ALL_ERROR = new HashMap<String, Integer>() {{
+        put("Article", 20621);
+        put("Categorie", 20622);
+        put("Enchere", 20623);
+        put("Retrait", 20624);
+        put("Utilisateur", 20625);
     }};
     // Error specific to the ArticleManager.
     public static final int ARTICLE_SET_ARTICLES_WON = 21421;
