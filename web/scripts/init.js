@@ -15,6 +15,3 @@ const init = async () => {
     await refresh();
 }
 
-init();
-
-

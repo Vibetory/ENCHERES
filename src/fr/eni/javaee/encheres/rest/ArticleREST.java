@@ -38,13 +38,10 @@ public class ArticleREST {
 
     @POST
     @Path("/new")
-    public Object create(Map<String, Object> data, @CookieParam("CookieIDUtilisateur") String identifier) {
+    public Object create(Map<String, Object> data) {
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-            int noVendeur = identifier != null ?
-                    Integer.parseInt(identifier) :
-                    (int) request.getSession().getAttribute("noUtilisateur");
-            Utilisateur vendeur = new UtilisateurManager().getById(noVendeur);
+            Utilisateur vendeur = new UtilisateurManager().getById((int) data.get("noUtilisateur"));
             Article newArticle = new Article(
                     (String) data.get("nomArticle"),
                     (String) data.get("description"),
@@ -71,8 +68,7 @@ public class ArticleREST {
             @QueryParam("categorie") String categorie,
             @QueryParam("saleIsOpen") boolean saleIsOpen,
             @QueryParam("isCurrentUser") boolean isCurrentUser,
-            @QueryParam("saleIsWon") boolean saleIsWon,
-            @CookieParam("CookieIDUtilisateur") String identifier
+            @QueryParam("saleIsWon") boolean saleIsWon
     )  {
         try {
             ArticleManager articleManager = new ArticleManager();
@@ -80,12 +76,13 @@ public class ArticleREST {
             List<Article> articles = articleManager.getArticlesLike(userSearch, categorie);
             List<Article> wonArticles = new ArrayList<>();
             if (saleIsOpen || isCurrentUser || saleIsWon) {
-                int noUtilisateur = identifier != null ?
-                        Integer.parseInt(identifier) :
-                        (int) request.getSession().getAttribute("noUtilisateur");
-                if (saleIsWon) { wonArticles = articleManager.filterByAcquereur(articles, noUtilisateur); }
-                if (saleIsOpen || isCurrentUser) { articles = articleManager.filterByEtat(articles, "En cours"); }
-                if (isCurrentUser) { articles = articleManager.filterByEncherisseur(articles, noUtilisateur); }
+                Utilisateur utilisateur = (Utilisateur) request.getSession().getAttribute("Utilisateur");
+                if (saleIsWon) {
+                    wonArticles = articleManager.filterByAcquereur(articles, utilisateur.getNoUtilisateur());
+                    if (!saleIsOpen && !isCurrentUser) { return wonArticles; }
+                }
+                articles = articleManager.filterByEtat(articles, "En cours");
+                if (isCurrentUser) { articles = articleManager.filterByEncherisseur(articles, utilisateur.getNoUtilisateur()); }
             }
             return Stream.of(articles, wonArticles)
                     .flatMap(Collection::stream)
@@ -102,24 +99,23 @@ public class ArticleREST {
     public Object searchSales(
             @QueryParam("userSearch") String userSearch,
             @QueryParam("categorie") String categorie,
-            @QueryParam("saleIsOpen") boolean saleIsOpen,
+            @QueryParam("saleIsOnGoing") boolean saleIsOnGoing,
             @QueryParam("saleIsCreated") boolean saleIsCreated,
-            @QueryParam("saleIsOver") boolean saleIsOver,
-            @CookieParam("CookieIDUtilisateur") String identifier
+            @QueryParam("saleIsOver") boolean saleIsOver
     ) {
         try {
+            Utilisateur utilisateur = (Utilisateur) request.getSession().getAttribute("Utilisateur");
             ArticleManager articleManager = new ArticleManager();
-            int noVendeur = identifier != null ?
-                    Integer.parseInt(identifier) :
-                    (int) request.getSession().getAttribute("noUtilisateur");
-            if (categorie.equals("null")) { categorie = null; }
-            List<Article> articles = articleManager.filterByVendeur(articleManager.getArticlesLike(userSearch, categorie), noVendeur);
+            if (categorie.equals("null") || categorie.isEmpty()) { categorie = null; }
+            List<Article> articles = articleManager.filterByVendeur(articleManager.getArticlesLike(userSearch, categorie), utilisateur.getNoUtilisateur());
             List<Article> openArticles = new ArrayList<>();
             List<Article> createdArticles = new ArrayList<>();
-            if (saleIsOpen) { openArticles = articleManager.filterByEtat(articles, "En cours"); }
+            List<Article> endedArticles = new ArrayList<>();
+            if (!saleIsOnGoing && !saleIsCreated && !saleIsOver) { return articles; }
+            if (saleIsOnGoing) { openArticles = articleManager.filterByEtat(articles, "En cours"); }
             if (saleIsCreated) { createdArticles = articleManager.filterByEtat(articles,"Créée"); }
-            if (saleIsOver) { articles = articleManager.filterByIsOver(articles); }
-            return Stream.of(articles, openArticles, createdArticles)
+            if (saleIsOver) { endedArticles = articleManager.filterByIsOver(articles); }
+            return Stream.of(openArticles, createdArticles, endedArticles)
                     .flatMap(Collection::stream)
                     .distinct()
                     .collect(Collectors.toList());
@@ -156,5 +152,6 @@ public class ArticleREST {
             retraitManager.update(retrait);
         }
     }
+
 
 }

@@ -10,6 +10,7 @@ public class Article {
     private Utilisateur vendeur, acquereur;
     private boolean retraitEffectue = false;
 
+
     // CONSTRUCTORS
 
     public Article() {};

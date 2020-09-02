@@ -125,16 +125,29 @@ public class UtilisateurREST {
     @GET
     @Path("/session")
     public Object checkValidity(@CookieParam("CookieIDUtilisateur") String identifier) {
-        try { return validateSession(identifier); }
-        catch (EException eException){
-            eException.printStackTrace();
-            return eException;
+        try {
+            if (identifier != null) {
+                UtilisateurManager utilisateurManager = new UtilisateurManager();
+                Utilisateur utilisateur = utilisateurManager.getById(Integer.parseInt(identifier));
+                generateNewSession(utilisateur);
+                return utilisateur;
+            }
+            HttpSession session = request.getSession(false);
+            if (session == null) { return false; }
+            return session.getAttribute("Utilisateur");
+        } catch (EException eException) {
+            try {
+                throw new EException(CodesExceptionREST.SESSION_VALIDATION_ERROR, eException);
+            } catch (EException eExceptionValidation) {
+                eExceptionValidation.printStackTrace();
+                return eExceptionValidation;
+            }
         }
     }
 
     public void generateNewSession(Utilisateur utilisateur, boolean rememberMe) {
         HttpSession session = request.getSession(true);
-        session.setAttribute("utilisateur", utilisateur.getNoUtilisateur());
+        session.setAttribute("Utilisateur", utilisateur);
         if (rememberMe) {
             String identifier = String.valueOf(utilisateur.getNoUtilisateur());
             Cookie cookie = new Cookie("CookieIDUtilisateur", identifier);
@@ -145,19 +158,5 @@ public class UtilisateurREST {
 
     public void generateNewSession(Utilisateur utilisateur) {
         generateNewSession(utilisateur, false);
-    }
-
-    /**
-     * @return Object | Instance of the current user or "false" if the session is not active.
-     */
-    public Object validateSession(String identifier) throws EException {
-        try {
-            if (identifier != null) { return new UtilisateurManager().getById(Integer.parseInt(identifier)); }
-            HttpSession session = request.getSession(false);
-            if (session == null) { return false; }
-            return new UtilisateurManager().getById((int) session.getAttribute("noUtilisateur"));
-        } catch (EException eException) {
-            throw new EException(CodesExceptionREST.SESSION_VALIDATION_ERROR, eException);
-        }
     }
 }

@@ -13,9 +13,11 @@ const updateUser = async function (pseudo, nom, prenom, email, telephone, rue, c
 const authenticate = async function (pseudo, password, rememberMe) {
     await getData(`utilisateur/signin?pseudo=${pseudo}&motDePasse=${password}&rememberMe=${rememberMe}`);
     await getSession();
+    location.reload();
 }
 
 const logout = async function() {
     await getData("utilisateur/signout")
     await getSession();
+    location.reload();
 }

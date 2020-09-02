@@ -1,6 +1,5 @@
 const ajax = async (method, endpoint = "", data = "") => {
     const parameters = { method: method, headers: {'Accept': 'application/json'} }
-    console.log(endpoint);
     if (data) {
         parameters.headers['Content-type'] = 'application/json';
         parameters.body = JSON.stringify(data);

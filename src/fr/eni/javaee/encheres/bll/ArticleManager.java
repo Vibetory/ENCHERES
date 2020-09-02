@@ -154,7 +154,7 @@ public class ArticleManager extends GenericManager<Article> {
     public List<Article> filterByAcquereur(List<Article> articles, int noUtilisateur) {
         return articles
                 .stream()
-                .filter(article -> article.getAcquereur().getNoUtilisateur() == noUtilisateur)
+                .filter(article -> article.getAcquereur() != null && article.getAcquereur().getNoUtilisateur() == noUtilisateur)
                 .collect(Collectors.toList());
     }
 
