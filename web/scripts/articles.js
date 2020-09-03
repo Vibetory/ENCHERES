@@ -12,70 +12,92 @@ async function search () {
 
 function updateResults() {
     clearAllCountdowns();
-    document.querySelector("#articles").innerHTML = "";
+    document.querySelector("#articles").innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
     search().then(articles => {
-        listArticles = articles ? articles : [];
-        listArticles.forEach(article => {
-            createArticle(article)
-        })
-    });
+            listArticles = articles ? articles : [];
+            document.querySelector("#articles").innerHTML = "";
+            listArticles.forEach(article => {
+                createArticle(article)
+            })
+        });
 }
 
 function createArticle(article) {
-    let container = document.createElement("div");
-    container.classList.add("article");
-    container.style.border = "1px solid black";
-    container.style.margin = "5px";
-    container.style.width = "50%";
-    container.style.padding = "5px";
-    let title = document.createElement("h2");
-    let description = document.createElement("h3");
-    let prix = document.createElement("p");
-    let dateEnd = getDate(article["dateFinEncheres"]);
-    let dateStart = getDate(article["dateDebutEncheres"]);
-    let notStarted = dateStart - Date.now() > 0;
-    let finished = Date.now() - dateEnd > 0;
-    let vendeur = document.createElement("p");
+    let card = document.createElement("div");
+    card.classList.add("card", "mx-auto", "border-dark", "col-12", 'col-sm-6', "col-lg-4", "col-xl-3");
+    card.style.width = "18rem";
+    let image = document.createElement("img");
+    image.src = "https://us.123rf.com/450wm/pavelstasevich/pavelstasevich1811/pavelstasevich181101028/112815904-stock-vector-no-image-available-icon-flat-vector-illustration.jpg?ver=6";
+    image.width = 300;
+    image.className = "card-img-top";
+    card.appendChild(image);
+    let header = document.createElement("div");
+    header.className = "card-body";
+    let title = document.createElement("h5"); // Add link and loadComponent();
+    title.className = "card-title";
     title.textContent = article["nomArticle"];
+    header.appendChild(title);
+    let description = document.createElement("p");
+    description.className = "card-text";
     description.textContent = article["description"];
+    header.appendChild(description);
+    card.appendChild(header);
+    let details = document.createElement("ul");
+    details.classList.add("list-group", "list-group-flush");
+    let prix = document.createElement("li");
+    prix.className = "list-group-item";
     prix.textContent = `Mise à prix: ${article["miseAPrix"]} point(s)`;
+    details.appendChild(prix);
+    let countdown = setUpCountdown(article);
+    details.appendChild(countdown);
+    let vendeur = setUpVendeur(article);
+    details.appendChild(vendeur);
+    card.appendChild(details);
+    document.querySelector("#articles").appendChild(card);
+}
+
+function setUpCountdown(article) {
     let time;
-    if (!finished) { time = getTimeUntil(notStarted ? dateStart: dateEnd); }
-    let countdown = document.createElement("p");
-    countdown.textContent = finished ? "L'enchère est terminée." : getCountdownTextContent(time, false, notStarted);
-    countdown.style.color = finished ? "orange" : notStarted ? "blue" : "green";
-    vendeur.textContent = `Vendeur: ${article["vendeur"]["pseudo"]}`;
-    vendeur.onclick = async () => {
-        let component = {url: "utilisateur.html", title: article["vendeur"]["pseudo"]};
-        sources = ["users.js"];
-        await loadComponent(component, sources)
-            .then(() => {
-            getUser(article["vendeur"]["pseudo"]).then();
-        });
-    }
-    container.appendChild(title);
-    container.appendChild(description);
-    container.appendChild(prix);
-    container.appendChild(countdown);
-    container.appendChild(vendeur);
-    if (!finished) {
+    let dateStart = getDate(article["dateDebutEncheres"]);
+    let dateEnd = getDate(article["dateFinEncheres"]);
+    let isNotStarted = dateStart - Date.now() > 0;
+    let isOver = Date.now() - dateEnd > 0;
+    if (!isOver) { time = getTimeUntil(isNotStarted ? dateStart: dateEnd); }
+    let countdown = document.createElement("li");
+    countdown.className = "list-group-item";
+    countdown.textContent = isOver ? "L'enchère est terminée." : getCountdownTextContent(time, false, isNotStarted);
+    if (!isOver) {
         countdowns.push(
             setInterval(() => {
-                countdown.textContent = getCountdownTextContent(time, true, notStarted);
+                countdown.textContent = getCountdownTextContent(time, true, isNotStarted);
             }, 1000)
         );
     }
-    document.querySelector("#articles").appendChild(container);
+    return countdown;
 }
 
-
+function setUpVendeur(article) {
+    let vendeur = document.createElement("li");
+    vendeur.className = "list-group-item";
+    let pseudoVendeur = article["vendeur"]["pseudo"];
+    vendeur.textContent = `Vendeur: ${pseudoVendeur}`;
+    vendeur.onclick = async () => {
+        component = {url: "utilisateur.html", title: pseudoVendeur};
+        sources = ["utilisateur.js"];
+        await loadComponent(component, sources)
+            .then(() => {
+                getUser(pseudoVendeur).then();
+            });
+    }
+    return vendeur;
+}
 
 function clearAllCountdowns(article) {
     countdowns.forEach(countdown => clearInterval(countdown));
     countdowns = [];
 }
 
-function getCountdownTextContent(time, countdown, notStarted) {
+function getCountdownTextContent(time, countdown, isNotStarted) {
     if (countdown) {
         time.seconds --;
         if (time.seconds === -1) { time.seconds = 59; }
@@ -87,7 +109,7 @@ function getCountdownTextContent(time, countdown, notStarted) {
         if (!time.seconds && !time.minutes && !time.hours && !time.days) { updateResults(); }
     }
     return (
-        `L'enchère ${notStarted ? "commence" : "se termine"} dans: ` +
+        `${isNotStarted ? "Démarre" : "Fin"} dans ` +
         `${!time.days ? "" : time.days + " jour(s), "}` +
         `${!time.hours ? "" : time.hours < 10 ? "0" + time.hours + " heure(s), ": time.hours + " heure(s), "}` +
         `${!time.minutes ? "" : time.minutes < 10 ? "0" + time.minutes + " minute(s)" : time.minutes + " minute(s)"}` +
@@ -110,7 +132,7 @@ function updateCheckboxes () {
 
 function displayFilters() {
     getSession().then(session => {
-        document.querySelector("#filters").style.display = session ? "block" : "none";
+        document.querySelector("#filters").className = session ? "d-block" : "d-none";
     })
 }
 
@@ -119,7 +141,6 @@ function displayFilters() {
 // INITIALIZATION
 
 function loadArticles() {
-    console.log("loadArticles");
     userSearch = document.querySelector("#userSearch").value;
     categorie = document.querySelector("#categorie").value;
     filter = document.querySelector('input[name="filter"]:checked').value;
@@ -137,6 +158,8 @@ function loadArticles() {
     updateResults();
     displayFilters();
     updateCheckboxes();
+
+
     // EVENTS
 
     document.querySelector("#userSearch").oninput = $event => {

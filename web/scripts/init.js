@@ -14,6 +14,8 @@ let session,
     },
     listArticles = [],
     countdowns = [];
+    sources = [];
+    component = {};
 
 
 // FUNCTIONS

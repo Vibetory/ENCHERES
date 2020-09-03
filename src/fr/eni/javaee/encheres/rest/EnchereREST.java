@@ -11,6 +11,7 @@ import fr.eni.javaee.encheres.bo.Utilisateur;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import java.util.HashMap;
 import java.util.Map;
 
 @Path("/enchere")
@@ -39,7 +40,9 @@ public class EnchereREST {
         }
         catch (EException eException) {
             eException.printStackTrace();
-            return eException;
+            return new HashMap<String, String>() {{
+                put("message", eException.getMessage());
+            }};
         }
     }
 }

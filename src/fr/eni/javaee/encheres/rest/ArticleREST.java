@@ -15,10 +15,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -33,7 +30,9 @@ public class ArticleREST {
         try { return new ArticleManager().getById(identifier); }
         catch (EException eException) {
             eException.printStackTrace();
-            return eException;
+            return new HashMap<String, String>() {{
+                put("message", eException.getMessage());
+            }};
         }
     }
 
@@ -59,7 +58,9 @@ public class ArticleREST {
             return article;
         } catch (EException eException) {
             eException.printStackTrace();
-            return eException;
+            return new HashMap<String, String>() {{
+                put("message", eException.getMessage());
+            }};
         }
     }
 
@@ -77,7 +78,7 @@ public class ArticleREST {
 
             if (categorie.isEmpty()) { categorie = null; }
             List<Article> articles = articleManager.getArticlesLike(userSearch, categorie);
-            if (request.getSession().getAttribute("Utilisateur") != null) {
+            if (request.getSession(false) != null && request.getSession(false).getAttribute("Utilisateur") != null) {
                 Utilisateur utilisateur = (Utilisateur) request.getSession().getAttribute("Utilisateur"); ;
                 articles = articles
                         .stream()
@@ -100,7 +101,9 @@ public class ArticleREST {
                     .collect(Collectors.toList());
         } catch (EException eException) {
             eException.printStackTrace();
-            return eException;
+            return new HashMap<String, String>() {{
+                put("message", eException.getMessage());
+            }};
         }
     }
 
@@ -131,7 +134,9 @@ public class ArticleREST {
                     .collect(Collectors.toList());
         } catch (EException eException) {
             eException.printStackTrace();
-            return eException;
+            return new HashMap<String, String>() {{
+                put("message", eException.getMessage());
+            }};
         }
     }
 
@@ -144,7 +149,9 @@ public class ArticleREST {
             return articleManager.getTimeUntilNextEnd();
         } catch (EException eException) {
             eException.printStackTrace();
-            return eException;
+            return new HashMap<String, String>() {{
+                put("message", eException.getMessage());
+            }};
         }
     }
 

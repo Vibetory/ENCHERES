@@ -22,5 +22,8 @@
     <orderEntry type="library" exported="" scope="PROVIDED" name="Tomcat 8.5.57" level="application_server_libraries" />
     <orderEntry type="library" exported="" name="JDBC" level="project" />
     <orderEntry type="library" name="WEB-INF" level="project" />
+    <orderEntry type="library" name="bootstrap" level="application" />
+    <orderEntry type="library" name="jquery-3.5.1.slim" level="application" />
+    <orderEntry type="library" name="popper.js" level="application" />
   </component>
 </module>

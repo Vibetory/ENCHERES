@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.Map;
 
 @Path("/utilisateur")
@@ -40,7 +41,9 @@ public class UtilisateurREST {
             return newUtilisateur;
         } catch (EException eException) {
             eException.printStackTrace();
-            return eException;
+            return new HashMap<String, String>() {{
+                put("message", eException.getMessage());
+            }};
         }
     }
 
@@ -58,7 +61,9 @@ public class UtilisateurREST {
             return new UtilisateurManager().update(utilisateur);
         }  catch(EException | InvocationTargetException | NoSuchMethodException | IllegalAccessException exception){
                 exception.printStackTrace();
-                return exception;
+                return new HashMap<String, String>() {{
+                    put("message", exception.getMessage());
+                }};
         }
     }
 
@@ -66,7 +71,9 @@ public class UtilisateurREST {
     @Path("/delete/{noUtilisateur: \\d+}")
     public void delete(@PathParam("noUtilisateur") int noUtilisateur)  {
         try { new UtilisateurManager().delete(noUtilisateur); }
-        catch (EException eException) { eException.printStackTrace(); }
+        catch (EException eException) {
+            eException.printStackTrace();
+        }
     }
 
 
@@ -84,7 +91,9 @@ public class UtilisateurREST {
         }
         catch (EException eException) {
             eException.printStackTrace();
-            return eException;
+            return new HashMap<String, String>() {{
+                put("message", eException.getMessage());
+            }};
         }
     }
 
@@ -109,7 +118,9 @@ public class UtilisateurREST {
         try { return new UtilisateurManager().getById(noUtilisateur); }
         catch (EException eException) {
             eException.printStackTrace();
-            return eException;
+            return new HashMap<String, String>() {{
+                put("message", eException.getMessage());
+            }};
         }
     }
 
@@ -119,7 +130,9 @@ public class UtilisateurREST {
         try { return new UtilisateurManager().getByPseudo(pseudo); }
         catch (EException eException) {
             eException.printStackTrace();
-            return eException;
+            return new HashMap<String, String>() {{
+                put("message", eException.getMessage());
+            }};
         }
     }
 
@@ -128,7 +141,9 @@ public class UtilisateurREST {
         try { return new UtilisateurManager().getAll(); }
         catch (EException eException) {
             eException.printStackTrace();
-            return eException;
+            return new HashMap<String, String>() {{
+                put("message", eException.getMessage());
+            }};
         }
     }
 
@@ -144,13 +159,16 @@ public class UtilisateurREST {
             }
             HttpSession session = request.getSession(false);
             if (session == null) { return false; }
+            System.out.println("Test");
             return session.getAttribute("Utilisateur");
         } catch (EException eException) {
             try {
                 throw new EException(CodesExceptionREST.SESSION_VALIDATION_ERROR, eException);
             } catch (EException eExceptionValidation) {
                 eExceptionValidation.printStackTrace();
-                return eExceptionValidation;
+                return new HashMap<String, String>() {{
+                    put("message", eExceptionValidation.getMessage());
+                }};
             }
         }
     }

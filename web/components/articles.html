@@ -1,41 +1,48 @@
-<section id="search">
-  <label for="userSearch">Filtres: </label>
-  <br />
-  <input type="text" id="userSearch" placeholder="Nom | Description">
-  <br />
-  <label for="categorie">Catégorie: </label>
-  <select name="categorie" id="categorie">
-    <option value="">Toutes</option>
-  </select>
-</section>
-<table id="filters" style="display: none">
-  <tr>
-    <td>
-      <label>
-        <input type="radio" name="filter"  value="buy" checked />
-        Achats
-      </label>
-      <br />
-      <input type="checkbox" id="saleIsOpen"><label for="saleIsOpen">Enchères ouvertes</label>
-      <br />
-      <input type="checkbox" id="isCurrentUser"><label for="isCurrentUser">Mes enchères en cours</label>
-      <br />
-      <input type="checkbox" id="saleIsWon"><label for="saleIsWon">Mes enchères remportées</label>
-      <br />
-    </td>
-    <td>
-      <label>
-        <input type="radio" name="filter"  value="sell" />
-        Ventes
-      </label>
-      <br />
-      <input type="checkbox" id="saleIsOnGoing"><label for="saleIsOnGoing">Mes ventes en cours</label>
-      <br />
-      <input type="checkbox" id="saleIsCreated"><label for="saleIsCreated">Ventes non débutées</label>
-      <br />
-      <input type="checkbox" id="saleIsOver"><label for="saleIsOver">Ventes terminées</label>
-      <br />
-    </td>
-  </tr>
-</table>
-<div id="articles"></div>
+<h3 class="d-none d-sm-block text-center">Liste des enchères</h3>
+
+<form class="form-group">
+  <label class= m-2>Filtres :</label>
+  <div class="form-inline">
+    <input class="form-control m-2" type="search" placeholder="Recherche" aria-label="Search" id="userSearch">
+    <button class="btn btn-outline-success m-2 my-1 disabled" type="submit" style="cursor: not-allowed" disabled>Recherche</button>
+  </div>
+  <div class="form-inline">
+    <label class="m-2" for="categorie">Catégorie</label>
+    <select class="custom-select m-2 col-3" id="categorie">
+      <option selected value ="">Toutes</option>
+    </select>
+  </div>
+  <table id="filters" class="d-none">
+    <tr>
+      <td>
+        <label>
+          <input type="radio" name="filter"  value="buy" checked />
+          Achats
+        </label>
+        <br />
+        <input type="checkbox" id="saleIsOpen"><label for="saleIsOpen">Enchères ouvertes</label>
+        <br />
+        <input type="checkbox" id="isCurrentUser"><label for="isCurrentUser">Mes enchères en cours</label>
+        <br />
+        <input type="checkbox" id="saleIsWon"><label for="saleIsWon">Mes enchères remportées</label>
+        <br />
+      </td>
+      <td>
+        <label>
+          <input type="radio" name="filter"  value="sell" />
+          Ventes
+        </label>
+        <br />
+        <input type="checkbox" id="saleIsOnGoing"><label for="saleIsOnGoing">Mes ventes en cours</label>
+        <br />
+        <input type="checkbox" id="saleIsCreated"><label for="saleIsCreated">Ventes non débutées</label>
+        <br />
+        <input type="checkbox" id="saleIsOver"><label for="saleIsOver">Ventes terminées</label>
+        <br />
+      </td>
+    </tr>
+  </table>
+</form>
+<div class="container">
+  <div id="articles" class="row"></div>
+</div>

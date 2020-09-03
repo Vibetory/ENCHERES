@@ -5,7 +5,7 @@ import java.util.ResourceBundle;
 
 public abstract class MessagesReader {
     private static ResourceBundle resourceBundle;
-    private static final String FILENAME = "fr.eni.javaee.encheres.messages.messages";
+    private static final String FILENAME = "fr.eni.javaee.encheres.messages.errors";
 
     static {
         try { resourceBundle = ResourceBundle.getBundle(FILENAME, Locale.FRANCE); }

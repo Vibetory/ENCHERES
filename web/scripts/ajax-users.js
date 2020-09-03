@@ -13,9 +13,9 @@ async function updateUser(pseudo, nom, prenom, email, telephone, rue, codePostal
 // FUNCTIONS
 
 async function authenticate(pseudo, password, rememberMe) {
-    await getData(`utilisateur/signin?pseudo=${pseudo}&motDePasse=${password}&rememberMe=${rememberMe}`);
+    let authenticated = await getData(`utilisateur/signin?pseudo=${pseudo}&motDePasse=${password}&rememberMe=${rememberMe}`);
     await getSession();
-    location.reload();
+    return authenticated;
 }
 
 async function logout() {

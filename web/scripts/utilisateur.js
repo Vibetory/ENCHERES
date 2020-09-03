@@ -10,12 +10,13 @@ function displayProfile(user) {
 // INITIALIZATION:
 
 function loadUsers() {
-    console.log("loadUsers");
     displayProfile(user)
-    document.querySelector("#home").onclick = () => {
-        let component = {url: "articles.html", title: "Liste des enchères"};
-        let sources = ["ajax-users.js", "ajax-articles.js", "ajax-encheres.js", "date-tools.js", "articles.js"];
-        loadComponent(component, sources).then();
+    if (user["noUtilisateur"] === session["noUtilisateur"]) {
+        document.title = "Mon profil";
+        let editButton = document.querySelector("#edit")
+        editButton.className = "d-block";
+        editButton.onclick = () => {
+        }
     }
 }
 
