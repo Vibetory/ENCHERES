@@ -190,7 +190,7 @@ public class EnchereManager extends GenericManager<Enchere> {
         if (enchere.getDateEnchere().isAfter(enchere.getArticleVendu().getDateFinEncheres())) {
             errors.append("Champs incorrect. L'enchère sur l'article associée est déjà terminée.").append("\n");
         }
-        if (enchere.getMontantEnchere() > this.temporaryHighestBid.getMontantEnchere()) {
+        if (this.temporaryHighestBid != null && enchere.getMontantEnchere() > this.temporaryHighestBid.getMontantEnchere()) {
             errors.append("Champs incorrect. Le montant de l'enchère doit être supérieur à l'enchère actuelle la plus haute.").append("\n");
         }
         if (enchere.getMontantEnchere() > enchere.getEncherisseur().getCredits()) {

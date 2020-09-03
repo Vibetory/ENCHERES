@@ -5,56 +5,27 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Title</title>
-    <script type="text/javascript" src="scripts/ajax.js"></script>
+    <title>Encheres</title>
     <script type="text/javascript" src="scripts/init.js"></script>
+    <script type="text/javascript" src="scripts/loaders.js"></script>
+    <script type="text/javascript" src="scripts/ajax.js"></script>
+    <script type="text/javascript" src="scripts/ajax-users.js"></script>
+    <script type="text/javascript" src="scripts/ajax-articles.js"></script>
+    <script type="text/javascript" src="scripts/ajax-encheres.js"></script>
+    <script src="https://kit.fontawesome.com/7b3b0349cd.js" crossorigin="anonymous"></script>
 </head>
 <body>
-<main>
-    <section id="search">
-        <label for="userSearch">Filtres: </label>
-        <br />
-        <input type="text" id="userSearch" placeholder="Nom | Description">
-        <br />
-        <label for="categorie">Catégorie: </label>
-        <select name="categorie" id="categorie">
-            <option value="">Toutes</option>
-        </select>
+    <main id="root">
+    </main>
+    <section id="scripts">
+        <script defer>
+            // Main page:
+            let component = {url: "articles.html", title: "Liste des enchères"};
+            let sources = ["date-tools.js", "articles.js"];
+            init().then(() => {
+                loadComponent(component, sources);
+            })
+        </script>
     </section>
-    <table id="filters">
-        <tr>
-            <td>
-                <label>
-                    <input type="radio" name="filter"  value="buy" checked />
-                    Achats
-                </label>
-                <br />
-                <input type="checkbox" id="saleIsOpen"><label for="saleIsOpen">Enchères ouvertes</label>
-                <br />
-                <input type="checkbox" id="isCurrentUser"><label for="isCurrentUser">Mes enchères en cours</label>
-                <br />
-                <input type="checkbox" id="saleIsWon"><label for="saleIsWon">Mes enchères remportées</label>
-                <br />
-            </td>
-            <td>
-                <label>
-                    <input type="radio" name="filter"  value="sell" />
-                    Ventes
-                </label>
-                <br />
-                <input type="checkbox" id="saleIsOnGoing"><label for="saleIsOnGoing">Mes ventes en cours</label>
-                <br />
-                <input type="checkbox" id="saleIsCreated"><label for="saleIsCreated">Ventes non débutées</label>
-                <br />
-                <input type="checkbox" id="saleIsOver"><label for="saleIsOver">Ventes terminées</label>
-                <br />
-            </td>
-        </tr>
-    </table>
-    <div id="root"></div>
-</main>
-<script type="text/javascript" src="scripts/account.js"></script>
-<script type="text/javascript" src="scripts/articles.js"></script>
-<script type="text/javascript" src="scripts/main.js"></script>
 </body>
 </html>

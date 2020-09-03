@@ -6,6 +6,7 @@ import fr.eni.javaee.encheres.bll.CategorieManager;
 import fr.eni.javaee.encheres.bll.RetraitManager;
 import fr.eni.javaee.encheres.bll.UtilisateurManager;
 import fr.eni.javaee.encheres.bo.Article;
+import fr.eni.javaee.encheres.bo.Categorie;
 import fr.eni.javaee.encheres.bo.Retrait;
 import fr.eni.javaee.encheres.bo.Utilisateur;
 
@@ -41,7 +42,7 @@ public class ArticleREST {
     public Object create(Map<String, Object> data) {
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-            Utilisateur vendeur = new UtilisateurManager().getById((int) data.get("noUtilisateur"));
+            Utilisateur vendeur = (Utilisateur) request.getSession().getAttribute("Utilisateur");
             Article newArticle = new Article(
                     (String) data.get("nomArticle"),
                     (String) data.get("description"),
@@ -49,7 +50,8 @@ public class ArticleREST {
                     LocalDateTime.parse((String) data.get("dateFinEncheres"), formatter),
                     (int) data.get("miseAPrix"),
                     vendeur,
-                    data.get("categorie") != null ? new CategorieManager().getById((int) data.get("categorie")) : null
+                    data.get("categorie") == null || ((String) data.get("categorie")).isEmpty() ?
+                             null : new CategorieManager().getById((int) data.get("categorie"))
             );
             Article article = new ArticleManager().add(newArticle);
             // The instance of retrait is automatically added. It is updated if the address data have been modified.
@@ -72,8 +74,16 @@ public class ArticleREST {
     )  {
         try {
             ArticleManager articleManager = new ArticleManager();
+
             if (categorie.isEmpty()) { categorie = null; }
             List<Article> articles = articleManager.getArticlesLike(userSearch, categorie);
+            if (request.getSession().getAttribute("Utilisateur") != null) {
+                Utilisateur utilisateur = (Utilisateur) request.getSession().getAttribute("Utilisateur"); ;
+                articles = articles
+                        .stream()
+                        .filter(article -> article.getVendeur().getNoUtilisateur() != utilisateur.getNoUtilisateur())
+                        .collect(Collectors.toList());
+            }
             List<Article> wonArticles = new ArrayList<>();
             if (saleIsOpen || isCurrentUser || saleIsWon) {
                 Utilisateur utilisateur = (Utilisateur) request.getSession().getAttribute("Utilisateur");

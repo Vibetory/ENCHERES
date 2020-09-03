@@ -63,7 +63,7 @@ public class UtilisateurREST {
     }
 
     @DELETE
-    @Path("/{noUtilisateur: \\d+}")
+    @Path("/delete/{noUtilisateur: \\d+}")
     public void delete(@PathParam("noUtilisateur") int noUtilisateur)  {
         try { new UtilisateurManager().delete(noUtilisateur); }
         catch (EException eException) { eException.printStackTrace(); }
@@ -107,6 +107,16 @@ public class UtilisateurREST {
     @Path("/{noUtilisateur: \\d+}")
     public Object selectById(@PathParam("noUtilisateur") int noUtilisateur)  {
         try { return new UtilisateurManager().getById(noUtilisateur); }
+        catch (EException eException) {
+            eException.printStackTrace();
+            return eException;
+        }
+    }
+
+    @GET
+    @Path("/{pseudo}")
+    public Object selectByPseudo(@PathParam("pseudo") String pseudo)  {
+        try { return new UtilisateurManager().getByPseudo(pseudo); }
         catch (EException eException) {
             eException.printStackTrace();
             return eException;

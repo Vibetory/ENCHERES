@@ -1,3 +1,5 @@
+// FUNCTIONS
+
 const ajax = async (method, endpoint = "", data = "") => {
     const parameters = { method: method, headers: {'Accept': 'application/json'} }
     if (data) {

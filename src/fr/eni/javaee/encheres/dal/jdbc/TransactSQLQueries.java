@@ -55,6 +55,7 @@ public class TransactSQLQueries {
                 "FROM Enchere " +
                 "WHERE articleVendu = ? " +
                 "GROUP BY articleVendu) " +
+                "AS EnchereMax " +
                 "ON Enchere.articleVendu = EnchereMax.articleVenduMax AND Enchere.montantEnchere = EnchereMax.montantEnchereMax";
     }
 

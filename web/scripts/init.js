@@ -1,17 +1,37 @@
-let currentUser;
-let refreshDelay;
+// VARIABLES
+let session,
+    user,
+    userSearch,
+    categorie,
+    filter,
+    checkboxes = {
+        saleIsOpen: false,
+        isCurrentUser: false,
+        saleIsWon: false,
+        saleIsOnGoing: false,
+        saleIsCreated: false,
+        saleIsOver: false
+    },
+    listArticles = [],
+    countdowns = [];
+
+
+// FUNCTIONS
 
 const getSession = async () => {
-    currentUser = await getData("utilisateur/session");
+    session = await getData("utilisateur/session");
+    return session;
 }
 
 const refresh = async () => {
-    refreshDelay = await getData("article/refresh");
-    setTimeout(refresh, refreshDelay)
+    let delay = await getData("article/refresh");
+    setTimeout(refresh, delay)
 }
 
 const init = async () => {
     await getSession();
     await refresh();
 }
+
+
 
