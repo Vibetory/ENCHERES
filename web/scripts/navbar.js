@@ -8,6 +8,10 @@ async function updateNavLinks() {
             navLink.classList.add(session ? "d-none" : "d-block");
             navLink.classList.remove(session ? "d-block" : "d-none");
         });
+        let credits = document.querySelector("#credits");
+        credits.innerHTML = session ? '<i class="fas fa-coins"> ' + session["credits"] : "";
+        credits.classList.add(session ? "d-block" : "d-none");
+        credits.classList.remove(session ? "d-none" : "d-block");
     });
 }
 
@@ -18,23 +22,17 @@ function loadNavBar() {
 
     document.querySelector("#profile").onclick = async () => {
         user = session;
-        component = {url: "utilisateur.html", title: "Mon profil"};
-        sources = ["utilisateur.js"];
-        await loadComponent(component, sources);
+        await loadComponent("utilisateur");
     }
 
     document.querySelectorAll(".home").forEach(navLink => {
         navLink.onclick = () => {
-            component = {url: "articles.html", title: "Liste des enchères"};
-            sources = ["ajax-utilisateur.js", "ajax-articles.js", "ajax-encheres.js", "date-tools.js", "articles.js"];
-            loadComponent(component, sources).then();
+            loadComponent("articles").then();
         }
     })
 
     document.querySelector("#signin-up").onclick = async () => {
-        component = {url: "connexion.html", title: "S'inscrire / Se connecter"};
-        sources = ["connexion.js"];
-        await loadComponent(component, sources);
+        await loadComponent("connexion");
     }
 }
 

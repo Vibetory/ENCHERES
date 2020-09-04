@@ -27,10 +27,13 @@
     <script type="text/javascript" src="scripts/ajax-users.js"></script>
     <script type="text/javascript" src="scripts/ajax-articles.js"></script>
     <script type="text/javascript" src="scripts/ajax-encheres.js"></script>
+    <script type="text/javascript" src="scripts/ajax-retraits.js"></script>
+    <script type="text/javascript" src="scripts/date-tools.js"></script>
 </head>
 <body>
     <nav class="navbar navbar-expand-sm navbar-light bg-light">
         <a class="navbar-brand home" href="#">ENI-Enchère</a>
+        <span id="credits" class="d-none"></span>
         <div class="col-12 d-sm-none"></div>
         <ul class="navbar-nav ml-sm-auto mr-auto mr-sm-0">
             <li class="nav-item active">
@@ -57,10 +60,8 @@
     <section id="scripts">
         <script defer>
             // Main page:
-            component = {url: "articles.html", title: "Liste des enchères"};
-            sources = ["date-tools.js", "articles.js"];
             init().then(() => {
-                loadComponent(component, sources);
+                loadComponent("articles");
             })
         </script>
     </section>

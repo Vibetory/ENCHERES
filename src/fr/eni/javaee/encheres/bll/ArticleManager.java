@@ -105,11 +105,13 @@ public class ArticleManager extends GenericManager<Article> {
     /**
      * @return long | Time in milliseconds until the next sale is ending.
      */
-    public long getTimeUntilNextEnd() throws EException {
+    public int getTimeUntilNextEnd() throws EException {
         setAllArticlesObtenus();
-        long milliseconds = Long.MAX_VALUE;
+        int milliseconds = Integer.MAX_VALUE;
         for (Article article : getAll()) {
-            milliseconds = Math.min(milliseconds, Duration.between(LocalDateTime.now(), article.getDateFinEncheres()).toMillis());
+            if (article.getEtatVente().equals("En cours")) {
+                milliseconds = (int) Math.min(milliseconds, Duration.between(LocalDateTime.now(), article.getDateFinEncheres()).toMillis());
+            }
         }
         return milliseconds;
     }

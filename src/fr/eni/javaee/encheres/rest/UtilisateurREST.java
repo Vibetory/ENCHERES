@@ -159,7 +159,6 @@ public class UtilisateurREST {
             }
             HttpSession session = request.getSession(false);
             if (session == null) { return false; }
-            System.out.println("Test");
             return session.getAttribute("Utilisateur");
         } catch (EException eException) {
             try {

@@ -33,9 +33,7 @@ function createArticle(article) {
     card.appendChild(image);
     let header = document.createElement("div");
     header.className = "card-body";
-    let title = document.createElement("h5"); // Add link and loadComponent();
-    title.className = "card-title";
-    title.textContent = article["nomArticle"];
+    let title = setUpTitle(article);
     header.appendChild(title);
     let description = document.createElement("p");
     description.className = "card-text";
@@ -54,6 +52,17 @@ function createArticle(article) {
     details.appendChild(vendeur);
     card.appendChild(details);
     document.querySelector("#articles").appendChild(card);
+}
+
+function setUpTitle(article) {
+    let title = document.createElement("h5"); // Add link and loadComponent();
+    title.className = "card-title";
+    title.textContent = article["nomArticle"];
+    title.onclick = async () => {
+        await getHighestBid(article["noArticle"]).then(() => { if (!enchere) {enchere = article; }})
+            .then(async() => { await loadComponent("enchere"); });
+    }
+    return title;
 }
 
 function setUpCountdown(article) {
@@ -82,12 +91,8 @@ function setUpVendeur(article) {
     let pseudoVendeur = article["vendeur"]["pseudo"];
     vendeur.textContent = `Vendeur: ${pseudoVendeur}`;
     vendeur.onclick = async () => {
-        component = {url: "utilisateur.html", title: pseudoVendeur};
-        sources = ["utilisateur.js"];
-        await loadComponent(component, sources)
-            .then(() => {
-                getUser(pseudoVendeur).then();
-            });
+        await loadComponent("utilisateur")
+            .then(() => { getUser(pseudoVendeur).then(); });
     }
     return vendeur;
 }

@@ -4,6 +4,7 @@ let session,
     userSearch,
     categorie,
     filter,
+    enchere,
     checkboxes = {
         saleIsOpen: false,
         isCurrentUser: false,
@@ -14,8 +15,6 @@ let session,
     },
     listArticles = [],
     countdowns = [];
-    sources = [];
-    component = {};
 
 
 // FUNCTIONS
@@ -27,7 +26,9 @@ const getSession = async () => {
 
 const refresh = async () => {
     let delay = await getData("article/refresh");
-    setTimeout(refresh, delay)
+    console.log(`The database will automatically refresh in ${delay / 1000} seconds.`)
+    if (!delay) { setTimeout(refresh, delay); }
+
 }
 
 const init = async () => {

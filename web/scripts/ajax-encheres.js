@@ -1,7 +1,8 @@
 // FUNCTIONS
 
 async function getHighestBid(noArticle) {
-    return await getData(`enchere/highest/${noArticle}`)
+    enchere = await getData(`enchere/highest/${noArticle}`)
+    return enchere;
 }
 
 async function newBid(articleVendu, montantEnchere) {

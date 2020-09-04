@@ -3,7 +3,6 @@ package fr.eni.javaee.encheres.rest;
 import fr.eni.javaee.encheres.EException;
 import fr.eni.javaee.encheres.bll.ArticleManager;
 import fr.eni.javaee.encheres.bll.EnchereManager;
-import fr.eni.javaee.encheres.bll.UtilisateurManager;
 import fr.eni.javaee.encheres.bo.Article;
 import fr.eni.javaee.encheres.bo.Enchere;
 import fr.eni.javaee.encheres.bo.Utilisateur;
@@ -22,10 +21,15 @@ public class EnchereREST {
     @GET
     @Path("/highest/{articleVendu: \\d+}")
     public Object getHighestBid(@PathParam("articleVendu") int articleVendu)  {
-        try { return new EnchereManager().getHighestBid(articleVendu).getMontantEnchere(); }
+        try {
+            Enchere enchere = new EnchereManager().getHighestBid(articleVendu);
+            return enchere != null ? enchere : false;
+        }
         catch (EException eException) {
             eException.printStackTrace();
-            return eException;
+            return new HashMap<String, String>() {{
+                put("message", eException.getMessage());
+            }};
         }
     }
 
