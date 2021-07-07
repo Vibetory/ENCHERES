@@ -1,18 +1,15 @@
 package fr.eni.javaee.encheres.bo;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class Utilisateur {
-    private int noUtilisateur, credit;
+    private int noUtilisateur, credits;
     private String pseudo, nom, prenom, email, telephone, rue, codePostal, ville, motDePasse;
     private byte administrateur;
 
     // CONSTRUCTORS
 
-    public Utilisateur(String pseudo, String nom, String prenom, String email, String rue, String codePostal, String ville, String motDePasse, int credit, byte administrateur) {
+    public Utilisateur() {}
+
+    public Utilisateur(String pseudo, String nom, String prenom, String email, String rue, String codePostal, String ville) {
         setPseudo(pseudo);
         setNom(nom);
         setPrenom(prenom);
@@ -20,26 +17,46 @@ public class Utilisateur {
         setRue(rue);
         setCodePostal(codePostal);
         setVille(ville);
-        setMotDePasse(motDePasse);
-        setCredit(credit);
-        setAdministrateur(administrateur);
+        setCredits(500);
+        setAdministrateur((byte) 0);
     }
 
-    // CONSTRUCTORS
-
-    public Utilisateur(String pseudo, String nom, String prenom, String email, String telephone, String rue, String codePostal, String ville, String motDePasse, int credit, byte administrateur) {
-        this(pseudo, nom, prenom, email, rue, codePostal, ville, motDePasse, credit, administrateur);
+    public Utilisateur(String pseudo, String nom, String prenom, String email, String telephone, String rue, String codePostal, String ville) {
+        this(pseudo, nom, prenom, email, rue, codePostal, ville);
         setTelephone(telephone);
     }
 
-    public Utilisateur(int noUtilisateur, String pseudo, String nom, String prenom, String email, String telephone, String rue, String codePostal, String ville, String motDePasse, int credit, byte administrateur) {
-        this(pseudo, nom, prenom, email, telephone, rue, codePostal, ville, motDePasse, credit, administrateur);
+    public Utilisateur(String pseudo, String nom, String prenom, String email, String telephone, String rue, String codePostal, String ville, String motDePasse) {
+        this(pseudo, nom, prenom, email, telephone, rue, codePostal, ville);
+        setMotDePasse(motDePasse);
+    }
+
+    public Utilisateur(String pseudo, String nom, String prenom, String email, String telephone, String rue, String codePostal, String ville, String motDePasse, int credits) {
+        this(pseudo, nom, prenom, email, telephone, rue, codePostal, ville, motDePasse);
+        setCredits(credits);
+    }
+
+    public Utilisateur(String pseudo, String nom, String prenom, String email, String rue, String codePostal, String ville, String motDePasse, int credits, byte administrateur) {
+        this(pseudo, nom, prenom, email, rue, codePostal, ville);
+        setMotDePasse(motDePasse);
+        setCredits(credits);
+        setAdministrateur(administrateur);
+    }
+
+    public Utilisateur(String pseudo, String nom, String prenom, String email, String telephone, String rue, String codePostal, String ville, String motDePasse, int credits, byte administrateur) {
+        this(pseudo, nom, prenom, email, rue, codePostal, ville, motDePasse, credits, administrateur);
+        setTelephone(telephone);
+    }
+
+    public Utilisateur(int noUtilisateur, String pseudo, String nom, String prenom, String email, String telephone, String rue, String codePostal, String ville, String motDePasse, int credits, byte administrateur) {
+        this(pseudo, nom, prenom, email, telephone, rue, codePostal, ville, motDePasse, credits, administrateur);
         setNoUtilisateur(noUtilisateur);
     }
 
     // METHODS
-    public static String getIdentifierName() { return "no_utilisateur"; }
 
+    public void addCredits(int credits) { this.credits += credits; }
+    public void substractCredits(int credits) { this.credits -= credits; }
 
     // GETTERS & SETTERS
 
@@ -47,9 +64,9 @@ public class Utilisateur {
 
     public void setNoUtilisateur(int noUtilisateur) { this.noUtilisateur = noUtilisateur; }
 
-    public int getCredit() { return this.credit; }
+    public int getCredits() { return this.credits; }
 
-    public void setCredit(int credit) { this.credit = credit;}
+    public void setCredits(int credits) { this.credits = credits;}
 
     public String getPseudo() { return this.pseudo; }
 

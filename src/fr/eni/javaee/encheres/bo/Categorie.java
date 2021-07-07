@@ -6,16 +6,14 @@ public class Categorie {
 
     // CONSTRUCTORS
 
+    public Categorie() {};
+
     public Categorie(int noCategorie, String libelle) {
         this(libelle);
         setNoCategorie(noCategorie);
     }
 
     public Categorie(String libelle) { setLibelle(libelle); }
-
-
-    // METHODS
-    public static String getIdentifierName() { return "no_categorie"; }
 
 
     // GETTERS AND SETTERS

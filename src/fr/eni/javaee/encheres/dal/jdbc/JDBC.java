@@ -10,7 +10,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class JDBC {
-    private static final DataSource dataSource;
+    private static DataSource dataSource;
     static {
         Context context;
         try {
@@ -18,12 +18,16 @@ public class JDBC {
             dataSource = (DataSource) context.lookup("java:comp/env/jdbc/pool_cnx");
         } catch (NamingException namingException) {
             try { throw new EException(CodesExceptionJDBC.DATABASE_ACCESS_ERROR, namingException); }
-            catch (EException eException) { throw new RuntimeException(); }
+            catch (EException eException) {
+                throw new RuntimeException();
+            }
         }
     }
 
     public static Connection getConnection() throws EException {
         try { return dataSource.getConnection(); }
-        catch (SQLException sqlException) { throw new EException(CodesExceptionJDBC.CONNECTION_ERROR, sqlException); }
+        catch (SQLException sqlException) {
+            throw new EException(CodesExceptionJDBC.CONNECTION_ERROR, sqlException);
+        }
     }
 }

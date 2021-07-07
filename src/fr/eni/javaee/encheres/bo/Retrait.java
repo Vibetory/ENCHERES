@@ -5,6 +5,15 @@ public class Retrait {
     private Article articleARetirer;
 
     // CONSTRUCTORS
+    public Retrait() {}
+
+    public Retrait(Article articleARetirer) {
+        setArticleARetirer(articleARetirer);
+        setRue(articleARetirer.getVendeur().getRue());
+        setCodePostal(articleARetirer.getVendeur().getCodePostal());
+        setVille(articleARetirer.getVendeur().getVille());
+    }
+
 
     public Retrait(Article articleARetirer, String rue, String codePostal, String ville) {
         setArticleARetirer(articleARetirer);
@@ -33,6 +42,10 @@ public class Retrait {
     public void setVille(String ville) { this.ville = ville; }
 
     public Article getArticleARetirer() { return this.articleARetirer; }
+
+    public int getNoArticleARetirer() {
+        return this.articleARetirer != null ? this.articleARetirer.getNoArticle() : 0;
+    }
 
     public void setArticleARetirer(Article articleARetirer) { this.articleARetirer = articleARetirer; }
 }
